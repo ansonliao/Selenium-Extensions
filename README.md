@@ -30,6 +30,32 @@ public class BrowserTest extends UserBaseTest {
 }
 ```
 
+Even, you can annotated your test class:
+```java
+@Chrome
+public class BrowserTest extends UserBaseTest {
+
+    @Test
+    @Edge
+    public void f1() {
+        openUrl(getUrl());
+        System.out.println("I'm in f1 - " + browserName + " : " + Thread.currentThread().getId());
+    }
+
+    @Test
+    @Firefox
+    public void f2() {
+        openUrl(getUrl());
+        System.out.println("I'm in f2 - "+ browserName + " : " + Thread.currentThread().getId());
+    }
+}
+```
+
+From the above code, test class `BrowserTest` was annotated by `@Chrome`, so all test method of TestNG of test class `BrowserTest` will be run at browser `Chrome`.
+So finally, test method:
+* `f1()`: will be run at browsers `Edge` and `Chrome` (if Windows OS platform);
+* `f2()`: will be run at browsers `Firefox` and `Chrome`.
+
 ## Dynamic URL support for test method:
 ```java
 public class BrowserTest extends UserBaseTest {
