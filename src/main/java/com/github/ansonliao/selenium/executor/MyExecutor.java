@@ -97,9 +97,9 @@ public class MyExecutor {
         }
         // Default browser is Chrome
         if (!browserTypes.contains(Platform.BrowserType.CHROME)
-                && browserTypes.contains(Platform.BrowserType.FIREFOX)
-                && browserTypes.contains(Platform.BrowserType.Edge)
-                && browserTypes.contains(Platform.BrowserType.InternetExplorer)) {
+                && !browserTypes.contains(Platform.BrowserType.FIREFOX)
+                && !browserTypes.contains(Platform.BrowserType.Edge)
+                && !browserTypes.contains(Platform.BrowserType.InternetExplorer)) {
             chromeTestMethods.add(method);
         }
     }
