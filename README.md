@@ -4,13 +4,13 @@ This is a extension for Selenium in Java to extend Selenium for make Selenium te
 Integrated beautiful and powerful HTML test report: [ExtentReports](http://extentreports.com/).
 
 ## Parallel
-Introduce [TestNG](http://testng.org/doc/index.html) framework to support Selenium test case parallel run.
-Parallel mode is by Test, the tag <test> of TestNG xml.
+Introduce [TestNG](http://testng.org/doc/index.html) framework to support Selenium test case parallel run. 
+Parallel mode is by Test, the tag `<test>` of TestNG test suite xml.
 
 ## Visual TestNG test suite XML generation
 No need to provide TestNG test suite XMl file to start the test, TestNG test suite XML file will be generated programmatically.
 
-## Multiple browsers in Runtime:
+## Multiple browsers in Runtime
 ```java
 public class BrowserTest extends UserBaseTest {
 
@@ -56,7 +56,7 @@ So finally, test method:
 * `f1()`: will be run at browsers `Edge` and `Chrome` (if Windows OS platform);
 * `f2()`: will be run at browsers `Firefox` and `Chrome`.
 
-## Dynamic URL support for test method:
+## Dynamic URL support for test method
 ```java
 public class BrowserTest extends UserBaseTest {
 
