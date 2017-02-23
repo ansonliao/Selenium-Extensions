@@ -77,3 +77,25 @@ public class BrowserTest extends UserBaseTest {
     }
 }
 ```
+
+also, you can annotate test class by `@URL`, such as:
+```java
+@URL("http://www.google.com")
+public class BrowserTest extends UserBaseTest {
+
+    @Test
+    @Chrome
+    public void f1() {
+        openUrl(getUrl());
+        System.out.println("I'm in f1 - " + browserName + " : " + Thread.currentThread().getId());
+    }
+
+    @Test
+    @Firefox
+    public void f2() {
+        openUrl(getUrl());
+        System.out.println("I'm in f2 - "+ browserName + " : " + Thread.currentThread().getId());
+    }
+}
+```
+
