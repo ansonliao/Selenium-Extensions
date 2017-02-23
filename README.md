@@ -10,6 +10,15 @@ Parallel mode is by Test, the tag `<test>` of TestNG test suite xml.
 ## Visual TestNG test suite XML generation
 No need to provide TestNG test suite XMl file to start the test, TestNG test suite XML file will be generated programmatically.
 
+## Multiple browsers support
+Browser support:
+
+- **Chrome**: Mac, Linux/Unix, Windows
+- **FireFox**: Mac, Linux/Unix, Windows
+- **Edge**: Windows
+- **InternetExplorer**: Windows
+- **Safari**: In planning...
+
 ## Multiple browsers in Runtime
 ```java
 public class BrowserTest extends UserBaseTest {
