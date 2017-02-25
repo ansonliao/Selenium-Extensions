@@ -1,22 +1,21 @@
 package com.github.ansonliao.selenium.expectedcondition;
 
-
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
-import java.util.logging.Logger;
 
 /**
  * Created by ansonliao on 24/2/2017.
  */
 public class MyExpectedConditions {
 
-    private static final Logger logger = Logger.getLogger(MyExpectedConditions.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(MyExpectedConditions.class.getName());
 
     public static ExpectedCondition<Boolean> invisibleOfElement(WebElement element) {
         return new ExpectedCondition<Boolean>() {
