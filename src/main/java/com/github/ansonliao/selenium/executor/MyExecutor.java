@@ -190,13 +190,17 @@ public class MyExecutor {
 
         int startIndex = 0;
         int endIndex = testClassSize;
+        int browserIndex = 1;
         while (xmlTestSize > 0) {
             if (xmlClassArrayList.size() == 0) {
                 break;
             }
             XmlTest xmlTest = new XmlTest(xmlSuite);
-            xmlTest.setName(String.format(
-                    "Selenium Test - %s %d", browserType.getName(), xmlTestSize));
+            String xmlTestName =
+                    browserIndex == 1
+                            ? String.format("Selenium Test - %s", browserType.getName())
+                            : String.format("Selenium Test - %s %d", browserType.getName(), browserIndex);
+            xmlTest.setName(xmlTestName);
             xmlTest.addParameter("browser", browserType.getName());
             xmlTest.setPreserveOrder(false);
 
@@ -210,6 +214,7 @@ public class MyExecutor {
 //            startIndex = endIndex;
 //            endIndex = endIndex + testClassSize;
             --xmlTestSize;
+            ++browserIndex;
         }
 
         return xmlTests;

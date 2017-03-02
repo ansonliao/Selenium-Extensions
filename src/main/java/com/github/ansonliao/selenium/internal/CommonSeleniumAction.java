@@ -31,6 +31,10 @@ public class CommonSeleniumAction {
         extentTest.log(Status.INFO, "{Search Page}:::: Element: " + element.getName() + ", Action: Type, Value: " + value);
     }
 
+    public void clearText(TypifiedElement element) {
+        element.getWrappedElement().clear();
+    }
+
     public WebDriver openUrl(String url) {
         driver.get(url);
         extentTest.log(Status.INFO, "Test Start ==> Open Url: " + url);
