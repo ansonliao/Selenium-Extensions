@@ -4,6 +4,8 @@ import com.github.ansonliao.selenium.internal.platform.Platform;
 import com.github.ansonliao.selenium.parallel.ClassFinder;
 import com.github.ansonliao.selenium.parallel.MethodFinder;
 import com.github.ansonliao.selenium.utils.BrowserUtils;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.testng.TestNG;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlInclude;
@@ -11,8 +13,6 @@ import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -28,17 +28,20 @@ public class MyExecutor {
     private MethodFinder methodFinder;
     private XmlSuite xmlSuite;
     private static int testClassSize = 50;
-    private static Properties properties = new Properties();
+    private static PropertiesConfiguration properties;
 
     private static final String CONFIG_PROPERTY_FILE = "config.properties";
     private static final String TEST_CLASS_SIZE_PROPERTY = "TEST_CLASS_SIZE";
     static {
         try {
-            properties.load(new FileInputStream(CONFIG_PROPERTY_FILE));
-        } catch (IOException e) {
-            System.out.println(String.format(
-                    "Config properties file was not found. [%s%s%s]",
-                    System.getProperty("user.dir"), File.separator, CONFIG_PROPERTY_FILE));
+            properties.load(CONFIG_PROPERTY_FILE);
+        } catch (ConfigurationException e) {
+            System.out.println(
+                    String.format(
+                            "Config properties file was not found. [%s%s%s]",
+                            System.getProperty("user.dir"),
+                            File.separator,
+                            CONFIG_PROPERTY_FILE));
         }
 
         if (properties.containsKey(TEST_CLASS_SIZE_PROPERTY)) {
@@ -55,20 +58,26 @@ public class MyExecutor {
     }
 
     public void getAllTestMethods(String packageName) {
-        Set<Class<?>> classes = new HashSet<>(ClassFinder.findAllTestClassesInPackage(packageName));
+        Set<Class<?>> classes = new HashSet<>(
+                ClassFinder.findAllTestClassesInPackage(packageName));
         classes.forEach(clazz -> {
-            Set<Method> methods = methodFinder.findAllAnnotatedTestMethodInClass(clazz);
-            methods.forEach(method -> setTestMethodBrowser(clazz, method));
+            Set<Method> methods =
+                    methodFinder.findAllAnnotatedTestMethodInClass(clazz);
+            methods.forEach(
+                    method -> setTestMethodBrowser(clazz, method));
         });
     }
 
     public void getAllTestMethods(String packageName, List<String> testClassList) {
-        Set<Class<?>> testClassSet = new HashSet<>(ClassFinder.findAllTestClassesInPackage(packageName));
+        Set<Class<?>> testClassSet = new HashSet<>(
+                ClassFinder.findAllTestClassesInPackage(packageName));
         Set<Class<?>> testClasses = new HashSet<>();
         Set<String> tcl = new HashSet<>(testClassList);
         Map<String, Class<?>> testClassMap = new HashMap<>();
 
-        testClassSet.forEach(testClass -> testClassMap.put(testClass.getSimpleName(), testClass));
+        testClassSet.forEach(
+                testClass -> testClassMap.put(
+                        testClass.getSimpleName(), testClass));
         tcl.forEach(testClassName -> {
             if (testClassMap.containsKey(testClassName)) {
                 testClasses.add(testClassMap.get(testClassName));
@@ -76,13 +85,16 @@ public class MyExecutor {
         });
 
         testClasses.forEach(clazz -> {
-            Set<Method> methods = methodFinder.findAllAnnotatedTestMethodInClass(clazz);
-            methods.forEach(method -> setTestMethodBrowser(clazz, method));
+            Set<Method> methods =
+                    methodFinder.findAllAnnotatedTestMethodInClass(clazz);
+            methods.forEach(
+                    method -> setTestMethodBrowser(clazz, method));
         });
     }
 
     private void setTestMethodBrowser(Class clazz, Method method) {
-        Set<Platform.BrowserType> browserTypes = BrowserUtils.getMethodSupportedBrowsers(clazz, method);
+        Set<Platform.BrowserType> browserTypes =
+                BrowserUtils.getMethodSupportedBrowsers(clazz, method);
         if (browserTypes.contains(Platform.BrowserType.CHROME)) {
             chromeTestMethods.add(method);
         }
