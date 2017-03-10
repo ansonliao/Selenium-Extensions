@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.github.ansonliao.selenium.internal.platform.Browser;
 import com.github.ansonliao.selenium.internal.platform.Platform;
 import org.openqa.selenium.WebDriver;
 
@@ -9,7 +10,7 @@ import org.openqa.selenium.WebDriver;
  */
 public class WebDriverFactory {
 
-    public WebDriver getInstance(Platform.BrowserType browserType) {
+    public WebDriver getInstance(Browser browserType) {
         WebDriver webDriver;
         switch (browserType) {
             case CHROME:

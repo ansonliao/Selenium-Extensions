@@ -1,9 +1,22 @@
 package com.github.ansonliao.selenium.internal.platform;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by ansonliao on 20/2/2017.
  */
 public class Platform {
+
+    public static Set<Browser> defaultSupportedBrowsers = new HashSet<>();
+    public static Set<Browser> ignoredBrowsers;
+
+    static {
+        for (Browser browser : Browser.values()) {
+            defaultSupportedBrowsers.add(browser);
+        }
+        ignoredBrowsers = defaultSupportedBrowsers;
+    }
 
     public static synchronized OSType getOSType() {
         String osName = System.getProperty("os.name");
@@ -33,22 +46,6 @@ public class Platform {
         private OSType(String name) {
             this.name = name;
         }
-        public String getName() {
-            return name;
-        }
-    }
-
-    public enum BrowserType {
-        CHROME("CHROME"),
-        FIREFOX("FIREFOX"),
-        InternetExplorer("INTERNETEXPLORER"),
-        Edge("EDGE");
-
-        private final String name;
-        private BrowserType(String name) {
-            this.name = name;
-        }
-
         public String getName() {
             return name;
         }

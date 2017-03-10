@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.executor;
 
+import com.github.ansonliao.selenium.internal.platform.Browser;
 import com.github.ansonliao.selenium.internal.platform.Platform;
 import com.github.ansonliao.selenium.parallel.ClassFinder;
 import com.github.ansonliao.selenium.parallel.MethodFinder;
@@ -15,6 +16,7 @@ import org.testng.xml.XmlTest;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by ansonliao on 20/2/2017.
@@ -25,13 +27,15 @@ public class MyExecutor {
     private Set<Method> firefoxTestMethods = new HashSet<>();
     private Set<Method> edgeTestMethods = new HashSet<>();
     private Set<Method> interExplorerTestMethods = new HashSet<>();
+    private Map<Browser, Set<Method>> browserMethodsMap = new HashMap<>();
     private MethodFinder methodFinder;
     private XmlSuite xmlSuite;
     private static int testClassSize = 50;
-    private static PropertiesConfiguration properties;
+    private static PropertiesConfiguration properties = new PropertiesConfiguration();
 
     private static final String CONFIG_PROPERTY_FILE = "config.properties";
     private static final String TEST_CLASS_SIZE_PROPERTY = "TEST_CLASS_SIZE";
+
     static {
         try {
             properties.load(CONFIG_PROPERTY_FILE);
@@ -93,27 +97,22 @@ public class MyExecutor {
     }
 
     private void setTestMethodBrowser(Class clazz, Method method) {
-        Set<Platform.BrowserType> browserTypes =
-                BrowserUtils.getMethodSupportedBrowsers(clazz, method);
-        if (browserTypes.contains(Platform.BrowserType.CHROME)) {
-            chromeTestMethods.add(method);
+        Set<Browser> browserTypes = BrowserUtils.getMethodSupportedBrowsers(clazz, method);
+        Set<Browser> browsers = browserTypes;
+        browsers.retainAll(Platform.defaultSupportedBrowsers);
+
+        // default browser is CHROME
+        if (browsers.isEmpty()) {
+            browsers.add(Browser.getDefaultBrowser());
         }
-        if (browserTypes.contains(Platform.BrowserType.FIREFOX)) {
-            firefoxTestMethods.add(method);
-        }
-        if (browserTypes.contains(Platform.BrowserType.Edge)) {
-            edgeTestMethods.add(method);
-        }
-        if (browserTypes.contains(Platform.BrowserType.InternetExplorer)) {
-            interExplorerTestMethods.add(method);
-        }
-        // Default browser is Chrome
-        if (!browserTypes.contains(Platform.BrowserType.CHROME)
-                && !browserTypes.contains(Platform.BrowserType.FIREFOX)
-                && !browserTypes.contains(Platform.BrowserType.Edge)
-                && !browserTypes.contains(Platform.BrowserType.InternetExplorer)) {
-            chromeTestMethods.add(method);
-        }
+        browsers.forEach(browser -> {
+            if (!browserMethodsMap.containsKey(browser)) {
+                browserMethodsMap.put(browser, new HashSet<>());
+            }
+            Set<Method> ms = browserMethodsMap.get(browser);
+            ms.add(method);
+            browserMethodsMap.put(browser, ms);
+        });
     }
 
 //    private Set<XmlClass> createXmlClasses(Set<Class<?>> testClasses) {
@@ -173,107 +172,74 @@ public class MyExecutor {
         return xmlClasses;
     }
 
-    private Set<XmlTest> createChromeXmlTest(Set<XmlClass> xmlClasses) {
-        return createXmlTest(xmlClasses, Platform.BrowserType.CHROME);
-    }
-
-    private Set<XmlTest> createFireFoxXmlTest(Set<XmlClass> xmlClasses) {
-        return createXmlTest(xmlClasses, Platform.BrowserType.FIREFOX);
-    }
-
-    private Set<XmlTest> createEdgeXmlTest(Set<XmlClass> xmlClasses) {
-        return createXmlTest(xmlClasses, Platform.BrowserType.Edge);
-    }
-
-    private Set<XmlTest> createInternetExplorerXmlTest(Set<XmlClass> xmlClasses) {
-        return createXmlTest(xmlClasses, Platform.BrowserType.InternetExplorer);
-    }
-
-    private Set<XmlTest> createXmlTest(Set<XmlClass> xmlClasses, Platform.BrowserType browserType) {
-        if (xmlClasses == null || xmlClasses.isEmpty()) {
+    private Map<Browser, Set<XmlTest>> createXmlTest(Map<Browser, Set<XmlClass>> map) {
+        if (map.isEmpty()) {
             return null;
         }
 
-        int xmlTestSize = xmlClasses.size()/testClassSize;
-        ++xmlTestSize;
-        int counter = xmlTestSize;
-        Set<XmlTest> xmlTests = new HashSet<>();
-        ArrayList<XmlClass> xmlClassArrayList = new ArrayList<>(xmlClasses);
+        Map<Browser, Set<XmlTest>> xmlTestMap = new HashMap<>();
 
-        int startIndex = 0;
-        int endIndex = testClassSize;
-        int browserIndex = 1;
-        while (xmlTestSize > 0) {
-            if (xmlClassArrayList.size() == 0) {
-                break;
-            }
-            XmlTest xmlTest = new XmlTest(xmlSuite);
-            String xmlTestName =
-                    browserIndex == 1
-                            ? String.format("Selenium Test - %s", browserType.getName())
-                            : String.format("Selenium Test - %s %d", browserType.getName(), browserIndex);
-            xmlTest.setName(xmlTestName);
-            xmlTest.addParameter("browser", browserType.getName());
-            xmlTest.setPreserveOrder(false);
+        for (Browser browser : map.keySet()) {
+            Set<XmlClass> xmlClasses = map.get(browser);
+            int xmlTestSize = xmlClasses.size() / testClassSize;
+            ++xmlTestSize;
+            int counter = xmlTestSize;
+            Set<XmlTest> xmlTests = new HashSet<>();
+            ArrayList<XmlClass> xmlClassArrayList = new ArrayList<>(xmlClasses);
 
-            if (xmlClassArrayList.size() < testClassSize) {
-                xmlTest.setXmlClasses(xmlClassArrayList.subList(startIndex, xmlClassArrayList.size()));
-            } else {
-                xmlTest.setXmlClasses(xmlClassArrayList.subList(startIndex, endIndex));
-                xmlClassArrayList = new ArrayList<>(xmlClassArrayList.subList(endIndex, xmlClassArrayList.size()));
+            int startIndex = 0;
+            int endIndex = testClassSize;
+            int browserIndex = 1;
+            while (xmlTestSize > 0) {
+                if (xmlClassArrayList.size() == 0) {
+                    break;
+                }
+
+                XmlTest xmlTest = new XmlTest(xmlSuite);
+                String xmlTestName = browserIndex == 1
+                        ? String.format("Selenium Test - %s", browser.getName())
+                        : String.format("Selenium Test - %s %d", browser.getName(), browserIndex);
+                xmlTest.setName(xmlTestName);
+                xmlTest.addParameter("browser", browser.getName());
+                xmlTest.setPreserveOrder(false);
+
+                if (xmlClassArrayList.size() < testClassSize) {
+                    xmlTest.setXmlClasses(
+                            xmlClassArrayList.subList(
+                                    startIndex, xmlClassArrayList.size()));
+                } else {
+                    xmlTest.setXmlClasses(
+                            xmlClassArrayList.subList(startIndex, endIndex));
+                    xmlClassArrayList = new ArrayList<>(
+                            xmlClassArrayList.subList(endIndex, xmlClassArrayList.size()));
+                }
+                xmlTests.add(xmlTest);
+                --xmlTestSize;
+                ++browserIndex;
             }
-            xmlTests.add(xmlTest);
-//            startIndex = endIndex;
-//            endIndex = endIndex + testClassSize;
-            --xmlTestSize;
-            ++browserIndex;
+
+            xmlTestMap.put(browser, xmlTests);
         }
 
-        return xmlTests;
-
-//        XmlTest xmlTest = new XmlTest(xmlSuite);
-//        xmlTest.setName("Selenium Test - " + browserType.getName());
-//        xmlTest.addParameter("browser", browserType.getName());
-//        xmlTest.setPreserveOrder(false);
-//        xmlTest.setXmlClasses(new ArrayList<>(xmlClasses));
-//        return xmlTest;
+        return xmlTestMap;
     }
 
     public XmlSuite createXmlSuite() {
         int threadCount = 0;
-        if (!isMethodSetEmpty(chromeTestMethods)) {
-            ++threadCount;
-        }
-        if (!isMethodSetEmpty(firefoxTestMethods)) {
-            ++threadCount;
-        }
-        if (!isMethodSetEmpty(edgeTestMethods)) {
-            ++threadCount;
-        }
-        if (!isMethodSetEmpty(interExplorerTestMethods)) {
-            ++threadCount;
-        }
         xmlSuite = new XmlSuite();
-        xmlSuite.setName("Maaii Selenium Test");
-        xmlSuite.setThreadCount(threadCount);
+        xmlSuite.setName("Selenium Web UI Test");
         xmlSuite.setParallel(XmlSuite.ParallelMode.TESTS);
         xmlSuite.setVerbose(2);
 
-        Set<XmlClass> xmlChromeClassSet = createXmlClasses(getChromeTestMethods());
-        Set<XmlClass> xmlFirefoxClassSet = createXmlClasses(getFirefoxTestMethods());
-        Set<XmlClass> xmlEdgeClassSet = createXmlClasses(getEdgeTestMethods());
-        Set<XmlClass> xmlIEClassSet = createXmlClasses(getInterExplorerTestMethods());
+        Map<Browser, Set<XmlClass>> browserXmlClassMap = new HashMap<>();
+        browserMethodsMap.forEach((browser, methods) ->
+                browserXmlClassMap.put(browser, createXmlClasses(methods)));
 
-        Set<XmlTest> xmlChromeTestSet = createChromeXmlTest(xmlChromeClassSet);
-        Set<XmlTest> xmlFirefoxTest = createFireFoxXmlTest(xmlFirefoxClassSet);
-        Set<XmlTest> xmlEdgeTest = createEdgeXmlTest(xmlEdgeClassSet);
-        Set<XmlTest> xmlIETest = createInternetExplorerXmlTest(xmlIEClassSet);
-//        xmlChromeTestSet.setSuite(xmlSuite);
-//        xmlFirefoxTest.setSuite(xmlSuite);
-//        xmlEdgeTest.setSuite(xmlSuite);
-//        xmlIETest.setSuite(xmlSuite);
-
-//        xmlTests.forEach(xmlTest -> xmlTest.setSuite(xmlSuite));
+        Map<Browser, Set<XmlTest>> xmlTests = createXmlTest(browserXmlClassMap);
+        for (Browser browser : xmlTests.keySet()) {
+            threadCount = threadCount + xmlTests.get(browser).size();
+        }
+        xmlSuite.setThreadCount(threadCount);
         return xmlSuite;
     }
 
@@ -287,40 +253,23 @@ public class MyExecutor {
         return (methodSet.isEmpty() || methodSet != null) ? false : true;
     }
 
-
-    /**
-    private void setFirefoxTestMethods(Method method, Set<Platform.BrowserType> browserTypes) {
-        if (browserTypes.contains(Platform.BrowserType.FIREFOX)) {
-            firefoxTestMethods.add(method);
-        }
-    }
-
-    private void setEdgeTestMethods(Method method, Set<Platform.BrowserType> browserTypes) {
-        if (browserTypes.contains(Platform.BrowserType.Edge)) {
-            edgeTestMethods.add(method);
-        }
-    }
-
-    private void setInterExplorerTestMethods(Method method, Set<Platform.BrowserType> browserTypes) {
-        if (browserTypes.contains(Platform.BrowserType.InternetExplorer)) {
-            interExplorerTestMethods.add(method);
-        }
-    }
-     */
-
     public Set<Method> getChromeTestMethods() {
-        return chromeTestMethods;
+        return browserMethodsMap.get(Browser.CHROME);
     }
 
     public Set<Method> getFirefoxTestMethods() {
-        return firefoxTestMethods;
+        return browserMethodsMap.get(Browser.FIREFOX);
     }
 
     public Set<Method> getEdgeTestMethods() {
-        return edgeTestMethods;
+        return browserMethodsMap.get(Browser.Edge);
     }
 
     public Set<Method> getInterExplorerTestMethods() {
-        return interExplorerTestMethods;
+        return browserMethodsMap.get(Browser.InternetExplorer);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Browser.getDefaultBrowser().getName());
     }
 }

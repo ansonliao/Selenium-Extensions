@@ -6,6 +6,7 @@ import com.github.ansonliao.selenium.annotations.Incognito;
 import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.factory.ChromeFactory;
 import com.github.ansonliao.selenium.factory.FirefoxFactory;
+import com.github.ansonliao.selenium.internal.platform.Browser;
 import com.github.ansonliao.selenium.internal.platform.Platform;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
@@ -62,7 +63,7 @@ public class SeleniumParallel {
     }
 
     public WebDriver startWebDriver(Method method) {
-        Platform.BrowserType browserType = parseBrowserType();
+        Browser browserType = parseBrowserType();
         isIncognito(method);
         switch (browserType) {
             case CHROME:
@@ -88,15 +89,15 @@ public class SeleniumParallel {
         return driver;
     }
 
-    private Platform.BrowserType parseBrowserType() {
+    private Browser parseBrowserType() {
         if (browserName.equalsIgnoreCase("CHROME")) {
-            return Platform.BrowserType.CHROME;
+            return Browser.CHROME;
         } else if (browserName.equalsIgnoreCase("FIREFOX")) {
-            return Platform.BrowserType.FIREFOX;
+            return Browser.FIREFOX;
         } else if (browserName.equalsIgnoreCase("EDGE")) {
-            return Platform.BrowserType.Edge;
+            return Browser.Edge;
         } else {
-            return Platform.BrowserType.InternetExplorer;
+            return Browser.InternetExplorer;
         }
     }
 

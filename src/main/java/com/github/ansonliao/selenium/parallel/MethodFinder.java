@@ -39,7 +39,6 @@ public class MethodFinder {
             for (Method method : methodFinder.findMethodInClass(clazz)) {
                 System.out.println("        " + method.getName());
             }
-//            System.out.println("    Methods: " + methodFinder.findMethodInClass(clazz));
         }
     }
 }

@@ -108,3 +108,9 @@ public class BrowserTest extends UserBaseTest {
 }
 ```
 
+## Run Test
+To run the simple test, please run the command below.
+```bash
+mvn clean test -Dtest=MyExecutorRunner
+```
+
