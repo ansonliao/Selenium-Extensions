@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.parallel;
 
+import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
@@ -12,6 +13,7 @@ import java.util.Set;
  * Created by ansonliao on 16/2/2017.
  */
 public class MethodFinder {
+    private static Logger logger = Logger.getLogger(MethodFinder.class);
 
     public Set<Method> findAllAnnotatedTestMethodInClass(Class clazz) {
         Set<Method> methods = findMethodInClass(clazz);

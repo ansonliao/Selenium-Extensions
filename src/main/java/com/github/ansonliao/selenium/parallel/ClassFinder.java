@@ -1,5 +1,7 @@
 package com.github.ansonliao.selenium.parallel;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.Set;
  * Created by ansonliao on 16/2/2017.
  */
 public class ClassFinder {
-
+    private static Logger logger = Logger.getLogger(ClassFinder.class);
     private static final String PACKAGE_SEPARATOR = ".";
     private static final String DIR_SEPARATOR = File.separator;
     private static final String CLASS_FILE_SUFFIX = ".class";
@@ -76,9 +78,9 @@ public class ClassFinder {
 
     public static void main(String[] args) {
         String packageName = "com.maaii.automation.selenium.parallel";
-        System.out.println(ClassFinder.find(packageName));
+        logger.info(ClassFinder.find(packageName));
         for (Class clazz : ClassFinder.find(packageName)) {
-            System.out.println(clazz.getName() + " - " + clazz.getSimpleName());
+            logger.info(clazz.getName() + " - " + clazz.getSimpleName());
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.github.ansonliao.selenium.factory;
 
 import com.github.ansonliao.selenium.internal.platform.Platform;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -12,6 +13,7 @@ import java.util.Map;
  * Created by ansonliao on 16/2/2017.
  */
 public class FirefoxFactory implements IWebDriver {
+    private static Logger logger = Logger.getLogger(FirefoxFactory.class);
     private static Map<Long, WebDriver> firefoxDriverMap = new HashMap<>();
     private ThreadLocal<WebDriver> firefoxDrivers = new ThreadLocal<>();
     private boolean isIncognito = false;

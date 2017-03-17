@@ -1,9 +1,8 @@
 package com.github.ansonliao.selenium.utils;
 
-
 import com.github.ansonliao.selenium.annotations.*;
 import com.github.ansonliao.selenium.internal.platform.Browser;
-import com.github.ansonliao.selenium.internal.platform.Platform;
+import org.apache.log4j.Logger;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -15,6 +14,7 @@ import java.util.Set;
  * Created by ansonliao on 20/2/2017.
  */
 public class BrowserUtils {
+    private static Logger logger = Logger.getLogger(BrowserUtils.class);
 
     public static synchronized Set<Browser> getClassSupportedBrowsers(Class clazz) {
         Set<Browser> enabledBrowsers = getClassBrowsers(clazz);

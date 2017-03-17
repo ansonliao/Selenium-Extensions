@@ -1,6 +1,7 @@
 package com.github.ansonliao.selenium.factory;
 
 import com.github.ansonliao.selenium.internal.platform.Platform;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -13,7 +14,9 @@ import java.util.Map;
  * Created by ansonliao on 16/2/2017.
  */
 public class InternetExplorerFactory implements IWebDriver {
+    private static Logger logger = Logger.getLogger(InternetExplorerFactory.class);
     private static Map<Long, WebDriver> ieDriverMap = new HashMap<>();
+
     @Override
     public WebDriver getInstance() {
         long threadId = Thread.currentThread().getId();

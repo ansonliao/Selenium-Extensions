@@ -1,6 +1,7 @@
 package com.github.ansonliao.selenium.parallel;
 
 import com.github.ansonliao.selenium.executor.MyExecutor;
+import org.apache.log4j.Logger;
 import org.testng.xml.XmlSuite;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import static java.util.Arrays.asList;
  * Created by ansonliao on 23/2/2017.
  */
 public class ParallelThread {
+    private static final Logger logger = Logger.getLogger(ParallelThread.class);
     MyExecutor myExecutor;
 
     public ParallelThread() {
@@ -20,7 +22,7 @@ public class ParallelThread {
     public void run(String packageName) {
         myExecutor.getAllTestMethods(packageName);
         XmlSuite xmlSuite = myExecutor.createXmlSuite();
-        System.out.println(xmlSuite.toXml());
+        logger.info(xmlSuite.toXml());
         myExecutor.testNGRun(asList(xmlSuite));
     }
 
@@ -28,6 +30,7 @@ public class ParallelThread {
         myExecutor.getAllTestMethods(packageName, testClassList);
         XmlSuite xmlSuite = myExecutor.createXmlSuite();
         System.out.println(xmlSuite.toXml());
+        logger.info(xmlSuite.toXml());
         myExecutor.testNGRun(asList(xmlSuite));
     }
 }

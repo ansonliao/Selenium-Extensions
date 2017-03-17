@@ -7,6 +7,7 @@ import com.github.ansonliao.selenium.parallel.MethodFinder;
 import com.github.ansonliao.selenium.utils.BrowserUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.log4j.Logger;
 import org.testng.TestNG;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlInclude;
@@ -16,12 +17,12 @@ import org.testng.xml.XmlTest;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by ansonliao on 20/2/2017.
  */
 public class MyExecutor {
+    private static Logger logger = Logger.getLogger(MyExecutor.class);
 
     private Set<Method> chromeTestMethods = new HashSet<>();
     private Set<Method> firefoxTestMethods = new HashSet<>();
@@ -40,7 +41,7 @@ public class MyExecutor {
         try {
             properties.load(CONFIG_PROPERTY_FILE);
         } catch (ConfigurationException e) {
-            System.out.println(
+            logger.error(
                     String.format(
                             "Config properties file was not found. [%s%s%s]",
                             System.getProperty("user.dir"),

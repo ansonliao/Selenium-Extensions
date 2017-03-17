@@ -1,5 +1,7 @@
 package com.github.ansonliao.selenium.internal.platform;
 
+import org.apache.log4j.Logger;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,7 +9,7 @@ import java.util.Set;
  * Created by ansonliao on 20/2/2017.
  */
 public class Platform {
-
+    private static Logger logger = Logger.getLogger(Platform.class);
     public static Set<Browser> defaultSupportedBrowsers = new HashSet<>();
     public static Set<Browser> ignoredBrowsers;
 
@@ -43,7 +45,7 @@ public class Platform {
         SOLARIS("SOLARIS");
 
         private final String name;
-        private OSType(String name) {
+        OSType(String name) {
             this.name = name;
         }
         public String getName() {

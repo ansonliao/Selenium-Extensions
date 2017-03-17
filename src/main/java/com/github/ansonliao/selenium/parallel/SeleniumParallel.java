@@ -8,6 +8,7 @@ import com.github.ansonliao.selenium.factory.ChromeFactory;
 import com.github.ansonliao.selenium.factory.FirefoxFactory;
 import com.github.ansonliao.selenium.internal.platform.Browser;
 import com.github.ansonliao.selenium.internal.platform.Platform;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -19,6 +20,8 @@ import java.lang.reflect.Method;
  */
 
 public class SeleniumParallel {
+    protected static Logger logger = Logger.getLogger(SeleniumParallel.class);
+
     public WebDriver driver;
     protected String browserName;
     private boolean isIncognito;

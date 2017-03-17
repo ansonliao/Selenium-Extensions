@@ -1,6 +1,7 @@
 package com.github.ansonliao.selenium.factory;
 
 import com.github.ansonliao.selenium.internal.platform.Platform;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -15,7 +16,7 @@ import java.util.Map;
  * Created by ansonliao on 16/2/2017.
  */
 public class WebDriverManager {
-
+    private static Logger logger = Logger.getLogger(WebDriverManager.class);
     private static Map<Long, WebDriver> webDriverMap = new HashMap<>();
 
     public static class getInstance {
