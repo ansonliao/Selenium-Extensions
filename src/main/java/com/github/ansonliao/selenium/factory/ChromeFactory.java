@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.internal.platform.Platform;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -42,10 +43,27 @@ public class ChromeFactory implements IWebDriver {
     }
 
     private DesiredCapabilities initialCaps() {
-        if (!Platform.getOSType().equals(Platform.OSType.WINDOWS)) {
-            System.setProperty(CHROME_DRIVER_PROPERTY, "chromedriver");
-        } else {
-            System.setProperty(CHROME_DRIVER_PROPERTY, "chromedriver.exe");
+        switch (Platform.getOSType()) {
+            case MAC:
+                System.setProperty(
+                        CHROME_DRIVER_PROPERTY,
+                        Constants.CHROMEDRIVER_MAC_64BIT_PATH);
+                break;
+            case UNIX:
+                System.setProperty(
+                        CHROME_DRIVER_PROPERTY,
+                        Constants.CHROMEDRIVER_LINUX_64BIT_PATH);
+                break;
+            case WINDOWS:
+                System.setProperty(
+                        CHROME_DRIVER_PROPERTY,
+                        Constants.CHROMEDRIVER_WINDOWS_32BIT_PATH);
+                break;
+            default:
+                System.setProperty(
+                        CHROME_DRIVER_PROPERTY,
+                        Constants.CHROMEDRIVER_MAC_64BIT_PATH);
+                break;
         }
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         ChromeOptions options = new ChromeOptions();

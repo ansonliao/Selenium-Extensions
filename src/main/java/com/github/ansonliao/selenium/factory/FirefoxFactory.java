@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.internal.platform.Platform;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -41,12 +42,30 @@ public class FirefoxFactory implements IWebDriver {
 
     private FirefoxProfile initialCaps() {
         FirefoxProfile firefoxProfile = new FirefoxProfile();
-        if (!Platform.getOSType().equals(Platform.OSType.WINDOWS)) {
-            System.setProperty(FIREFOX_DRIVER_PROPERTY, "geckodriver");
-        } else {
-            System.setProperty(FIREFOX_DRIVER_PROPERTY, "geckodriver.exe");
+        switch (Platform.getOSType()) {
+            case MAC:
+                System.setProperty(
+                        FIREFOX_DRIVER_PROPERTY,
+                        Constants.FIREFOXDRIVER_MAC_64BIT_PATH);
+                break;
+            case UNIX:
+                System.setProperty(
+                        FIREFOX_DRIVER_PROPERTY,
+                        Constants.CHROMEDRIVER_LINUX_64BIT_PATH);
+                break;
+            case WINDOWS:
+                System.setProperty(
+                        FIREFOX_DRIVER_PROPERTY,
+                        Constants.FIREFOXDRIVER_WINDOWS_64BIT_PATH);
+                break;
+            default:
+                System.setProperty(
+                        FIREFOX_DRIVER_PROPERTY,
+                        Constants.FIREFOXDRIVER_MAC_64BIT_PATH);
+                break;
         }
-        firefoxProfile.setPreference(FIREFOX_INCOGNITO_PROPERTY, isIncognito);
+        firefoxProfile.setPreference(
+                FIREFOX_INCOGNITO_PROPERTY, isIncognito);
         return firefoxProfile;
     }
 }

@@ -3,11 +3,10 @@ package com.github.ansonliao.selenium.parallel;
 import com.github.ansonliao.selenium.annotations.Edge;
 import com.github.ansonliao.selenium.annotations.IgnoreFirefox;
 import com.github.ansonliao.selenium.annotations.Incognito;
-import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.factory.ChromeFactory;
 import com.github.ansonliao.selenium.factory.FirefoxFactory;
 import com.github.ansonliao.selenium.internal.platform.Browser;
-import com.github.ansonliao.selenium.internal.platform.Platform;
+import com.github.ansonliao.selenium.utils.RemoteAddressUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
@@ -25,7 +24,7 @@ public class SeleniumParallel {
     public WebDriver driver;
     protected String browserName;
     private boolean isIncognito;
-    protected String url;
+    protected String remoteAddress;
 
 //    private WebDriver driver;
 //
@@ -48,21 +47,28 @@ public class SeleniumParallel {
         return isIncognito;
     }
 
-    public String findUrl(Method method) {
-        if (method.isAnnotationPresent(URL.class)) {
-            url = method.getAnnotation(URL.class).value();
-        } else if (method.getDeclaringClass().isAnnotationPresent(URL.class)) {
-            url = method.getDeclaringClass().getAnnotation(URL.class).value();
-        } else {
-            url = null;
+//    public String findUrl(Method method) {
+//        if (method.isAnnotationPresent(URL.class)) {
+//            url = method.getAnnotation(URL.class).value();
+//        } else if (method.getDeclaringClass().isAnnotationPresent(URL.class)) {
+//            url = method.getDeclaringClass().getAnnotation(URL.class).value();
+//        } else {
+//            url = null;
+//        }
+//
+//        return url;
+//
+//    }
+
+    public String getRemoteAddress(Method method) {
+        if (remoteAddress == null || remoteAddress == "") {
+            remoteAddress = RemoteAddressUtils.getRemoteAddress(this.getClass(), method);
         }
-
-        return url;
-
+        return remoteAddress;
     }
 
-    public String getUrl() {
-        return url;
+    public String getRemoteAddress() {
+        return remoteAddress;
     }
 
     public WebDriver startWebDriver(Method method) {
@@ -70,10 +76,16 @@ public class SeleniumParallel {
         isIncognito(method);
         switch (browserType) {
             case CHROME:
-                driver = isIncognito ? new ChromeFactory().getInstance() : new ChromeFactory().getIncognitoInstance();
+                driver =
+                        isIncognito
+                        ? new ChromeFactory().getInstance()
+                        : new ChromeFactory().getIncognitoInstance();
                 break;
             case FIREFOX:
-                driver = isIncognito ? new FirefoxFactory().getInstance() : new FirefoxFactory().getIncognitoInstance();
+                driver =
+                        isIncognito
+                        ? new FirefoxFactory().getInstance()
+                        : new FirefoxFactory().getIncognitoInstance();
                 break;
             case Edge:
                 // add code here
@@ -104,8 +116,13 @@ public class SeleniumParallel {
         }
     }
 
-    public WebDriver openUrl(String url) {
-        getDriver().get(url);
+    public WebDriver openRemoteAddress() {
+        getDriver().get(this.remoteAddress);
+        return getDriver();
+    }
+
+    public WebDriver openRemoteAddress(String remoteAddress) {
+        getDriver().get(remoteAddress);
         return getDriver();
     }
 

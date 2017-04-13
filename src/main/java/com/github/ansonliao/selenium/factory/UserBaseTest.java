@@ -2,7 +2,6 @@ package com.github.ansonliao.selenium.factory;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.github.ansonliao.selenium.parallel.SeleniumParallel;
-import org.apache.log4j.Logger;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -17,7 +16,7 @@ public class UserBaseTest extends SeleniumParallel {
 
     @BeforeMethod
     public void beforeMethod(Method method) {
-        url = findUrl(method);
+        remoteAddress = getRemoteAddress(method);
         startWebDriver(method);
     }
 
