@@ -2,6 +2,8 @@ package com.github.ansonliao.selenium.internal.platform;
 
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,9 +16,12 @@ public class Platform {
     public static Set<Browser> ignoredBrowsers;
 
     static {
-        for (Browser browser : Browser.values()) {
-            defaultSupportedBrowsers.add(browser);
-        }
+//        for (Browser browser : Browser.values()) {
+//            defaultSupportedBrowsers.add(browser);
+//        }
+
+        defaultSupportedBrowsers
+                .addAll(Arrays.asList(Browser.values()));
         ignoredBrowsers = defaultSupportedBrowsers;
     }
 

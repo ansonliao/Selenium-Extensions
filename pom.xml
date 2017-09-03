@@ -12,53 +12,15 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <browser.64bit>64</browser.64bit>
+    <browser.bit>64</browser.bit>
     <browser.32bit>32</browser.32bit>
-    <chromedriver.name>chromedriver</chromedriver.name>
-    <firefoxdriver.name>geckodriver</firefoxdriver.name>
-    <phantomjsdriver.name>phantomjs</phantomjsdriver.name>
-    <edgedriver.name>edgedriver</edgedriver.name>
-    <internetexplorerdriver.name>internetexplorerdriver</internetexplorerdriver.name>
-    <mac.os.name>mac</mac.os.name>
-    <linux.os.name>linux</linux.os.name>
-    <windows.os.name>windows</windows.os.name>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>3.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-firefox-driver</artifactId>
-      <version>3.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-chrome-driver</artifactId>
-      <version>3.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-ie-driver</artifactId>
-      <version>3.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-safari-driver</artifactId>
-      <version>3.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-edge-driver</artifactId>
-      <version>3.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.detro.ghostdriver</groupId>
-      <artifactId>phantomjsdriver</artifactId>
-      <version>1.1.0</version>
+      <version>3.5.3</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
@@ -91,9 +53,9 @@
       <version>1.6.1</version>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>21.0</version>
+      <groupId>io.github.lukehutch</groupId>
+      <artifactId>fast-classpath-scanner</artifactId>
+      <version>2.0.21</version>
     </dependency>
   </dependencies>
 
@@ -125,7 +87,94 @@
           </execution>
         </executions>
         <configuration>
-          <installationDirectory>${basedir}/src/main/resources</installationDirectory>
+          <installationDirectory>target/drivers</installationDirectory>
+          <!--<installationDirectory>${basedir}/src/main/resources</installationDirectory>-->
+          <!--<drivers>-->
+            <!--<driver>-->
+              <!--<name>internetexplorerdriver</name>-->
+              <!--<platform>windows</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>3.3.0</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>chromedriver</name>-->
+              <!--<platform>mac</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>2.9</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>chromedriver</name>-->
+              <!--<platform>linux</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>2.9</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>chromedriver</name>-->
+              <!--<platform>windows</platform>-->
+              <!--<bit>${browser.32bit}</bit>-->
+              <!--<version>2.9</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>phantomjs</name>-->
+              <!--<platform>windows</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>2.1.1</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>phantomjs</name>-->
+              <!--<platform>mac</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>2.1.1</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>phantomjs</name>-->
+              <!--<platform>linux</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>2.1.1</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>geckodriver</name>-->
+              <!--<platform>windows</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>0.15.0</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>geckodriver</name>-->
+              <!--<platform>mac</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>0.15.0</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>geckodriver</name>-->
+              <!--<platform>linux</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>0.15.0</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>edgedriver</name>-->
+              <!--<platform>windows</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>3.14366</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>operadriver</name>-->
+              <!--<platform>windows</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>0.2.2</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>operadriver</name>-->
+              <!--<platform>mac</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>0.2.2</version>-->
+            <!--</driver>-->
+            <!--<driver>-->
+              <!--<name>operadriver</name>-->
+              <!--<platform>linux</platform>-->
+              <!--<bit>${browser.bit}</bit>-->
+              <!--<version>0.2.2</version>-->
+            <!--</driver>-->
+          <!--</drivers>-->
         </configuration>
       </plugin>
     </plugins>

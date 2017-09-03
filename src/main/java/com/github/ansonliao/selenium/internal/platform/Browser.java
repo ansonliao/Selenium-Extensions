@@ -7,8 +7,7 @@ public enum Browser {
     CHROME("CHROME"),
     FIREFOX("FIREFOX"),
     InternetExplorer("INTERNETEXPLORER"),
-    Edge("EDGE"),
-    PHOTOMJS("PHOTOMJS");
+    Edge("EDGE");
 
     private final String name;
     Browser(String name) {

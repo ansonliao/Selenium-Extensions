@@ -45,7 +45,7 @@ public class MyExpectedConditions {
         };
     }
 
-    public static ExpectedCondition<Boolean> textPresent(String text) {
+    public static ExpectedCondition<Boolean> textPresented(String text) {
         return new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {

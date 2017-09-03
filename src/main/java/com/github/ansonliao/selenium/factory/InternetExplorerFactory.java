@@ -28,7 +28,7 @@ public class InternetExplorerFactory implements IWebDriver {
     }
 
     private ChromeOptions initChromeCapabilities() {
-        if (!Platform.getOSType().equals(Platform.OSType.WINDOWS)) {
+        if (Platform.getOSType().equals(Platform.OSType.WINDOWS)) {
             System.setProperty("webdriver.chrome.driver", "chromedriver");
         } else {
             System.setProperty("webdriver.chrome.driver", "chromedriver.exe");

@@ -47,22 +47,22 @@ public class ChromeFactory implements IWebDriver {
             case MAC:
                 System.setProperty(
                         CHROME_DRIVER_PROPERTY,
-                        Constants.CHROMEDRIVER_MAC_64BIT_PATH);
+                        Constants.CHROME_DRIVER_64BIT_MAC_PATH);
                 break;
             case UNIX:
                 System.setProperty(
                         CHROME_DRIVER_PROPERTY,
-                        Constants.CHROMEDRIVER_LINUX_64BIT_PATH);
+                        Constants.CHROME_DRIVER_64BIT_LINUX_PATH);
                 break;
             case WINDOWS:
                 System.setProperty(
                         CHROME_DRIVER_PROPERTY,
-                        Constants.CHROMEDRIVER_WINDOWS_32BIT_PATH);
+                        Constants.CHROME_DRIVER_32BIT_WINDOWS_PATH);
                 break;
             default:
                 System.setProperty(
                         CHROME_DRIVER_PROPERTY,
-                        Constants.CHROMEDRIVER_MAC_64BIT_PATH);
+                        Constants.CHROME_DRIVER_64BIT_MAC_PATH);
                 break;
         }
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
