@@ -8,6 +8,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -127,5 +128,19 @@ public class BrowserUtils {
         }
 
         return ignoredBrowserTypes;
+    }
+
+    public synchronized static Browser getBrowserByString(Optional<String> optBrowser) {
+        String browserName = optBrowser.orElse("CHROME");
+
+        if (browserName.equalsIgnoreCase(Browser.CHROME.getName())) {
+            return Browser.CHROME;
+        } else if (browserName.equalsIgnoreCase(Browser.FIREFOX.getName())) {
+            return Browser.FIREFOX;
+        } else if (browserName.equalsIgnoreCase(Browser.Edge.getName())) {
+            return Browser.Edge;
+        } else {
+            return Browser.InternetExplorer;
+        }
     }
 }
