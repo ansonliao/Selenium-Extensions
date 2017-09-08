@@ -4,8 +4,8 @@ import org.openqa.selenium.WebDriver;
 
 public abstract class DriverManager {
 
-    protected boolean isHeadless = false;
-    protected boolean isIncognito = false;
+    public boolean isHeadless = false;
+    public boolean isIncognito = false;
 
     protected WebDriver driver;
     protected abstract void startService();

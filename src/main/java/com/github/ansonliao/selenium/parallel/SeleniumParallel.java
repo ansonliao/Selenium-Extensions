@@ -1,19 +1,29 @@
 package com.github.ansonliao.selenium.parallel;
 
-import com.github.ansonliao.selenium.annotations.Edge;
-import com.github.ansonliao.selenium.annotations.IgnoreFirefox;
-import com.github.ansonliao.selenium.annotations.Incognito;
-import com.github.ansonliao.selenium.annotations.URL;
+import com.github.ansonliao.selenium.annotations.*;
 import com.github.ansonliao.selenium.factory.ChromeFactory;
+import com.github.ansonliao.selenium.factory.DriverManager;
+import com.github.ansonliao.selenium.factory.DriverManagerFactory;
 import com.github.ansonliao.selenium.factory.FirefoxFactory;
+import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.internal.platform.Browser;
-import com.github.ansonliao.selenium.internal.platform.Platform;
+import com.github.ansonliao.selenium.utils.BrowserUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.testng.ITestClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
+import java.util.Optional;
+
+import static com.github.ansonliao.selenium.internal.platform.Browser.CHROME;
 
 /**
  * Created by ansonliao on 17/2/2017.
@@ -22,7 +32,8 @@ import java.lang.reflect.Method;
 public class SeleniumParallel {
     protected static Logger logger = Logger.getLogger(SeleniumParallel.class);
 
-    public WebDriver driver;
+    private WebDriver driver;
+    protected DriverManager driverManager;
     protected String browserName;
     private boolean isIncognito;
     protected String url;
@@ -37,15 +48,21 @@ public class SeleniumParallel {
 //        return driver;
 //    }
 
-    @BeforeClass
-    @Parameters({"browser"})
-    public void beforeClass(String browser) {
-        browserName = browser;
-    }
+//    @BeforeClass
+//    @Parameters({"browser"})
+//    public void beforeClass(String browser) {
+//        browserName = browser;
+//    }
+//
+//    public boolean isIncognito(Method method) {
+//        isIncognito = method.isAnnotationPresent(Incognito.class) ? true : false;
+//        return isIncognito;
+//    }
 
-    public boolean isIncognito(Method method) {
-        isIncognito = method.isAnnotationPresent(Incognito.class) ? true : false;
-        return isIncognito;
+    @BeforeClass
+    public void beforeClass(ITestClass iTestClass) {
+        browserName = iTestClass.getXmlClass().getAllParameters().get("browser").toString();
+        driverManager = DriverManagerFactory.getManager(BrowserUtils.getBrowserByString(Optional.of(browserName)));
     }
 
     public String findUrl(Method method) {
@@ -66,25 +83,9 @@ public class SeleniumParallel {
     }
 
     public WebDriver startWebDriver(Method method) {
-        Browser browserType = parseBrowserType();
-        isIncognito(method);
-        switch (browserType) {
-            case CHROME:
-                driver = isIncognito ? new ChromeFactory().getInstance() : new ChromeFactory().getIncognitoInstance();
-                break;
-            case FIREFOX:
-                driver = isIncognito ? new FirefoxFactory().getInstance() : new FirefoxFactory().getIncognitoInstance();
-                break;
-            case Edge:
-                // add code here
-                break;
-            case InternetExplorer:
-                // add code here
-                break;
-            default:
-                driver = isIncognito ? new ChromeFactory().getInstance() : new ChromeFactory().getIncognitoInstance();
-                break;
-        }
+        driverManager.isIncognito = method.isAnnotationPresent(Incognito.class) ? true : false;
+        driverManager.isHeadless = method.isAnnotationPresent(Headless.class) ? true : false;
+        driver = driverManager.getDriver();
         return driver;
     }
 
@@ -92,21 +93,17 @@ public class SeleniumParallel {
         return driver;
     }
 
-    private Browser parseBrowserType() {
-        if (browserName.equalsIgnoreCase("CHROME")) {
-            return Browser.CHROME;
-        } else if (browserName.equalsIgnoreCase("FIREFOX")) {
-            return Browser.FIREFOX;
-        } else if (browserName.equalsIgnoreCase("EDGE")) {
-            return Browser.Edge;
-        } else {
-            return Browser.InternetExplorer;
-        }
-    }
-
     public WebDriver openUrl(String url) {
         getDriver().get(url);
         return getDriver();
+    }
+
+    protected void takeScreenShot(String filePath) throws IOException {
+        File scrFile = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
+
+        FileUtils.copyFile(scrFile, new File(
+                filePath + Constants.FILE_SEPARATOR
+                        + new Timestamp(System.currentTimeMillis()).getTime() + ".jpeg"));
     }
 
     @Edge
