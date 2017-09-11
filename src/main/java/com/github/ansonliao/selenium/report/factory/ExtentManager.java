@@ -14,7 +14,8 @@ import java.net.URL;
 public class ExtentManager {
     private static ExtentReports extentReports;
     private static String filePath =
-            System.getProperty("user.dir") + File.separator + "target" + File.separator + "ExtentReports.html";
+            System.getProperty("user.dir") + File.separator
+                    + "target" + File.separator + "ExtentReports.html";
 
     public synchronized static ExtentReports getExtentReports() {
         if (extentReports == null) {
@@ -37,14 +38,18 @@ public class ExtentManager {
             e.printStackTrace();
         }
         File dest = new File(
-                System.getProperty("user.dir") + File.separator + "target" + File.separator + "extent.xml");
-//        try {
-//            FileUtils.copyURLToFile(inputUrl, dest);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        htmlReporter.loadXMLConfig(
-//                System.getProperty("user.dir") + File.separator + "target" + File.separator + "extent.xml");
+                System.getProperty("user.dir") + File.separator
+                        + "target" + File.separator + "extent.xml");
+        /**
+        try {
+            FileUtils.copyURLToFile(inputUrl, dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        htmlReporter.loadXMLConfig(
+                System.getProperty("user.dir") + File.separator
+                  + "target" + File.separator + "extent.xml");
+         */
         htmlReporter.config().setChartVisibilityOnOpen(true);
         htmlReporter.config().setDocumentTitle("Maaii Selenium Web Test");
         htmlReporter.config().setReportName("Maaii Selenium Web Test");

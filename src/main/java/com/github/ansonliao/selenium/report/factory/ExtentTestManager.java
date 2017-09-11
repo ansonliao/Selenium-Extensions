@@ -17,7 +17,8 @@ public class ExtentTestManager {
         return extentTests.get();
     }
 
-    public synchronized static ExtentTest createTest(String name, String description, String browserType) {
+    public synchronized static ExtentTest createTest(
+            String name, String description, String browserType) {
         extentTest = extentReport.createTest(name, description).assignCategory(browserType);
         extentTests.set(extentTest);
         return getExtentTest();

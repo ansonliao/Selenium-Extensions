@@ -42,3 +42,10 @@ nbproject/private/
 ############
 .idea
 Selenium-Extensions.iml
+
+# Web Driver
+drivers/
+
+# Debug Files
+*.txt
+*.html

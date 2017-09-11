@@ -11,6 +11,7 @@ public class Sleep {
     public static synchronized void bySecond(int time) {
         byMillisecond(time * 1000);
     }
+
     public static synchronized void bySecondWithNoLog(int time) {
         byMillisecondWithNoLog(time * 1000);
     }
@@ -19,7 +20,10 @@ public class Sleep {
         try {
             Thread.sleep(time);
             ExtentTestManager.getExtentTest().log(
-                    Status.INFO, "{Search Page}:::: Action: Sleep, Value: " + time + " millisecond");
+                    Status.INFO,
+                    "{Search Page}:::: Action: Sleep, Value: "
+                            .concat(String.valueOf(time))
+                            .concat(" millisecond"));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

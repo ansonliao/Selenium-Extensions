@@ -36,7 +36,7 @@ public class MyExpectedConditions {
             public Boolean apply(WebDriver webDriver) {
                 try {
                     return Boolean.valueOf(!element.getWrappedElement().isDisplayed());
-                }catch (NoSuchElementException var3) {
+                } catch (NoSuchElementException var3) {
                     return Boolean.valueOf(true);
                 } catch (StaleElementReferenceException var4) {
                     return Boolean.valueOf(true);

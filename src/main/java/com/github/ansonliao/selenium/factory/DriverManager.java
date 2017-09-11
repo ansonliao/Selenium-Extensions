@@ -8,9 +8,13 @@ public abstract class DriverManager {
     public boolean isIncognito = false;
 
     protected WebDriver driver;
+
     protected abstract void startService();
+
     protected abstract void stopService();
+
     protected abstract void createService();
+
     protected abstract String getDriverPath();
 
     public void quitDriver() {

@@ -16,9 +16,9 @@ public class Platform {
     public static Set<Browser> ignoredBrowsers;
 
     static {
-//        for (Browser browser : Browser.values()) {
-//            defaultSupportedBrowsers.add(browser);
-//        }
+        //for (Browser browser : Browser.values()) {
+        //    defaultSupportedBrowsers.add(browser);
+        //}
 
         defaultSupportedBrowsers
                 .addAll(Arrays.asList(Browser.values()));
@@ -53,6 +53,7 @@ public class Platform {
         OSType(String name) {
             this.name = name;
         }
+
         public String getName() {
             return name;
         }
@@ -67,7 +68,9 @@ public class Platform {
     }
 
     public static synchronized boolean isUnix(String osName) {
-        return (osName.indexOf("nix") >= 0 || osName.indexOf("nux") >= 0 || osName.indexOf("aix") >= 0);
+        return (osName.indexOf("nix") >= 0
+                || osName.indexOf("nux") >= 0
+                || osName.indexOf("aix") >= 0);
     }
 
     public static synchronized boolean isSolaris(String osName) {

@@ -23,11 +23,11 @@ public class UserBaseTest extends SeleniumParallel {
 
     @AfterMethod(alwaysRun = true)
     public void afterMethod(ITestResult iTestResult) {
-//        if (iTestResult.getStatus() == ITestResult.SUCCESS) {
-//            extentTest.log(Status.PASS, iTestResult.getMethod().getMethodName() + " Test Passed");
-//        }
+        //if (iTestResult.getStatus() == ITestResult.SUCCESS) {
+        //    extentTest.log(Status.PASS, iTestResult.getMethod().getMethodName() + " Test Passed");
+        //}
         getDriver().quit();
-//        ExtentTestManager.extentReport.flush();
+        //ExtentTestManager.extentReport.flush();
     }
 
     public ExtentTest getExtentTest() {
