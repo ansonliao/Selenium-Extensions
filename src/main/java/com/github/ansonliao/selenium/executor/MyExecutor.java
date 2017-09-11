@@ -16,7 +16,12 @@ import org.testng.xml.XmlTest;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by ansonliao on 20/2/2017.
@@ -68,8 +73,8 @@ public class MyExecutor {
         classes.forEach(clazz -> {
             Set<Method> methods =
                     methodFinder.findAllAnnotatedTestMethodInClass(clazz);
-            methods.forEach(
-                    method -> setTestMethodBrowser(clazz, method));
+            methods.forEach(method -> setTestMethodBrowser(
+                    clazz, method));
         });
     }
 
@@ -80,9 +85,8 @@ public class MyExecutor {
         Set<String> tcl = new HashSet<>(testClassList);
         Map<String, Class<?>> testClassMap = new HashMap<>();
 
-        testClassSet.forEach(
-                testClass -> testClassMap.put(
-                        testClass.getSimpleName(), testClass));
+        testClassSet.forEach(testClass -> testClassMap.put(
+                testClass.getSimpleName(), testClass));
         tcl.forEach(testClassName -> {
             if (testClassMap.containsKey(testClassName)) {
                 testClasses.add(testClassMap.get(testClassName));
@@ -92,8 +96,7 @@ public class MyExecutor {
         testClasses.forEach(clazz -> {
             Set<Method> methods =
                     methodFinder.findAllAnnotatedTestMethodInClass(clazz);
-            methods.forEach(
-                    method -> setTestMethodBrowser(clazz, method));
+            methods.forEach(method -> setTestMethodBrowser(clazz, method));
         });
     }
 
@@ -116,11 +119,14 @@ public class MyExecutor {
         });
     }
 
-//    private Set<XmlClass> createXmlClasses(Set<Class<?>> testClasses) {
-//        Set<XmlClass> xmlClasses = new HashSet<>();
-//        testClasses.forEach(testClass -> xmlClasses.add(new XmlClass(testClass.getCanonicalName())));
-//        return xmlClasses;
-//    }
+    /**
+    private Set<XmlClass> createXmlClasses(Set<Class<?>> testClasses) {
+        Set<XmlClass> xmlClasses = new HashSet<>();
+        testClasses.forEach(testClass -> xmlClasses.add(
+            new XmlClass(testClass.getCanonicalName())));
+        return xmlClasses;
+    }
+     */
 
     private Set<Class<?>> getClassesFromMethod(Set<Method> methods) {
         Set<Class<?>> testClasses = new HashSet<>();
@@ -152,7 +158,8 @@ public class MyExecutor {
         classes.forEach(clazz -> {
             Set<Method> ms = new HashSet<>();
             methods.forEach(method -> {
-                if (clazz.getCanonicalName().equalsIgnoreCase(method.getDeclaringClass().getCanonicalName())) {
+                if (clazz.getCanonicalName().equalsIgnoreCase(
+                        method.getDeclaringClass().getCanonicalName())) {
                     ms.add(method);
                 }
             });

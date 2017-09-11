@@ -1,6 +1,13 @@
 package com.github.ansonliao.selenium.utils;
 
-import com.github.ansonliao.selenium.annotations.*;
+import com.github.ansonliao.selenium.annotations.Chrome;
+import com.github.ansonliao.selenium.annotations.Edge;
+import com.github.ansonliao.selenium.annotations.Firefox;
+import com.github.ansonliao.selenium.annotations.IgnoreChrome;
+import com.github.ansonliao.selenium.annotations.IgnoreEdge;
+import com.github.ansonliao.selenium.annotations.IgnoreFirefox;
+import com.github.ansonliao.selenium.annotations.IgnoreInternetExplorer;
+import com.github.ansonliao.selenium.annotations.InternetExplorer;
 import com.github.ansonliao.selenium.internal.platform.Browser;
 import org.apache.log4j.Logger;
 

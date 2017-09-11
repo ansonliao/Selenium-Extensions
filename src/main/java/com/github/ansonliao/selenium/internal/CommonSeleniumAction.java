@@ -24,14 +24,21 @@ public class CommonSeleniumAction {
     public void click(TypifiedElement element) {
         element.getWrappedElement().click();
         Sleep.byMillisecondWithNoLog(200);
-        extentTest.log(Status.INFO, "{Search Page}:::: Element: " + element.getName() + ", Action: [Click]");
+        extentTest.log(Status.INFO,
+                "{Search Page}:::: Element: "
+                .concat(element.getName())
+                .concat(", Action: [Click]"));
     }
 
     public void type(TypifiedElement element, String value) {
         element.getWrappedElement().sendKeys(value);
         element.sendKeys(Keys.ESCAPE);
         Sleep.byMillisecondWithNoLog(200);
-        extentTest.log(Status.INFO, "{Search Page}:::: Element: " + element.getName() + ", Action: Type, Value: " + value);
+        extentTest.log(Status.INFO,
+                "{Search Page}:::: Element: "
+                        .concat(element.getName())
+                        .concat(", Action: Type, Value: ")
+                        .concat(value));
     }
 
     public void clearText(TypifiedElement element) {
