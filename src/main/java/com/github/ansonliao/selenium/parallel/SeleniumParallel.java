@@ -9,10 +9,10 @@ import com.github.ansonliao.selenium.factory.DriverManager;
 import com.github.ansonliao.selenium.factory.DriverManagerFactory;
 import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.utils.BrowserUtils;
+import com.github.ansonliao.selenium.utils.MyFileUtils;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaMethod;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.hamcrest.generator.qdox.JavaDocBuilder;
 import org.openqa.selenium.OutputType;
@@ -29,9 +29,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Created by ansonliao on 17/2/2017.
- */
 
 public class SeleniumParallel {
     protected static Logger logger = Logger.getLogger(SeleniumParallel.class);
@@ -71,6 +68,7 @@ public class SeleniumParallel {
                 .get("browser").toString();
         driverManager = DriverManagerFactory.getManager(
                 BrowserUtils.getBrowserByString(Optional.of(browserName)));
+        MyFileUtils.createScreenshotFolderForBrowser(this.getClass(), browserName);
     }
 
     public String findUrl(Method method) {
@@ -97,8 +95,12 @@ public class SeleniumParallel {
         return driver;
     }
 
+    public void setDriver(WebDriver driver) {
+        this.driver = driver;
+    }
+
     public WebDriver getDriver() {
-        return driver;
+        return this.driver;
     }
 
     public WebDriver openUrl(String url) {
@@ -106,12 +108,24 @@ public class SeleniumParallel {
         return getDriver();
     }
 
-    protected void takeScreenShot(String filePath) throws IOException {
+    protected String takeScreenShot(String imgPrefix) throws IOException {
         File scrFile = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
 
-        FileUtils.copyFile(scrFile, new File(
-                filePath + Constants.FILE_SEPARATOR
-                        + new Timestamp(System.currentTimeMillis()).getTime() + ".jpeg"));
+        String destDir = Constants.SCREENSHOT_DIR
+                .concat(Constants.FILE_SEPARATOR)
+                .concat(this.getClass().getPackage().getName())
+                .concat(Constants.FILE_SEPARATOR)
+                .concat(this.getClass().getSimpleName())
+                .concat(Constants.FILE_SEPARATOR)
+                .concat(this.browserName)
+                .concat(Constants.FILE_SEPARATOR)
+                .concat(imgPrefix)
+                .concat("_")
+                .concat(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))
+                .concat(".jpeg");
+        MyFileUtils.copyFile(scrFile, new File(destDir));
+        return destDir;
+
     }
 
     public String getAuthors(String className, ITestNGMethod method) {
