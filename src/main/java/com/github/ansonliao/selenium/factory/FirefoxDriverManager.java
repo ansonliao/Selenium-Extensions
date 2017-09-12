@@ -3,8 +3,10 @@ package com.github.ansonliao.selenium.factory;
 import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.internal.platform.Platform;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +39,16 @@ public class FirefoxDriverManager extends DriverManager {
 
     @Override
     protected void createService() {
-        FirefoxProfile profile = new FirefoxProfile();
+        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+        System.setProperty("webdriver.gecko.driver", getDriverPath());
         if (getIsIncognito()) {
             // https://gist.github.com/4M01/9b60a5f852fabdc5f65c9496e6eccf03
-            profile.setPreference("browser.private.browsing.autostart", true);
+            //profile.setPreference("browser.private.browsing.autostart", true);
+            //capabilities.setCapability("browser.private.browsing.autostart", true);
+            capabilities.setCapability("marionette", true);
         }
-        driver = new FirefoxDriver(profile);
+        System.out.println("Gecko Driver: " + getDriverPath());
+        driver = new FirefoxDriver(capabilities);
     }
 
     @Override

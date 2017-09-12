@@ -4,7 +4,6 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.internal.interrupt.Sleep;
 import org.apache.log4j.Logger;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 

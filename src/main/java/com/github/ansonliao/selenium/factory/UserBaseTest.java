@@ -32,13 +32,14 @@ public class UserBaseTest extends SeleniumParallel {
         }
         if (iTestResult.getStatus() == FAILURE) {
             String imgPrefix = takeScreenShot(iTestResult.getMethod().getMethodName());
+            System.out.println("screenshot: " + imgPrefix);
             // add extent report log here
         }
         if (iTestResult.getStatus() == SKIP) {
             // add extent report log here
         }
 
-        getDriver().quit();
+        driverManager.quitDriver();
         ExtentTestManager.extentReport.flush();
     }
 

@@ -8,9 +8,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-/**
- * Created by ansonliao on 23/2/2017.
- */
+
 public class ParallelThread {
     private static final Logger logger = Logger.getLogger(ParallelThread.class);
     MyExecutor myExecutor;
@@ -22,6 +20,7 @@ public class ParallelThread {
     public void run(String packageName) {
         myExecutor.getAllTestMethods(packageName);
         XmlSuite xmlSuite = myExecutor.createXmlSuite();
+        System.out.println(xmlSuite.toXml());
         logger.info(xmlSuite.toXml());
         myExecutor.testNGRun(asList(xmlSuite));
     }
