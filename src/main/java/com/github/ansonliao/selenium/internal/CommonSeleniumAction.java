@@ -30,7 +30,7 @@ public class CommonSeleniumAction {
 
     public void type(TypifiedElement element, String value) {
         element.getWrappedElement().sendKeys(value);
-        element.sendKeys(Keys.ESCAPE);
+        //element.sendKeys(Keys.ESCAPE);
         Sleep.byMillisecondWithNoLog(200);
         extentTest.log(Status.INFO,
                 "{Search Page}:::: Element: "
