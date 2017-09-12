@@ -18,7 +18,7 @@ import org.hamcrest.generator.qdox.JavaDocBuilder;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.testng.ITestClass;
+import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
 import org.testng.annotations.BeforeClass;
 
@@ -63,9 +63,9 @@ public class SeleniumParallel {
     */
 
     @BeforeClass
-    public void beforeClass(ITestClass iTestClass) {
-        browserName = iTestClass.getXmlClass().getAllParameters()
-                .get("browser").toString();
+    public void beforeClass(ITestContext iTestContext) {
+        browserName = iTestContext.getCurrentXmlTest().getAllParameters()
+                .get("browser").toString().trim();
         driverManager = DriverManagerFactory.getManager(
                 BrowserUtils.getBrowserByString(Optional.of(browserName)));
         MyFileUtils.createScreenshotFolderForBrowser(this.getClass(), browserName);
@@ -124,8 +124,7 @@ public class SeleniumParallel {
                 .concat(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))
                 .concat(".jpeg");
         MyFileUtils.copyFile(scrFile, new File(destDir));
-        return destDir;
-
+        return destDir.replace(Constants.PROJECT_ROOT_DIR + Constants.FILE_SEPARATOR, "");
     }
 
     public String getAuthors(String className, ITestNGMethod method) {

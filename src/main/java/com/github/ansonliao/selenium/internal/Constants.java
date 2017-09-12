@@ -7,11 +7,13 @@ public class Constants {
 
     public static final String FILE_SEPARATOR = File.separator;
 
+    public static final String PROJECT_ROOT_DIR = System.getProperty("user.dir");
+
     private static final String WEBDRIVER_DIR =
-            "target" + FILE_SEPARATOR + "drivers";
+            Constants.PROJECT_ROOT_DIR + FILE_SEPARATOR + "drivers";
 
     public static final String SCREENSHOT_DIR =
-            System.getProperty("user.dir") + Constants.FILE_SEPARATOR
+            PROJECT_ROOT_DIR + Constants.FILE_SEPARATOR
             + "target" + Constants.FILE_SEPARATOR + "screenshots";
 
     public static final String CHROME_DRIVER_64BIT_MAC_PATH =

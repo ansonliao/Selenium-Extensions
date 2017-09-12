@@ -12,7 +12,7 @@ public class DriverManagerFactory {
                 driverManager = new ChromeDriverManager();
                 break;
             case FIREFOX:
-                // add firefox driver manager here
+                driverManager = new FirefoxDriverManager();
                 break;
             case Edge:
                 // add edge driver manager here
