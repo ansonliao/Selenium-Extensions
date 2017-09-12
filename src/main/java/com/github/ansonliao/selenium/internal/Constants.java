@@ -2,15 +2,17 @@ package com.github.ansonliao.selenium.internal;
 
 import java.io.File;
 
-/**
- * Created by ansonliao on 30/3/2017.
- */
+
 public class Constants {
 
     public static final String FILE_SEPARATOR = File.separator;
 
     private static final String WEBDRIVER_DIR =
             "target" + FILE_SEPARATOR + "drivers";
+
+    public static final String SCREENSHOT_DIR =
+            System.getProperty("user.dir") + Constants.FILE_SEPARATOR
+            + "target" + Constants.FILE_SEPARATOR + "screenshots";
 
     public static final String CHROME_DRIVER_64BIT_MAC_PATH =
             WEBDRIVER_DIR + FILE_SEPARATOR + "chromedriver-mac-64bit";

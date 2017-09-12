@@ -8,9 +8,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
-/**
- * Created by ansonliao on 17/2/2017.
- */
+
 public class CommonSeleniumAction {
     protected static Logger logger = Logger.getLogger(CommonSeleniumAction.class);
 
