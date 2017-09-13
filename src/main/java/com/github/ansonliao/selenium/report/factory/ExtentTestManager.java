@@ -52,9 +52,14 @@ public class ExtentTestManager {
      * @param name: java class full name included package name
      * @return
      */
-    public synchronized static ExtentTest createParentTest(String name) {
+    public synchronized static ExtentTest createParentTest(String name, String description) {
+        ExtentTest test = null;
         if (!parentTests.containsKey(name)) {
-            ExtentTest test = extentReport.createTest(name);
+            if (description != null && description.length() > 0) {
+                test = extentReport.createTest(name, description);
+            } else {
+                test = extentReport.createTest(name);
+            }
             parentTests.put(name, test);
         }
         return parentTests.get(name);

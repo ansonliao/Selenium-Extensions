@@ -12,11 +12,9 @@ import static org.testng.Assert.assertTrue;
  * Created by ansonliao on 10/3/2017.
  */
 
-@Chrome
 public class Test_Sample1 extends UserBaseTest {
 
     @Test
-    @Chrome
     @URL("https://www.google.com")
     public void f1() {
         openUrl(getUrl());
@@ -25,6 +23,9 @@ public class Test_Sample1 extends UserBaseTest {
         assertTrue(false);
     }
 
+    /**
+     * @author Benny
+     */
     @Test
     //@Firefox
     @URL("http://www.m800.com/")
