@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.parallel;
 
+import com.github.ansonliao.selenium.annotations.Description;
 import com.github.ansonliao.selenium.annotations.Edge;
 import com.github.ansonliao.selenium.annotations.Headless;
 import com.github.ansonliao.selenium.annotations.IgnoreFirefox;
@@ -61,15 +62,6 @@ public class SeleniumParallel {
         return isIncognito;
     }
     */
-
-    @BeforeClass
-    public void beforeClass(ITestContext iTestContext) {
-        browserName = iTestContext.getCurrentXmlTest().getAllParameters()
-                .get("browser").toString().trim();
-        driverManager = DriverManagerFactory.getManager(
-                BrowserUtils.getBrowserByString(Optional.of(browserName)));
-        MyFileUtils.createScreenshotFolderForBrowser(this.getClass(), browserName);
-    }
 
     public String findUrl(Method method) {
         if (method.isAnnotationPresent(URL.class)) {
@@ -163,6 +155,26 @@ public class SeleniumParallel {
         }
 
         return allAuthors.trim();
+    }
+
+    protected String getDescription(Object object) {
+        String description = null;
+        if (object instanceof Class) {
+            Class clazz = (Class) object;
+            if (clazz.isAnnotationPresent(Description.class)) {
+                description = clazz.getAnnotation(Description.class).toString().trim();
+                return description;
+            }
+        }
+        if (object instanceof Method) {
+            Method method = (Method) object;
+            if (method.isAnnotationPresent(Description.class)) {
+                description = method.getDeclaredAnnotation(Description.class).toString().trim();
+                return description;
+            }
+        }
+
+        return description;
     }
 
     @Edge

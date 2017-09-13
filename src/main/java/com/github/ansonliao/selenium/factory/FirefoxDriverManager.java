@@ -47,8 +47,7 @@ public class FirefoxDriverManager extends DriverManager {
             //capabilities.setCapability("browser.private.browsing.autostart", true);
             capabilities.setCapability("marionette", true);
         }
-        System.out.println("Gecko Driver: " + getDriverPath());
-        driver = new FirefoxDriver(capabilities);
+        driver = new FirefoxDriver();
     }
 
     @Override
