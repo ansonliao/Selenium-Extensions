@@ -27,7 +27,6 @@ public class CommonSeleniumAction {
     public void type(TypifiedElement element, String value) {
         element.getWrappedElement().sendKeys(value);
         Sleep.byMillisecondWithNoLog(200);
-        element.sendKeys(Keys.ESCAPE);
         ExtentTestManager.getExtentTest().log(
                 Status.INFO,
                 String.format("Type: [%s], Element: [%s]", value, element.getName()));
