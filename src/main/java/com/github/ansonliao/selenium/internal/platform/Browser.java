@@ -1,8 +1,6 @@
 package com.github.ansonliao.selenium.internal.platform;
 
-/**
- * Created by ansonliao on 10/3/2017.
- */
+
 public enum Browser {
     CHROME("CHROME"),
     FIREFOX("FIREFOX"),
@@ -21,5 +19,4 @@ public enum Browser {
     public static Browser getDefaultBrowser() {
         return CHROME;
     }
-
 }

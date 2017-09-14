@@ -3,9 +3,7 @@ package com.github.ansonliao.selenium.internal.interrupt;
 import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 
-/**
- * Created by ansonliao on 17/2/2017.
- */
+
 public class Sleep {
 
     public static synchronized void bySecond(int time) {

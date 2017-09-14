@@ -8,9 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by ansonliao on 20/2/2017.
- */
+
 public class AnnotationUtils {
     private static Logger logger = Logger.getLogger(AnnotationUtils.class);
 
@@ -21,6 +19,4 @@ public class AnnotationUtils {
     public static synchronized Set<Annotation> getMethodAnnotations(Method method) {
         return new HashSet<>(Arrays.asList(method.getAnnotations()));
     }
-
-
 }

@@ -12,9 +12,11 @@ public class Constants {
     private static final String WEBDRIVER_DIR =
             Constants.PROJECT_ROOT_DIR + FILE_SEPARATOR + "drivers";
 
-    public static final String SCREENSHOT_DIR =
-            PROJECT_ROOT_DIR + Constants.FILE_SEPARATOR
-            + "target" + Constants.FILE_SEPARATOR + "screenshots";
+    public static final String SCREENSHOT_DIR = PROJECT_ROOT_DIR
+            .concat(Constants.FILE_SEPARATOR)
+            .concat("target")
+            .concat(Constants.FILE_SEPARATOR)
+            .concat("screenshots");
 
     public static final String CHROME_DRIVER_64BIT_MAC_PATH =
             WEBDRIVER_DIR + FILE_SEPARATOR + "chromedriver-mac-64bit";

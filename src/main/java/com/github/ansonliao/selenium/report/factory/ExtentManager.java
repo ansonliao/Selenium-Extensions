@@ -4,18 +4,19 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.ChartLocation;
 import com.aventstack.extentreports.reporter.configuration.Theme;
+import com.github.ansonliao.selenium.internal.Constants;
 
 import java.io.File;
 import java.net.URL;
 
-/**
- * Created by ansonliao on 17/2/2017.
- */
+
 public class ExtentManager {
     private static ExtentReports extentReports;
-    private static String filePath =
-            System.getProperty("user.dir") + File.separator
-                    + "target" + File.separator + "ExtentReports.html";
+    private static String filePath = Constants.PROJECT_ROOT_DIR
+            .concat(Constants.FILE_SEPARATOR)
+            .concat("target")
+            .concat(Constants.FILE_SEPARATOR)
+            .concat("ExtentReports.html");
 
     public synchronized static ExtentReports getExtentReports() {
         if (extentReports == null) {
@@ -38,24 +39,17 @@ public class ExtentManager {
             e.printStackTrace();
         }
         File dest = new File(
-                System.getProperty("user.dir") + File.separator
-                        + "target" + File.separator + "extent.xml");
-        /**
-        try {
-            FileUtils.copyURLToFile(inputUrl, dest);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        htmlReporter.loadXMLConfig(
-                System.getProperty("user.dir") + File.separator
-                  + "target" + File.separator + "extent.xml");
-         */
+                Constants.PROJECT_ROOT_DIR
+                        .concat(Constants.FILE_SEPARATOR)
+                        .concat("target")
+                        .concat(Constants.FILE_SEPARATOR)
+                        .concat("extent.xml"));
+
         htmlReporter.config().setChartVisibilityOnOpen(true);
-        htmlReporter.config().setDocumentTitle("Maaii Selenium Web Test");
-        htmlReporter.config().setReportName("Maaii Selenium Web Test");
+        htmlReporter.config().setDocumentTitle("Selenium Web UI Test");
+        htmlReporter.config().setReportName("Selenium Web UI Test");
         htmlReporter.config().setTestViewChartLocation(ChartLocation.TOP);
         htmlReporter.config().setTheme(Theme.STANDARD);
         return htmlReporter;
     }
-
 }

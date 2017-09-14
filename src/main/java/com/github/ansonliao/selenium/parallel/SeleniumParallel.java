@@ -1,34 +1,33 @@
 package com.github.ansonliao.selenium.parallel;
 
+import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.annotations.Description;
-import com.github.ansonliao.selenium.annotations.Edge;
 import com.github.ansonliao.selenium.annotations.Headless;
-import com.github.ansonliao.selenium.annotations.IgnoreFirefox;
 import com.github.ansonliao.selenium.annotations.Incognito;
 import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.factory.DriverManager;
-import com.github.ansonliao.selenium.factory.DriverManagerFactory;
 import com.github.ansonliao.selenium.internal.Constants;
-import com.github.ansonliao.selenium.utils.BrowserUtils;
+import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
+import com.thoughtworks.qdox.JavaDocBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaMethod;
 import org.apache.log4j.Logger;
-import org.hamcrest.generator.qdox.JavaDocBuilder;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.testng.ITestContext;
-import org.testng.ITestNGMethod;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class SeleniumParallel {
@@ -40,29 +39,6 @@ public class SeleniumParallel {
     private boolean isIncognito;
     protected String url;
 
-    /**
-    private WebDriver driver;
-
-    public SeleniumParallel(WebDriver driver) {
-        this.driver = driver;
-    }
-
-    public WebDriver getDriver() {
-        return driver;
-    }
-
-    @BeforeClass
-    @Parameters({"browser"})
-    public void beforeClass(String browser) {
-        browserName = browser;
-    }
-
-    public boolean isIncognito(Method method) {
-        isIncognito = method.isAnnotationPresent(Incognito.class) ? true : false;
-        return isIncognito;
-    }
-    */
-
     public String findUrl(Method method) {
         if (method.isAnnotationPresent(URL.class)) {
             url = method.getAnnotation(URL.class).value();
@@ -73,7 +49,6 @@ public class SeleniumParallel {
         }
 
         return url;
-
     }
 
     public String getUrl() {
@@ -97,6 +72,9 @@ public class SeleniumParallel {
 
     public WebDriver openUrl(String url) {
         getDriver().get(url);
+        ExtentTestManager.getExtentTest().log(
+                Status.INFO,
+                "Test Start ==> Open Url: " + url);
         return getDriver();
     }
 
@@ -116,72 +94,99 @@ public class SeleniumParallel {
                 .concat(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))
                 .concat(".jpeg");
         MyFileUtils.copyFile(scrFile, new File(destDir));
-        return destDir.replace(Constants.PROJECT_ROOT_DIR + Constants.FILE_SEPARATOR, "");
+        return destDir.replace(
+                Constants.PROJECT_ROOT_DIR
+                        .concat(Constants.FILE_SEPARATOR)
+                        .concat("target")
+                        .concat(Constants.FILE_SEPARATOR), "");
     }
 
-    public String getAuthors(String className, ITestNGMethod method) {
+    public List<String> getAuthors(String className, Method method) {
         logger.info("className = " + className);
 
         JavaDocBuilder builder = new JavaDocBuilder();
-        JavaClass cls = (JavaClass) builder.getClassByName(className);
-        List<DocletTag> authors = cls.getTagsByName("author");
+        JavaClass cls = builder.getClassByName(className);
+        List<DocletTag> authors = Arrays.asList(cls.getTagsByName("author"));
         logger.info("authors = " + authors.toString());
 
         // get class authors as default author name
-        String allAuthors = "";
+        Set<String> allAuthors = new HashSet<>();
         if (authors.size() != 0) {
             for (DocletTag author : authors) {
                 if (author.getValue().trim().length() > 0) {
-                    allAuthors += author.getValue() + " ";
+                    allAuthors.add(author.getValue().trim());
                 }
             }
         }
 
-        // get method author
-        List<JavaMethod> methods = cls.getMethods();
-        logger.info("JavaMethod = " + methods.toString());
-        JavaMethod mth = methods
-                .stream()
-                .filter(m -> m.getName().equalsIgnoreCase(method.getMethodName()))
-                .findFirst()
-                .get();
 
-        authors = mth.getTagsByName("author");
-        if (authors.size() != 0) {
-            allAuthors = "";
-            for (DocletTag author : authors) {
-                allAuthors += author.getValue() + " ";
+        // get method author
+        List<JavaMethod> methods = Arrays.asList(cls.getMethods());
+        logger.info("JavaMethod = " + methods.toString());
+        JavaMethod mth = null;
+        for (JavaMethod m : methods) {
+            System.out.println("JavaMethod: " + m.getName());
+            if (m.getName().equalsIgnoreCase(method.getName())) {
+                mth = m;
+                break;
             }
         }
 
-        return allAuthors.trim();
+        authors = Arrays.asList(mth.getTagsByName("author"));
+        if (authors.size() != 0) {
+            allAuthors.clear();
+            for (DocletTag author : authors) {
+                allAuthors.add(author.getValue().trim());
+            }
+        }
+
+        return allAuthors.stream().collect(Collectors.toList());
     }
 
-    protected String getDescription(Object object) {
+    public List<String> getTestGroups(Object object) {
+        Set<String> allGroups = new HashSet<>();
+        Test t;
+
+        if (object instanceof Class) {
+            Class clazz = (Class) object;
+            t = (Test) clazz.getAnnotation(Test.class);
+            if (t != null && t.groups().length > 0) {
+                allGroups.addAll(Arrays.asList(t.groups()));
+            }
+            return allGroups.stream().collect(Collectors.toList());
+        } else {
+            Class clazz = ((Method) object).getDeclaringClass();
+            t = (Test) clazz.getAnnotation(Test.class);
+            if (t != null && t.groups().length > 0) {
+                allGroups.addAll(Arrays.asList(t.groups()));
+            }
+
+            t = ((Method) object).getAnnotation(Test.class);
+            if (t != null && t.groups().length > 0) {
+                allGroups.addAll(Arrays.asList(t.groups()));
+            }
+            return allGroups.stream().collect(Collectors.toList());
+        }
+    }
+
+    public String getDescription(Object object) {
         String description = null;
         if (object instanceof Class) {
             Class clazz = (Class) object;
             if (clazz.isAnnotationPresent(Description.class)) {
-                description = clazz.getAnnotation(Description.class).toString().trim();
-                return description;
+                return ((Description) clazz.getAnnotation(Description.class))
+                        .value().trim();
             }
         }
         if (object instanceof Method) {
             Method method = (Method) object;
             if (method.isAnnotationPresent(Description.class)) {
-                description = method.getDeclaredAnnotation(Description.class).toString().trim();
-                return description;
+                return method.getAnnotation(Description.class)
+                        .value().trim();
             }
         }
 
         return description;
     }
 
-    @Edge
-    @IgnoreFirefox
-    public static void main(String[] args) {
-        SeleniumParallel parallel = new SeleniumParallel();
-//        System.out.println(parallel.getBrowsers());
-
-    }
 }

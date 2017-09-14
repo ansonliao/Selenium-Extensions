@@ -5,11 +5,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 
-/**
- * @author: ansonliao
- * @Date: 2017-Sep-11
- * @Time: 16:56
- */
+
 public class MyFileUtils extends FileUtils {
 
     public static synchronized File createScreenshotFolderForBrowser(
@@ -26,9 +22,5 @@ public class MyFileUtils extends FileUtils {
 
         new File(destDir).mkdirs();
         return new File(destDir);
-    }
-
-    public static void main(String... args) {
-        MyFileUtils.createScreenshotFolderForBrowser(MyFileUtils.class, "CHROME");
     }
 }

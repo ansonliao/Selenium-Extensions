@@ -7,19 +7,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by ansonliao on 20/2/2017.
- */
+
 public class Platform {
     private static Logger logger = Logger.getLogger(Platform.class);
     public static Set<Browser> defaultSupportedBrowsers = new HashSet<>();
     public static Set<Browser> ignoredBrowsers;
 
     static {
-        //for (Browser browser : Browser.values()) {
-        //    defaultSupportedBrowsers.add(browser);
-        //}
-
         defaultSupportedBrowsers
                 .addAll(Arrays.asList(Browser.values()));
         ignoredBrowsers = defaultSupportedBrowsers;
@@ -75,9 +69,5 @@ public class Platform {
 
     public static synchronized boolean isSolaris(String osName) {
         return (osName.indexOf("sunos") >= 0);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getOSType().getName());
     }
 }

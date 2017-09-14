@@ -11,6 +11,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.File;
 import java.io.IOException;
 
+
 public class FirefoxDriverManager extends DriverManager {
 
     private GeckoDriverService driverService;
