@@ -4,17 +4,11 @@
 
   <groupId>com.github.ansonliao</groupId>
   <artifactId>Selenium-Extensions</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>Selenium-Extensions</name>
-  <url>http://maven.apache.org</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <browser.bit>64</browser.bit>
-    <browser.32bit>32</browser.32bit>
-  </properties>
+  <url>https://github.com/ansonliao/Selenium-Extensions</url>
 
   <dependencies>
     <dependency>
@@ -57,7 +51,6 @@
       <artifactId>fast-classpath-scanner</artifactId>
       <version>2.0.21</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.thoughtworks.qdox/qdox -->
     <dependency>
       <groupId>com.thoughtworks.qdox</groupId>
       <artifactId>qdox</artifactId>
@@ -65,7 +58,6 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <plugin>
@@ -79,7 +71,6 @@
       </plugin>
     </plugins>
   </build>
-
   <profiles>
     <profile>
       <id>release</id>
