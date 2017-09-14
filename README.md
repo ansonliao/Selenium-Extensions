@@ -3,6 +3,26 @@
 This is a extension for Selenium in Java to extend Selenium for make Selenium test case can be run in parallel, and make it easy to support multiple browsers.
 Integrated beautiful and powerful HTML test report: [ExtentReports](http://extentreports.com/).
 
+## Maven Dependency
+Add the below dependencies in your `pom.xml` (Master)
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+```xml
+<dependency>
+    <groupId>com.github.ansonliao</groupId>
+    <artifactId>Selenium-Extensions</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 ## Parallel
 Introduce [TestNG](http://testng.org/doc/index.html) framework to support Selenium test case parallel run. 
 Parallel mode is by Test, the tag `<test>` of TestNG test suite xml.
