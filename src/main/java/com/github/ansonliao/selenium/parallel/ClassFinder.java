@@ -9,9 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by ansonliao on 16/2/2017.
- */
+
 public class ClassFinder {
     private static Logger logger = Logger.getLogger(ClassFinder.class);
     private static final String PACKAGE_SEPARATOR = ".";
@@ -74,13 +72,5 @@ public class ClassFinder {
         });
 
         return annotatedTestClasses;
-    }
-
-    public static void main(String[] args) {
-        String packageName = "com.maaii.automation.selenium.parallel";
-        logger.info(ClassFinder.find(packageName));
-        for (Class clazz : ClassFinder.find(packageName)) {
-            logger.info(clazz.getName() + " - " + clazz.getSimpleName());
-        }
     }
 }

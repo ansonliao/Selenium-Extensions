@@ -3,8 +3,10 @@ package com.github.ansonliao.selenium.report.factory;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import com.github.ansonliao.selenium.annotations.Description;
 import org.testng.Reporter;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +22,6 @@ public class ExtentTestManager {
     public static ThreadLocal<ExtentTest> grandTests = new ThreadLocal<>();
 
     public synchronized static ExtentTest getExtentTest() {
-        return extentTests.get();
-    }
-
-    public synchronized static ExtentTest getChildExtentTest(String key) {
-        return childTests.get(key);
-    }
-
-    public synchronized static ExtentTest getGrandTest() {
         return grandTests.get();
     }
 
@@ -43,80 +37,47 @@ public class ExtentTestManager {
         return createTest(name, description, String.valueOf(Thread.currentThread().getId()));
     }
 
+    public synchronized static ExtentTest createTest(Method method, String browserName,
+                                                     List<String> authors, List<String> groups) {
+        ExtentTest test;
+        String description;
+        Class clazz = method.getDeclaringClass();
+        String className = clazz.getName();
+
+        if (!parentTests.containsKey(className)) {
+            description = clazz.isAnnotationPresent(Description.class)
+                    ? ((Description) clazz.getAnnotation(Description.class)).value().trim()
+                    : "";
+            test = extentReport.createTest(className, description);
+            parentTests.put(className, test);
+        }
+
+        if (!childTests.containsKey(method.getName())) {
+            description = method.isAnnotationPresent(Description.class)
+                    ? (method.getAnnotation(Description.class)).value().trim()
+                    : "";
+            test = parentTests.get(className).createNode(method.getName(), description);
+            if (authors != null && authors.size() > 0) {
+                for (String author : authors) {
+                    test.assignAuthor(author);
+                }
+            }
+            if (groups != null && groups.size() > 0) {
+                for (String group : groups) {
+                    test.assignCategory(group);
+                }
+            }
+            childTests.put(method.getName(), test);
+        }
+
+        test = childTests.get(method.getName()).createNode(browserName);
+        grandTests.set(test);
+
+        return test;
+    }
+
     public synchronized static ExtentTest createTest(String name) {
         return createTest(name, "Sample Test");
-    }
-
-    /**
-     *
-     * @param name: java class full name included package name
-     * @return
-     */
-    public synchronized static ExtentTest createParentTest(String name, String description) {
-        ExtentTest test = null;
-        if (!parentTests.containsKey(name)) {
-            if (description != null && description.length() > 0) {
-                test = extentReport.createTest(name, description);
-            } else {
-                test = extentReport.createTest(name);
-            }
-            parentTests.put(name, test);
-        }
-        return parentTests.get(name);
-    }
-
-    /**
-     *
-     * @param name: test method name of java class, without class name, and package name
-     * @param description
-     * @param groups
-     * @param authors
-     * @return
-     */
-    public synchronized static ExtentTest createChildTest(String parentKey,
-            String name, String description, List<String> groups, List<String> authors) {
-        if (!parentTests.containsKey(parentKey)) {
-            ExtentTest parentTest = parentTests.get(parentKey);
-            ExtentTest test = parentTest.createNode(name, description);
-            if (groups != null && groups.size() > 0) {
-                groups.stream().filter(group -> group.trim().length() > 0)
-                        .forEach(group -> test.assignCategory(group));
-            }
-            if (authors != null && authors.size() > 0) {
-                authors.stream().filter(author -> author.trim().length() > 0)
-                        .forEach(author -> test.assignAuthor(author));
-            }
-
-            childTests.put(name, test);
-        }
-
-        return childTests.get(name);
-    }
-
-    /**
-     *
-     * @param parentKey
-     * @param name: browser name
-     * @param description
-     * @param groups
-     * @param authors
-     * @return
-     */
-    public synchronized static ExtentTest createGrandTest(String parentKey,
-            String name, String description, List<String> groups, List<String> authors) {
-        ExtentTest parentTest = childTests.get(parentKey);
-        ExtentTest test = parentTest.createNode(name, description);
-        if (groups != null && groups.size() > 0) {
-            groups.stream().filter(group -> group.trim().length() > 0)
-                    .forEach(group -> test.assignCategory(group));
-        }
-        if (authors != null && authors.size() > 0) {
-            authors.stream().filter(author -> author.trim().length() > 0)
-                    .forEach(author -> test.assignAuthor(author));
-        }
-
-        grandTests.set(test);
-        return test;
     }
 
     public synchronized static void logOutPut(String imgSrc, String headerName) {

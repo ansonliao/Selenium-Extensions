@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by ansonliao on 20/2/2017.
- */
+
 public class MyExecutor {
     private static Logger logger = Logger.getLogger(MyExecutor.class);
 

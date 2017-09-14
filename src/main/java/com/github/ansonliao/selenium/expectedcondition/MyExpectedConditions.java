@@ -9,9 +9,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
 
-/**
- * Created by ansonliao on 24/2/2017.
- */
 public class MyExpectedConditions {
     private static Logger logger = Logger.getLogger(MyExpectedConditions.class);
 

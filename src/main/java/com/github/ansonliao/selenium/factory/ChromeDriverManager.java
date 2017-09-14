@@ -10,6 +10,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.File;
 import java.io.IOException;
 
+
 public class ChromeDriverManager extends DriverManager {
 
     private ChromeDriverService driverService;
@@ -70,5 +71,4 @@ public class ChromeDriverManager extends DriverManager {
         }
         return path;
     }
-
 }
