@@ -12,9 +12,15 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertTrue;
 
 
+/**
+ * @author ansonliao
+ */
 @Chrome
 public class Test_Sample extends UserBaseTest {
 
+    /**
+     * @author DemoTest
+     */
     @Test(groups = {"@BVT", "@BLOCKER"})
     @Firefox
     @URL("https://www.google.com")

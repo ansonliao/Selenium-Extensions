@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.executor;
 
+import com.github.ansonliao.selenium.annotations.PageName;
 import com.github.ansonliao.selenium.internal.CommonSeleniumAction;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
@@ -7,6 +8,7 @@ import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
 
 
+@PageName("Home Page")
 public class HomePage extends CommonSeleniumAction {
     HomePO po = new HomePO();
 

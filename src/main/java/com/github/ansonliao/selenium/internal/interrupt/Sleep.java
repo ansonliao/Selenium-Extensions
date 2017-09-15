@@ -19,7 +19,7 @@ public class Sleep {
             Thread.sleep(time);
             ExtentTestManager.getExtentTest().log(
                     Status.INFO,
-                    "{Search Page}:::: Action: Sleep, Value: "
+                    "Action: Sleep, Duration: "
                             .concat(String.valueOf(time))
                             .concat(" millisecond"));
         } catch (InterruptedException e) {

@@ -75,8 +75,10 @@ public class SeleniumParallel {
         getDriver().get(url);
         ExtentTestManager.getExtentTest().log(
                 Status.INFO,
-                "Test Start ==> Open Url: " + url);
-        return getDriver();
+                withBoldHTML("Test Start"));
+        ExtentTestManager.getExtentTest().log(Status.INFO,
+                withBoldHTML("Open URL: ") + url);
+        return driver;
     }
 
     protected String takeScreenShot(String imgPrefix) throws IOException {
@@ -196,6 +198,12 @@ public class SeleniumParallel {
         }
 
         return description;
+    }
+
+    public String withBoldHTML(String s) {
+        return !s.trim().isEmpty()
+                ? "<b>" + s + "</b>"
+                : "";
     }
 
 }
