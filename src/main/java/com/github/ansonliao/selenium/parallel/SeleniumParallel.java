@@ -9,7 +9,7 @@ import com.github.ansonliao.selenium.factory.DriverManager;
 import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
-import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaMethod;
@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 public class SeleniumParallel {
     protected static Logger logger = Logger.getLogger(SeleniumParallel.class);
+    protected static JavaProjectBuilder javaProjectBuilder = new JavaProjectBuilder();
 
     private WebDriver driver;
     protected DriverManager driverManager;
@@ -104,9 +105,14 @@ public class SeleniumParallel {
     public List<String> getAuthors(String className, Method method) {
         logger.info("className = " + className);
 
-        JavaDocBuilder builder = new JavaDocBuilder();
-        JavaClass cls = builder.getClassByName(className);
-        List<DocletTag> authors = Arrays.asList(cls.getTagsByName("author"));
+        javaProjectBuilder.addSourceTree(new File(
+                Constants.PROJECT_ROOT_DIR
+                        .concat(Constants.FILE_SEPARATOR)
+                        .concat("src")));
+        JavaClass cls = javaProjectBuilder.getClassByName(className);
+        List<DocletTag> authors = cls.getTags().stream()
+                .filter(tag -> tag.getName().equals("author") || tag.getName().equals("author:"))
+                .collect(Collectors.toList());
         logger.info("authors = " + authors.toString());
 
         // get class authors as default author name
@@ -119,10 +125,9 @@ public class SeleniumParallel {
             }
         }
 
-
         // get method author
-        List<JavaMethod> methods = Arrays.asList(cls.getMethods());
-        logger.info("JavaMethod = " + methods.toString());
+        List<JavaMethod> methods = cls.getMethods();
+        logger.info("Java Method = " + methods.toString());
         JavaMethod mth = null;
         for (JavaMethod m : methods) {
             System.out.println("JavaMethod: " + m.getName());
@@ -132,11 +137,15 @@ public class SeleniumParallel {
             }
         }
 
-        authors = Arrays.asList(mth.getTagsByName("author"));
+        authors = mth.getTags().stream()
+                .filter(tag -> tag.getName().equals("author") || tag.getName().equals("author:"))
+                .collect(Collectors.toList());
         if (authors.size() != 0) {
             allAuthors.clear();
             for (DocletTag author : authors) {
-                allAuthors.add(author.getValue().trim());
+                if (author.getValue().trim().length() > 0) {
+                    allAuthors.add(author.getValue().trim());
+                }
             }
         }
 
