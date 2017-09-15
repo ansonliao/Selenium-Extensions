@@ -52,11 +52,16 @@ public class MyExecutor {
                             CONFIG_PROPERTY_FILE));
         }
 
-        if (properties.containsKey(TEST_CLASS_SIZE_PROPERTY)) {
+        if (System.getenv().containsKey(TEST_CLASS_SIZE_PROPERTY)) {
+            testClassSize = Integer.valueOf(
+                    System.getenv(TEST_CLASS_SIZE_PROPERTY).toString());
+        } else if (System.getProperties().contains(TEST_CLASS_SIZE_PROPERTY)) {
+            testClassSize = Integer.valueOf(
+                    System.getProperty(TEST_CLASS_SIZE_PROPERTY).toString());
+        } else if (properties.containsKey(TEST_CLASS_SIZE_PROPERTY)) {
             testClassSize = Integer.valueOf(
                     properties.getProperty(TEST_CLASS_SIZE_PROPERTY).toString());
         }
-
     }
 
     private static final String separator = ".";
