@@ -1,30 +1,27 @@
 package com.github.ansonliao.selenium.parallel;
 
+import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class MethodFinder {
     private static Logger logger = Logger.getLogger(MethodFinder.class);
 
-    public Set<Method> findAllAnnotatedTestMethodInClass(Class clazz) {
-        Set<Method> methods = findMethodInClass(clazz);
-        Set<Method> testMethods = new HashSet<>();
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(Test.class)) {
-                testMethods.add(method);
-            }
-        }
-        return testMethods;
+    public static List<Method> findAllAnnotatedTestMethodInClass(Class clazz) {
+        logger.info("Find all @Test method in class: " + clazz.getName());
+        return findMethodInClass(clazz).stream().distinct()
+                .filter(method -> method.isAnnotationPresent(Test.class))
+                .collect(Collectors.toList());
     }
 
-    public Set<Method> findMethodInClass(Class clazz) {
-        Method[] methods = clazz.getDeclaredMethods();
-        return new HashSet<>(Arrays.asList(methods));
+    public static List<Method> findMethodInClass(Class clazz) {
+        logger.info("Find all declared methods in class: " + clazz.getName());
+        return Lists.newArrayList(clazz.getDeclaredMethods()).stream()
+                .distinct().collect(Collectors.toList());
     }
 }

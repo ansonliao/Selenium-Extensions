@@ -1,13 +1,19 @@
 package com.github.ansonliao.selenium.parallel;
 
+import com.google.common.collect.Sets;
+import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 import org.apache.log4j.Logger;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class ClassFinder {
@@ -15,8 +21,16 @@ public class ClassFinder {
     private static final String PACKAGE_SEPARATOR = ".";
     private static final String DIR_SEPARATOR = File.separator;
     private static final String CLASS_FILE_SUFFIX = ".class";
+    private static final String TESTNG_TEST_CLASS_PREFIX = "test";
     private static final String BAD_PACKAGE_ERROR =
             "Unable to get resources from path '%s'. Are you sure the package '%s' exists?";
+
+    private static FastClasspathScanner classpathScanner;
+
+    static {
+        classpathScanner = new FastClasspathScanner()
+                .enableMethodAnnotationIndexing();
+    }
 
     public static List<Class<?>> findAllTestClassesInPackage(String scannedPackage) {
         List<Class<?>> testClasses = new ArrayList<>();
@@ -72,5 +86,54 @@ public class ClassFinder {
         });
 
         return annotatedTestClasses;
+    }
+
+    public static List<Class<?>> findAllTestNGTestClasses(String... packages) {
+        Set<Class<?>> classes = Sets.newHashSet();
+        ScanResult result = classpathScanner.scan();
+
+        // find all testng test classes with class annotated @Test
+        result.getNamesOfClassesWithAnnotation(Test.class)
+                .stream()
+                .map(className -> createClass(className))
+                .filter(clazz ->
+                        clazz.getSimpleName().toLowerCase().startsWith(TESTNG_TEST_CLASS_PREFIX))
+                .forEach(clazz -> classes.add(clazz));
+
+        // find all testng test classes with method annotated @Test
+        result.getNamesOfClassesWithMethodAnnotation(Test.class)
+                .stream()
+                .map(className -> createClass(className))
+                .filter(clazz ->
+                        clazz.getSimpleName().toLowerCase().startsWith(TESTNG_TEST_CLASS_PREFIX))
+                .forEach(clazz -> classes.add(clazz));
+
+        if (packages == null || packages.length == 0) {
+            logger.info("Find all TestNG test classes in current project.");
+            return classes.stream().collect(Collectors.toList());
+        }
+
+        List<String> packageNames = Arrays.asList(packages);
+        logger.info("Find TestNG classes in package(s): " + packageNames);
+
+        //TODO: replace forEach() with filter of stream
+        classes.stream().collect(Collectors.toList()).forEach(aClass -> {
+            if (!packageNames.contains(aClass.getPackage().getName())) {
+                classes.remove(aClass);
+            }
+        });
+
+        return classes.stream().collect(Collectors.toList());
+    }
+
+    private synchronized static Class<?> createClass(String className) {
+        Class clazz = null;
+        try {
+            clazz = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return clazz;
     }
 }
