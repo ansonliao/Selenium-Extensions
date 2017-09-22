@@ -74,7 +74,7 @@ public class MyExecutor {
         Set<Class<?>> classes = new HashSet<>(
                 ClassFinder.findAllTestClassesInPackage(packageName));
         classes.forEach(clazz -> {
-            Set<Method> methods =
+            List<Method> methods =
                     methodFinder.findAllAnnotatedTestMethodInClass(clazz);
             methods.forEach(method -> setTestMethodBrowser(
                     clazz, method));
@@ -97,7 +97,7 @@ public class MyExecutor {
         });
 
         testClasses.forEach(clazz -> {
-            Set<Method> methods =
+            List<Method> methods =
                     methodFinder.findAllAnnotatedTestMethodInClass(clazz);
             methods.forEach(method -> setTestMethodBrowser(clazz, method));
         });
