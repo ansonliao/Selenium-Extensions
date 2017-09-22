@@ -24,4 +24,30 @@ public class MethodFinder {
         return Lists.newArrayList(clazz.getDeclaredMethods()).stream()
                 .distinct().collect(Collectors.toList());
     }
+
+    public static List<Method> findTestNGMethodInClassByGroup(Class clazz, String groupName) {
+        List<Method> methodList = Lists.newArrayList();
+
+        if (clazz.isAnnotationPresent(Test.class)) {
+            Test t = (Test) clazz.getAnnotation(Test.class);
+            if (t.groups().length > 0) {
+                List<String> groups = Lists.newArrayList(t.groups());
+                if (groups.contains(groupName)) {
+                    Lists.newArrayList(clazz.getDeclaredMethods())
+                            .stream().filter(method -> method.isAnnotationPresent(Test.class))
+                            .forEach(method -> methodList.add(method));
+                    return methodList;
+                }
+            }
+        } else {
+            return Lists.newArrayList(clazz.getDeclaredMethods())
+                    .stream()
+                    .filter(m -> m.isAnnotationPresent(Test.class))
+                    .filter(m ->
+                            Lists.newArrayList(m.getAnnotation(Test.class).groups()).contains(groupName))
+                    .collect(Collectors.toList());
+        }
+
+        return methodList;
+    }
 }
