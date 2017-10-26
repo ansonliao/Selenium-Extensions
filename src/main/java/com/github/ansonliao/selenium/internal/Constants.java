@@ -2,7 +2,6 @@ package com.github.ansonliao.selenium.internal;
 
 import java.io.File;
 
-
 public class Constants {
 
     public static final String FILE_SEPARATOR = File.separator;
@@ -35,4 +34,16 @@ public class Constants {
 
     public static final String FIREFOX_DRIVER_64BIT_WINDOWS_PATH =
             WEBDRIVER_DIR + FILE_SEPARATOR + "geckodriver-windows-64bit.exe";
+
+    public static final String BROWSER_ANNOTATION_PACKAGE =
+            "com.github.ansonliao.selenium.annotations.browser";
+
+    public static final String BROWSER_IGNORE_ANNOTATION_PREFIX = "IGNORE";
+
+    public static final String BROWSER_ANNOTATION_TYPE_PROPERTY = "BROWSER";
+
+    public static final String BROWSER_IGNORE_ANNOTATION_TYPE_PROPERTY = "BROWSER_IGNORE";
+
+    public static final String TESTNG_XML_BROWSER_PARAMETER_KEY = "browser";
+
 }

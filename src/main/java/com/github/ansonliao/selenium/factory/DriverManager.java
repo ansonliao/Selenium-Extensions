@@ -2,7 +2,6 @@ package com.github.ansonliao.selenium.factory;
 
 import org.openqa.selenium.WebDriver;
 
-
 public abstract class DriverManager {
 
     public boolean isHeadless = false;

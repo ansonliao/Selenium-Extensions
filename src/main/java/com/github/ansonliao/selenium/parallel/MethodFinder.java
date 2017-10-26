@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class MethodFinder {
     private static Logger logger = Logger.getLogger(MethodFinder.class);
 
@@ -22,7 +21,7 @@ public class MethodFinder {
 
     public static List<Method> findMethodInClass(Class clazz) {
         logger.info("Find all declared methods in class: " + clazz.getName());
-        return Lists.newArrayList(clazz.getDeclaredMethods()).stream()
+        return Lists.newArrayList(clazz.getDeclaredMethods()).parallelStream()
                 .distinct().collect(Collectors.toList());
     }
 
@@ -32,20 +31,21 @@ public class MethodFinder {
 
         if (clazz.isAnnotationPresent(Test.class)) {
             Test t = (Test) clazz.getAnnotation(Test.class);
-            methodList.addAll(Lists.newArrayList(clazz.getDeclaredMethods()));
+            methodList.addAll(
+                    Lists.newArrayList(
+                            clazz.getDeclaredMethods()));
 
             if (t.groups().length > 0) {
                 List<String> groups = Lists.newArrayList(t.groups());
-                System.out.println("Class group: " + groups);
                 if (groups.contains(groupName)) {
-                    System.out.println("all method of class included");
-                    return Lists.newArrayList(clazz.getDeclaredMethods());
+                    return Lists.newArrayList(
+                            clazz.getDeclaredMethods());
                 }
             }
         }
 
         return Lists.newArrayList(clazz.getDeclaredMethods())
-                .stream()
+                .parallelStream()
                 .filter(m -> m.isAnnotationPresent(Test.class))
                 .filter(m ->
                         Lists.newArrayList(

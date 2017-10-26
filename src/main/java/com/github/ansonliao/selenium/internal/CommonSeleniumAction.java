@@ -6,13 +6,14 @@ import com.github.ansonliao.selenium.internal.interrupt.Sleep;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
-
 
 public class CommonSeleniumAction {
     protected static Logger logger = Logger.getLogger(CommonSeleniumAction.class);
     private WebDriver driver;
     private String pageName;
+    private Actions action;
 
     public CommonSeleniumAction(WebDriver driver) {
         this.driver = driver;
@@ -60,6 +61,14 @@ public class CommonSeleniumAction {
             }
         }
         return pageName;
+    }
+
+    public Actions getAction() {
+        if (action == null) {
+            action = new Actions(driver);
+        }
+
+        return action;
     }
 
     public String withBoldHTML(String s) {

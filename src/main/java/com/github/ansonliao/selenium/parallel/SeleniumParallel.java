@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 public class SeleniumParallel {
     protected static Logger logger = Logger.getLogger(SeleniumParallel.class);
     protected static JavaProjectBuilder javaProjectBuilder = new JavaProjectBuilder();

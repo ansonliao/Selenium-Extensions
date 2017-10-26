@@ -3,7 +3,6 @@ package com.github.ansonliao.selenium.internal.interrupt;
 import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 
-
 public class Sleep {
 
     public static synchronized void bySecond(int time) {
