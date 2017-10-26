@@ -71,6 +71,10 @@ public class CommonSeleniumAction {
         return action;
     }
 
+    public WebDriver getDriver() {
+        return driver;
+    }
+
     public String withBoldHTML(String s) {
         return !s.trim().isEmpty()
                 ? "<b>" + s + "</b>"

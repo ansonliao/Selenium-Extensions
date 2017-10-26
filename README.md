@@ -128,6 +128,17 @@ public class BrowserTest extends UserBaseTest {
 }
 ```
 
+## Filter
+`Selenium-Extentsions` support run the test case by filters.
+The filter includes:
+
+- All: run test cases in test project
+- Package: run test cases by specify packages
+- Test Group: run test cases by specify test groups which in TestNG test annotation `@Test`
+- Test class: run test cases by specify test classes which are TestNG test class
+- Browser: run test cases by specify browser, such as `CHROME`, `FIREFOX`
+ 
+
 ## Run Test
 To run the simple test, please run the command below.
 ```bash

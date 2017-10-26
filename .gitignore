@@ -41,7 +41,7 @@ nbproject/private/
 # IDEA
 ############
 .idea
-Selenium-Extensions.iml
+*.iml
 
 # Web Driver
 drivers/
