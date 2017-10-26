@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 public class ClassFinder {
     private static Logger logger = Logger.getLogger(ClassFinder.class);
     private static final String PACKAGE_SEPARATOR = ".";
@@ -26,10 +25,12 @@ public class ClassFinder {
             "Unable to get resources from path '%s'. Are you sure the package '%s' exists?";
 
     private static FastClasspathScanner classpathScanner;
+    private static ScanResult scanResult;
 
     static {
         classpathScanner = new FastClasspathScanner()
                 .enableMethodAnnotationIndexing();
+        scanResult = classpathScanner.scan();
     }
 
     public static List<Class<?>> findAllTestClassesInPackage(String scannedPackage) {
@@ -90,19 +91,19 @@ public class ClassFinder {
 
     public static List<Class<?>> findAllTestNGTestClasses(String... packages) {
         Set<Class<?>> classes = Sets.newHashSet();
-        ScanResult result = classpathScanner.scan();
+        //ScanResult result = classpathScanner.scan();
 
         // find all testng test classes with class annotated @Test
-        result.getNamesOfClassesWithAnnotation(Test.class)
-                .stream()
+        scanResult.getNamesOfClassesWithAnnotation(Test.class)
+                .parallelStream()
                 .map(className -> createClass(className))
                 .filter(clazz ->
                         clazz.getSimpleName().toLowerCase().startsWith(TESTNG_TEST_CLASS_PREFIX))
                 .forEach(clazz -> classes.add(clazz));
 
         // find all testng test classes with method annotated @Test
-        result.getNamesOfClassesWithMethodAnnotation(Test.class)
-                .stream()
+        scanResult.getNamesOfClassesWithMethodAnnotation(Test.class)
+                .parallelStream()
                 .map(className -> createClass(className))
                 .filter(clazz ->
                         clazz.getSimpleName().toLowerCase().startsWith(TESTNG_TEST_CLASS_PREFIX))
@@ -126,7 +127,7 @@ public class ClassFinder {
         return classes.stream().collect(Collectors.toList());
     }
 
-    private synchronized static Class<?> createClass(String className) {
+    public synchronized static Class<?> createClass(String className) {
         Class clazz = null;
         try {
             clazz = Class.forName(className);
@@ -135,5 +136,9 @@ public class ClassFinder {
         }
 
         return clazz;
+    }
+
+    public static ScanResult getScanAllClassesResult() {
+        return scanResult;
     }
 }

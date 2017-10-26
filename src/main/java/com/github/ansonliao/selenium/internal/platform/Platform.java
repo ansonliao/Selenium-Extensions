@@ -2,22 +2,8 @@ package com.github.ansonliao.selenium.internal.platform;
 
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-
 public class Platform {
     private static Logger logger = Logger.getLogger(Platform.class);
-    public static Set<Browser> defaultSupportedBrowsers = new HashSet<>();
-    public static Set<Browser> ignoredBrowsers;
-
-    static {
-        defaultSupportedBrowsers
-                .addAll(Arrays.asList(Browser.values()));
-        ignoredBrowsers = defaultSupportedBrowsers;
-    }
 
     public static synchronized OSType getOSType() {
         String osName = System.getProperty("os.name");

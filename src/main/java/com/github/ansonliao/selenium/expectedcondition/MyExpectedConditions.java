@@ -8,7 +8,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
-
 public class MyExpectedConditions {
     private static Logger logger = Logger.getLogger(MyExpectedConditions.class);
 

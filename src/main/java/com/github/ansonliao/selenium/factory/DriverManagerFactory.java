@@ -1,24 +1,21 @@
 package com.github.ansonliao.selenium.factory;
 
-import com.github.ansonliao.selenium.internal.platform.Browser;
-
-
 public class DriverManagerFactory {
 
-    public static DriverManager getManager(Browser browser) {
+    public static DriverManager getManager(String browserName) {
         DriverManager driverManager = null;
 
-        switch (browser) {
-            case CHROME:
+        switch (browserName) {
+            case "CHROME":
                 driverManager = new ChromeDriverManager();
                 break;
-            case FIREFOX:
+            case "FIREFOX":
                 driverManager = new FirefoxDriverManager();
                 break;
-            case Edge:
+            case "EDGE":
                 // add edge driver manager here
                 break;
-            case InternetExplorer:
+            case "INTERNETEXPLOER":
                 // add ie driver manager here
                 break;
             default:

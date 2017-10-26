@@ -3,14 +3,11 @@ package com.github.ansonliao.selenium.factory;
 import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.internal.platform.Platform;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.IOException;
-
 
 public class FirefoxDriverManager extends DriverManager {
 

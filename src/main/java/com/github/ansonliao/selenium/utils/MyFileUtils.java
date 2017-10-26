@@ -5,7 +5,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 
-
 public class MyFileUtils extends FileUtils {
 
     public static synchronized File createScreenshotFolderForBrowser(

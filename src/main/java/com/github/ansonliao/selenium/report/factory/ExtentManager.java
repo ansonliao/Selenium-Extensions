@@ -9,7 +9,6 @@ import com.github.ansonliao.selenium.internal.Constants;
 import java.io.File;
 import java.net.URL;
 
-
 public class ExtentManager {
     private static ExtentReports extentReports;
     private static String filePath = Constants.PROJECT_ROOT_DIR
@@ -22,7 +21,7 @@ public class ExtentManager {
         if (extentReports == null) {
             extentReports = new ExtentReports();
             extentReports.attachReporter(getHtmlReporter());
-            extentReports.setSystemInfo("Selenium Java Version", "1.8");
+            extentReports.setSystemInfo("Selenium Java Version", System.getProperty("java.version"));
             extentReports.setSystemInfo("Environment", "Prod");
             extentReports.setSystemInfo("Selenium Java Client", "3");
         }
