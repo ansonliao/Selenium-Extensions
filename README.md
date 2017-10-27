@@ -128,6 +128,27 @@ public class BrowserTest extends UserBaseTest {
 }
 ```
 
+## Run test case
+You need to create the `runner` to trigger the testing run.
+
+Below is a sample, it is the simplest sample run all test cases, only run method `TestNGRunner.Run()`.
+
+```java
+public class MyTestRunner {
+
+    @Test
+    public void run() {
+        TestNGRunner.Run();
+    }
+}
+```
+
+When test runner created, we can trigger the test by `Maven` command, as below.
+
+```bash
+mvn clean test -Dtest=MyTestRunner
+```
+
 ## Filter
 `Selenium-Extentsions` support run the test case by filters.
 The filter includes:
@@ -137,11 +158,103 @@ The filter includes:
 - Test Group: run test cases by specify test groups which in TestNG test annotation `@Test`
 - Test class: run test cases by specify test classes which are TestNG test class
 - Browser: run test cases by specify browser, such as `CHROME`, `FIREFOX`
- 
 
-## Run Test
-To run the simple test, please run the command below.
-```bash
-mvn clean test -Dtest=MyExecutorRunner
+## Setting your filter
+
+The keywords for you to setting the filters:
+
+- Package: `testPackages`
+- Test Group: `testGroups`
+- Test Class: `testClasses`
+- Browsers: `testBrowsers`
+
+
+There are two ways to setting your filter for package list, test groups list, test class list, and browser list.
+
+1. Setting by `System Property`, can set `System Property` by `mvn` command or `export` method of Unix/Linux OS:
+    
+    Maven:
+    ```bash
+    mvn clean test -Dtest=MyTestRunner -DtestBrowsers="CHROME, FIREFOX, SAFARI" -DtestClasses="com.example.Test_HomePage.java, com.example.Test_LoginPage.java"
+    ```
+    
+    Export:
+    ```bash
+    export testClasses="com.example.Test_HomePage.java, com.example.Test_LoginPage.java
+    export testBrowsers="CHROME, FIREFOX, SAFARI"
+    export testPackages="com.example.test1, com.example.test2"
+    export testGroups="@SMOKE, @REGRESSION, @BLOCKER"
+    ```   
+    
+    after that, add method call in your test runner Java class, before `TestNGRunner.Run()`, sample is below.
+    
+    ```java
+    public class MyTestRunner {
+    
+        @Test
+        public void run() {
+            DefaultSettingUtils.set();     // try to fetch filters from system properties setting
+            TestNGRunner.Run();
+        }
+    }
+    ```
+
+2. Setting by programming
+
+Setting custom filter programmatically is easy, `DefaultSettingUtils` can approach it.
+Below is the sample.
+
+```java
+public class MyTestRunner {
+
+    @Test
+    public void run() {
+        List<String> packageList = com.google.common.collect.Lists.newArrayList("com.example.test1", com.example.test2);
+        List<String> groupList = com.google.common.collect.Lists.newArrayList("@SMOKE", "@REGRESSION", "@BLOCKER");
+        DefaultSettingUtils.setTestingPackages(packageList);
+        DefaultSettingUtils.setTestingGroups(groupList);
+        
+        TestNGRunner.Run();
+    }
+}
 ```
 
+For example, we can create a test runner for `Smoke Test`, to run the test cases tagged as `@SMOKE` test group.
+
+```java
+public class SmokeTestRunner {
+
+    @Test
+    public void run() {
+        List<String> groupList = com.google.common.collect.Lists.newArrayList("@SMOKE");
+        DefaultSettingUtils.setTestingGroups(groupList);
+        
+        TestNGRunner.Run();
+    }
+}
+```
+
+or in Jenkins, export `testGroups` before Maven command to trigger the test run.
+
+```bash
+export testGroups="@SMOKE"
+```
+
+Make sure the test runner includes: `DefaultSettingUtils.set();`
+
+```java
+public class SmokeTestRunner {
+    
+        @Test
+        public void run() {
+            DefaultSettingUtils.set();
+            TestNGRunner.Run();
+        }
+    }
+```
+
+And then the command to trigger the test by Maven command:
+
+```bash
+mvn clean test -Dtest=SmokeTestRunner
+```
