@@ -135,8 +135,11 @@ public class TestNGFilter {
     private static Set<String> addIncludedDefaultBrowser(Method method) {
         String DEFAULT_BROWSER_TYPE_NAME = Variables.DEFAULT_BROWSER_TYPE_NAME.trim().toUpperCase();
         Set<String> methodSupportedBrowsers = BrowserUtils.getMethodSupportedBrowsers(method);
-        if (!BrowserUtils.getMethodBrowsers(method).contains(DEFAULT_BROWSER_TYPE_NAME)
-                && !methodSupportedBrowsers.contains(DEFAULT_BROWSER_TYPE_NAME)) {
+        Set<String> methodBrowsers = BrowserUtils.getMethodBrowsers(method);
+        Set<String> ignoreBrowsers = BrowserUtils.getMethodIgnoredBrowsers(method);
+
+        if (methodBrowsers.isEmpty()
+                && !ignoreBrowsers.contains(DEFAULT_BROWSER_TYPE_NAME)) {
             methodSupportedBrowsers.add(DEFAULT_BROWSER_TYPE_NAME);
         }
 

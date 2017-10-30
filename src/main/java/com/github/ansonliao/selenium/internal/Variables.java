@@ -19,7 +19,7 @@ public class Variables {
     public static String DEFAULT_BROWSER_ANNOTATION_PACKAGE_NAME =
             "com.github.ansonliao.selenium.annotations.browser";
 
-    public static int DEFAULT_TEST_CLASS_SIZE_OF_TESTNG_XML = 1;
+    public static int DEFAULT_TEST_CLASS_SIZE_OF_TESTNG_XML = 10;
 
     public static int TEST_FAILURE_COUNTER = 0;
 }

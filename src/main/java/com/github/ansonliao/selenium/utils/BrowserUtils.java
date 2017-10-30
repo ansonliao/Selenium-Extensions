@@ -93,7 +93,8 @@ public class BrowserUtils {
                 Lists.newArrayList(method.getAnnotations()));
         return Sets.intersection(
                 methodBrowserList,
-                Sets.newHashSet(getSupportedBrowsers()));
+                Sets.newHashSet(getSupportedBrowsers()))
+                .parallelStream().collect(Collectors.toSet());
     }
 
     public static Set<String> getMethodIgnoredBrowsers(Method method) {
