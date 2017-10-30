@@ -19,7 +19,7 @@ Add the below dependencies in your `pom.xml` (Master)
 <dependency>
     <groupId>com.github.ansonliao</groupId>
     <artifactId>Selenium-Extensions</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 
@@ -30,6 +30,12 @@ Parallel mode is by Test, the tag `<test>` of TestNG test suite xml.
 ## Visual TestNG test suite XML generation
 No need to provide TestNG test suite XMl file to start the test, TestNG test suite XML file will be generated programmatically.
 
+## Test Report
+After test completed, Extents test report can be found `target/ExtentReports.html`.
+
+### Screenshot for test fail
+Screenshot can be found at `target/screenshots` for the test failed.
+
 ## Multiple browsers support
 Browser support:
 
@@ -37,7 +43,6 @@ Browser support:
 - **FireFox**: Mac, Linux/Unix, Windows
 - **Edge**: Windows
 - **InternetExplorer**: Windows
-- **Safari**: In planning...
 
 ## Multiple browsers in Runtime
 ```java
@@ -180,7 +185,7 @@ There are two ways to setting your filter for package list, test groups list, te
     
     Export:
     ```bash
-    export testClasses="com.example.Test_HomePage.java, com.example.Test_LoginPage.java
+    export testClasses="com.example.Test_HomePage.java, com.example.Test_LoginPage.java"
     export testBrowsers="CHROME, FIREFOX, SAFARI"
     export testPackages="com.example.test1, com.example.test2"
     export testGroups="@SMOKE, @REGRESSION, @BLOCKER"
