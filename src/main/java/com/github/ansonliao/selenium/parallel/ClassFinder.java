@@ -3,7 +3,8 @@ package com.github.ansonliao.selenium.parallel;
 import com.google.common.collect.Sets;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -16,7 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ClassFinder {
-    private static Logger logger = Logger.getLogger(ClassFinder.class);
+    private static Logger logger = LoggerFactory.getLogger(ClassFinder.class);
     private static final String PACKAGE_SEPARATOR = ".";
     private static final String DIR_SEPARATOR = File.separator;
     private static final String CLASS_FILE_SUFFIX = ".class";

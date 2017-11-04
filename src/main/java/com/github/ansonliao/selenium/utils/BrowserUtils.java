@@ -4,7 +4,8 @@ import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.parallel.ClassFinder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -13,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BrowserUtils {
-    private static Logger logger = Logger.getLogger(BrowserUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(BrowserUtils.class);
 
     public static List<String> getSupportedBrowsers() {
         return ClassFinder.getScanAllClassesResult()

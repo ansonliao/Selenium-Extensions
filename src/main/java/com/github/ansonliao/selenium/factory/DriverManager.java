@@ -1,39 +1,28 @@
 package com.github.ansonliao.selenium.factory;
 
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 
 public abstract class DriverManager {
+    protected boolean isHeadless = false;
+    protected boolean isIncognito = false;
+    public WebDriver driver;
+    public String exportParameter = getExportParameterKey();
+    public Logger logger = getLogger();
 
-    public boolean isHeadless = false;
-    public boolean isIncognito = false;
+    public abstract WebDriver getDriver();
 
-    protected WebDriver driver;
+    public abstract String getExportParameterKey();
 
-    protected abstract void startService();
-
-    protected abstract void stopService();
-
-    protected abstract void createService();
-
-    protected abstract String getDriverPath();
+    public abstract Logger getLogger();
 
     public void quitDriver() {
         if (driver != null) {
             driver.quit();
-            driver = null;
         }
     }
 
-    public WebDriver getDriver() {
-        if (driver == null) {
-            startService();
-            createService();
-        }
-
-        return driver;
-    }
-
-    public void setHandless(boolean isHeadless) {
+    public void setHeadless(boolean isHeadless) {
         this.isHeadless = isHeadless;
     }
 
@@ -41,11 +30,8 @@ public abstract class DriverManager {
         this.isIncognito = isIncognito;
     }
 
-    public boolean getIsHeadless() {
-        return isHeadless;
-    }
-
-    public boolean getIsIncognito() {
-        return isIncognito;
+    public void exportDriver(String key, String value) {
+        logger.info("Export {} as {}", key, value);
+        System.setProperty(key, value);
     }
 }

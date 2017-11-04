@@ -3,23 +3,29 @@ package com.github.ansonliao.selenium.factory;
 public class DriverManagerFactory {
 
     public static DriverManager getManager(String browserName) {
-        DriverManager driverManager = null;
+        DriverManager driverManager;
 
         switch (browserName) {
             case "CHROME":
-                driverManager = new ChromeDriverManager();
+                driverManager = ChromeFactory.getInstance();
                 break;
             case "FIREFOX":
-                driverManager = new FirefoxDriverManager();
+                driverManager = FirefoxFactory.getInstance();
                 break;
             case "EDGE":
-                // add edge driver manager here
+                driverManager = EdgeFactory.getInstance();
                 break;
             case "INTERNETEXPLOER":
-                // add ie driver manager here
+                driverManager = InternetExplorerFactory.getInstance();
+                break;
+            case "PHANTOMJS":
+                driverManager = PhantomJsFactory.getInstance();
+                break;
+            case "OPERA":
+                driverManager = OperaFactory.getInstance();
                 break;
             default:
-                driverManager = new ChromeDriverManager();
+                driverManager = ChromeFactory.getInstance();
                 break;
         }
 
