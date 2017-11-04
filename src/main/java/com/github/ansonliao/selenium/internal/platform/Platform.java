@@ -1,9 +1,10 @@
 package com.github.ansonliao.selenium.internal.platform;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Platform {
-    private static Logger logger = Logger.getLogger(Platform.class);
+    private static Logger logger = LoggerFactory.getLogger(Platform.class);
 
     public static synchronized OSType getOSType() {
         String osName = System.getProperty("os.name");

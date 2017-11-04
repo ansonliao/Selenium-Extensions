@@ -13,6 +13,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -24,13 +25,18 @@ import static org.testng.ITestResult.SUCCESS;
 public class UserBaseTest extends SeleniumParallel {
     protected ExtentTest extentTest;
 
-    @BeforeClass
-    public void beforeClass(ITestContext iTestContext) {
+    @BeforeTest(alwaysRun = true)
+    public void beforeTest(ITestContext iTestContext) {
         browserName = iTestContext.getCurrentXmlTest().getAllParameters()
                 .get(Constants.TESTNG_XML_BROWSER_PARAMETER_KEY)
                 .toString().trim();
         driverManager = DriverManagerFactory.getManager(browserName);
-        MyFileUtils.createScreenshotFolderForBrowser(this.getClass(), browserName);
+    }
+
+    @BeforeClass
+    public void beforeClass(ITestContext iTestContext) {
+        MyFileUtils.createScreenshotFolderForBrowser(
+                this.getClass(), browserName);
     }
 
     @BeforeMethod
@@ -66,6 +72,7 @@ public class UserBaseTest extends SeleniumParallel {
         }
 
         driverManager.quitDriver();
+        //getDriver().quit();
         ExtentTestManager.extentReport.flush();
     }
 

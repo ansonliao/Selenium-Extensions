@@ -1,13 +1,14 @@
 package com.github.ansonliao.selenium.testng;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.TestNG;
 import org.testng.xml.XmlSuite;
 
 import static java.util.Arrays.asList;
 
 public class TestNGRunner {
-    private static final Logger logger = Logger.getLogger(TestNGRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestNGRunner.class);
 
     public static void Run() {
         XmlSuite xmlSuite = XmlSuiteBuilder.build();

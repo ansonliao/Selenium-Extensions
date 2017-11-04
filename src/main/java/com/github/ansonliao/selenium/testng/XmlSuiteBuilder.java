@@ -1,10 +1,11 @@
 package com.github.ansonliao.selenium.testng;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.xml.XmlSuite;
 
 public class XmlSuiteBuilder {
-    private static final Logger logger = Logger.getLogger(XmlSuiteBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(XmlSuiteBuilder.class);
 
     public static XmlSuite build() {
         XmlSuite xmlSuite = new XmlSuite();

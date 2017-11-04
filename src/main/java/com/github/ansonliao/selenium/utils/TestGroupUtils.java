@@ -2,7 +2,8 @@ package com.github.ansonliao.selenium.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
@@ -12,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TestGroupUtils {
-    private static final Logger logger = Logger.getLogger(TestGroupUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestGroupUtils.class);
 
     public static List<String> getClassTestGroups(Class<?> clazz) {
         if (!clazz.isAnnotationPresent(Test.class)) {

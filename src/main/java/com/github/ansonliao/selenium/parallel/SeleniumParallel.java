@@ -13,10 +13,11 @@ import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaMethod;
-import org.apache.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -30,13 +31,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SeleniumParallel {
-    protected static Logger logger = Logger.getLogger(SeleniumParallel.class);
-    protected static JavaProjectBuilder javaProjectBuilder = new JavaProjectBuilder();
+    protected static Logger logger =
+            LoggerFactory.getLogger(SeleniumParallel.class);
+    protected static JavaProjectBuilder javaProjectBuilder =
+            new JavaProjectBuilder();
 
     private WebDriver driver;
     protected DriverManager driverManager;
     protected String browserName;
-    private boolean isIncognito;
     protected String url;
 
     public String findUrl(Method method) {
@@ -56,8 +58,8 @@ public class SeleniumParallel {
     }
 
     public WebDriver startWebDriver(Method method) {
-        driverManager.isIncognito = method.isAnnotationPresent(Incognito.class) ? true : false;
-        driverManager.isHeadless = method.isAnnotationPresent(Headless.class) ? true : false;
+        driverManager.setIncognito(method.isAnnotationPresent(Incognito.class) ? true : false);
+        driverManager.setHeadless(method.isAnnotationPresent(Headless.class) ? true : false);
         driver = driverManager.getDriver();
         return driver;
     }

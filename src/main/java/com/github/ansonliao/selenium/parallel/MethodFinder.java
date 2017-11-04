@@ -1,7 +1,8 @@
 package com.github.ansonliao.selenium.parallel;
 
 import com.google.common.collect.Lists;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MethodFinder {
-    private static Logger logger = Logger.getLogger(MethodFinder.class);
+    private static Logger logger = LoggerFactory.getLogger(MethodFinder.class);
 
     public static List<Method> findAllAnnotatedTestMethodInClass(
             Class clazz) {
