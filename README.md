@@ -19,7 +19,7 @@ Add the below dependencies in your `pom.xml` (Master)
 <dependency>
     <groupId>com.github.ansonliao</groupId>
     <artifactId>Selenium-Extensions</artifactId>
-    <version>2.0.1</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -36,13 +36,20 @@ After test completed, Extents test report can be found `target/ExtentReports.htm
 ### Screenshot for test fail
 Screenshot can be found at `target/screenshots` for the test failed.
 
+## Download WebDriver binary automatically
+`Selenium-Extensions` will download `WebDriver` binaries for Test automatically, 
+no need download the binary manually before the test start.
+
 ## Multiple browsers support
 Browser support:
 
-- **Chrome**: Mac, Linux/Unix, Windows
-- **FireFox**: Mac, Linux/Unix, Windows
+- **Chrome**: Mac, Linux, Windows
+- **FireFox**: Mac, Linux, Windows
+- **PhantomJs**: Mac, Linux, Windows
+- **Opera**: Mac, Linux, Windows
 - **Edge**: Windows
 - **InternetExplorer**: Windows
+- **Safari**: DEPRECATED
 
 ## Multiple browsers in Runtime
 ```java
