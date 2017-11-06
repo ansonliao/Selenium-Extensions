@@ -61,15 +61,15 @@ public class ExtentTestManager {
                     test.assignAuthor(author);
                 }
             }
-            if (groups != null && groups.size() > 0) {
-                for (String group : groups) {
-                    test.assignCategory(group);
-                }
-            }
             childTests.put(method.getName(), test);
         }
 
         test = childTests.get(method.getName()).createNode(browserName);
+        if (groups != null && groups.size() > 0) {
+            for (String group : groups) {
+                test.assignCategory(group);
+            }
+        }
         grandTests.set(test);
 
         return test;
