@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 public class SEConfig {
     private static final Logger logger =
             LoggerFactory.getLogger(SEConfig.class);
-    private static SEConfig instance;
+    private static SEConfig instance = new SEConfig();
     private Config config;
 
     protected SEConfig() {
@@ -18,9 +18,6 @@ public class SEConfig {
     }
 
     public synchronized static SEConfig getInstance() {
-        if (instance == null) {
-            instance = new SEConfig();
-        }
         return instance;
     }
 

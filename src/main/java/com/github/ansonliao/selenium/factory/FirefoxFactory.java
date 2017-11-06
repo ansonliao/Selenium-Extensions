@@ -1,14 +1,11 @@
 package com.github.ansonliao.selenium.factory;
 
-import com.github.ansonliao.selenium.utils.SEConfig;
-import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.util.Strings;
 
 public class FirefoxFactory extends DriverManager {
     private static final Logger logger =
@@ -17,18 +14,6 @@ public class FirefoxFactory extends DriverManager {
 
     private FirefoxFactory() {
         super();
-        if (!SEConfig.isKeyExisted(exportParameter)
-                || Strings.isNullOrEmpty(SEConfig.getString(exportParameter))) {
-            logger.info("FirefoxDriver export parameter was not found, {}: {}",
-                    getExportParameterKey(), exportParameter);
-            FirefoxDriverManager.getInstance().setup();
-
-            // sometimes the webdriver binary download completed,
-            // but export parameter was not set,
-            // set it in case
-            exportDriver(getExportParameterKey(),
-                    FirefoxDriverManager.getInstance().getBinaryPath());
-        }
     }
 
     public synchronized static FirefoxFactory getInstance() {
