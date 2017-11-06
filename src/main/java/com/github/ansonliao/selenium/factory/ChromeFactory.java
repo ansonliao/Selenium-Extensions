@@ -16,18 +16,18 @@ public class ChromeFactory extends DriverManager {
 
     private ChromeFactory() {
         super();
-        if (!SEConfig.isKeyExisted(exportParameter)
-                || Strings.isNullOrEmpty(SEConfig.getString(exportParameter))) {
-            logger.info("ChromeDriver export parameter was not found, {}: {}",
-                    getExportParameterKey(), exportParameter);
-            ChromeDriverManager.getInstance().setup();
-
-            // sometimes the webdriver binary download completed,
-            // but export parameter was not set,
-            // set it in case
-            exportDriver(getExportParameterKey(),
-                    ChromeDriverManager.getInstance().getBinaryPath());
-        }
+//        if (!SEConfig.isKeyExisted(exportParameter)
+//                || Strings.isNullOrEmpty(SEConfig.getString(exportParameter))) {
+//            logger.info("ChromeDriver export parameter was not found, {}: {}",
+//                    getExportParameterKey(), exportParameter);
+//            ChromeDriverManager.getInstance().setup();
+//
+//            // sometimes the webdriver binary download completed,
+//            // but export parameter was not set,
+//            // set it in case
+//            exportDriver(getExportParameterKey(),
+//                    ChromeDriverManager.getInstance().getBinaryPath());
+//        }
     }
 
     public synchronized static ChromeFactory getInstance() {
