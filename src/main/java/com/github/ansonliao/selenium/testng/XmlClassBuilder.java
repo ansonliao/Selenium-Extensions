@@ -23,6 +23,11 @@ public class XmlClassBuilder {
                     browserXmlClassMap.put(browserName, xmlClass);
                 }));
 
+        /** TODO:
+         * until WDM 1.7.2, download WebDriver binary only works at single thread,
+         * upgrade WebDriver binary to Async with multi-threads once WDM support
+         * multi-thread download
+         */
         browserXmlClassMap.keySet().stream()
                 .map(String::toUpperCase)
                 .forEach(WDMHelper::downloadWebDriverBinary);

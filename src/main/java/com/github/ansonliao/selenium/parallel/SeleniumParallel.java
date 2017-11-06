@@ -106,7 +106,7 @@ public class SeleniumParallel {
     }
 
     public List<String> getAuthors(String className, Method method) {
-        logger.info("className = " + className);
+        logger.info("Get authors of Class = " + className);
 
         javaProjectBuilder.addSourceTree(new File(
                 Constants.PROJECT_ROOT_DIR
@@ -116,7 +116,7 @@ public class SeleniumParallel {
         List<DocletTag> authors = cls.getTags().stream()
                 .filter(tag -> tag.getName().equals("author") || tag.getName().equals("author:"))
                 .collect(Collectors.toList());
-        logger.info("authors = " + authors.toString());
+        logger.info("Class: {}, authors: {} ", className, authors.toString());
 
         // get class authors as default author name
         Set<String> allAuthors = new HashSet<>();
@@ -130,10 +130,9 @@ public class SeleniumParallel {
 
         // get method author
         List<JavaMethod> methods = cls.getMethods();
-        logger.info("Java Method = " + methods.toString());
+        logger.info("Get authors of method = " + methods.toString());
         JavaMethod mth = null;
         for (JavaMethod m : methods) {
-            System.out.println("JavaMethod: " + m.getName());
             if (m.getName().equalsIgnoreCase(method.getName())) {
                 mth = m;
                 break;

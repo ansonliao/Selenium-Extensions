@@ -7,6 +7,7 @@ import com.github.ansonliao.selenium.factory.DriverManagerFactory;
 import com.github.ansonliao.selenium.parallel.SeleniumParallel;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
+import com.github.ansonliao.selenium.utils.SEConfig;
 import com.github.ansonliao.selenium.utils.TestGroupUtils;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -17,6 +18,7 @@ import org.testng.annotations.BeforeTest;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import static org.testng.ITestResult.FAILURE;
 import static org.testng.ITestResult.SKIP;
@@ -43,13 +45,19 @@ public class UserBaseTest extends SeleniumParallel {
     public void beforeMethod(Method method) {
         url = findUrl(method);
         setDriver(driverManager.getDriver());
+        List<String> groups = Variables.TESTING_TEST_GROUPS.isEmpty()
+                ? TestGroupUtils.getMethodTestGroups(method)
+                : Variables.TESTING_TEST_GROUPS;
+
+        if (SEConfig.getBoolean("se.addBrowserGroupToReport")) {
+            groups.add(browserName);
+        }
+
         ExtentTestManager.createTest(
                 method,
                 browserName,
                 getAuthors(this.getClass().getName(), method),
-                Variables.TESTING_TEST_GROUPS.isEmpty()
-                        ? TestGroupUtils.getMethodTestGroups(method)
-                        : Variables.TESTING_TEST_GROUPS);
+                groups);
         extentTest = ExtentTestManager.getExtentTest();
     }
 
