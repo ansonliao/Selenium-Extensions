@@ -18,13 +18,9 @@ public class XmlSuiteBuilder {
         XmlTestBuilder.setXmlSuite(xmlSuite);
         XmlTestBuilder.build();
         xmlSuite = XmlTestBuilder.getXmlSuite();
-        logger.info(xmlSuite.toXml());
+        logger.info("\n" + xmlSuite.toXml());
 
         return xmlSuite;
-    }
-
-    public static void printXmlSuite(XmlSuite xmlSuite) {
-        System.out.println(xmlSuite.toXml());
     }
 
 }

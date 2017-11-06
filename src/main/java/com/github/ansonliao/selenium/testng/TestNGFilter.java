@@ -108,14 +108,9 @@ public class TestNGFilter {
             testNGClass2MethodMap.get(aClass).forEach(method -> {
                 // add default browser if the testng method without any browser annotations
                 Set<String> methodSupportedBrowsers = addIncludedDefaultBrowser(method);
-
                 methodSupportedBrowsers.forEach(browserName ->
                         browserTestngMethodMap.put(browserName, method));
                 methodSupportedBrowsers.forEach(browserName -> {
-                    System.out.println("Filter browser name: " + browserName);
-                    System.out.println("Filter class name: " + aClass.getCanonicalName());
-                    System.out.println("Filter method name: " + method.getName());
-
                     if (!browserTestingMap.containsKey(browserName)) {
                         browserTestingMap.put(browserName, new HashMap<>());
                     }
@@ -128,7 +123,6 @@ public class TestNGFilter {
                 });
             });
         });
-
         return browserTestingMap;
     }
 
@@ -137,12 +131,10 @@ public class TestNGFilter {
         Set<String> methodSupportedBrowsers = BrowserUtils.getMethodSupportedBrowsers(method);
         Set<String> methodBrowsers = BrowserUtils.getMethodBrowsers(method);
         Set<String> ignoreBrowsers = BrowserUtils.getMethodIgnoredBrowsers(method);
-
         if (methodBrowsers.isEmpty()
                 && !ignoreBrowsers.contains(DEFAULT_BROWSER_TYPE_NAME)) {
             methodSupportedBrowsers.add(DEFAULT_BROWSER_TYPE_NAME);
         }
-
         return methodSupportedBrowsers;
     }
 }
