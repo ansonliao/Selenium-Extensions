@@ -82,11 +82,8 @@ public class BrowserUtils {
         enabledBrowsers = Sets.union(classSupportedBrowsers, enabledBrowsers);
         ignoredBrowsers = Sets.union(classIgnoredBrowsers, ignoredBrowsers);
 
-        return Sets.difference(
-                enabledBrowsers,
-                Sets.intersection(enabledBrowsers, ignoredBrowsers))
-                .parallelStream()
-                .collect(Collectors.toSet());
+        return Sets.difference(enabledBrowsers, Sets.intersection(enabledBrowsers, ignoredBrowsers))
+                .parallelStream().collect(Collectors.toSet());
     }
 
     public static Set<String> getMethodBrowsers(Method method) {
