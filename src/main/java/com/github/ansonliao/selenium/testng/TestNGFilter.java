@@ -4,12 +4,17 @@ import com.github.ansonliao.selenium.internal.Variables;
 import com.github.ansonliao.selenium.parallel.ClassFinder;
 import com.github.ansonliao.selenium.parallel.MethodFinder;
 import com.github.ansonliao.selenium.utils.BrowserUtils;
+import com.github.ansonliao.selenium.utils.SEConfig;
+import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +23,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TestNGFilter {
+    private static final Logger logger = LoggerFactory.getLogger(TestNGFilter.class);
     private static List<Class<?>> testngClasses = new ArrayList<>();
     private static Multimap<Class<?>, Method> testNGClass2MethodMap = HashMultimap.create();
+    private static final String EXTERNAL_RUN_BROWSER_KEY = "runByBrowsers";
 
     static {
         String[] testingPackageNames = Variables.TESTING_PACKAGE_NAMES.toArray(
@@ -104,7 +111,49 @@ public class TestNGFilter {
         Map<String, Map<Class<?>, List<Method>>> browserTestingMap = new HashMap<>();
         Multimap<String, Method> browserTestngMethodMap = HashMultimap.create();
 
-        testNGClass2MethodMap.keySet().forEach(aClass -> {
+        if (!Strings.isNullOrEmpty(SEConfig.getString(EXTERNAL_RUN_BROWSER_KEY))) {
+            // only fetch support browsers
+            List<String> browsers =
+                    Sets.intersection(
+                            Arrays.stream(SEConfig.getString(EXTERNAL_RUN_BROWSER_KEY).split(","))
+                                    .map(String::trim).collect(Collectors.toSet()),
+                            Sets.newHashSet(BrowserUtils.getSupportedBrowsers()))
+                    .parallelStream().collect(Collectors.toList());
+
+            logger.info("Run Tests by browser: " + browsers);
+
+            if (browsers.isEmpty()) {
+                return browserTestingMap;
+            }
+
+            browsers.parallelStream().map(String::trim).forEach(browserName ->
+                    testNGClass2MethodMap.keySet().forEach(aClass ->
+                            testNGClass2MethodMap.get(aClass).forEach(method -> {
+                                Set<String> ignoreBrowsers = BrowserUtils.getMethodIgnoredBrowsers(method);
+                                if (ignoreBrowsers.isEmpty() || !ignoreBrowsers.contains(browserName)) {
+                                    if (!browserTestingMap.containsKey(browserName)) {
+                                        browserTestingMap.put(browserName, new HashMap<>());
+                                    }
+                                    if (!browserTestingMap.get(browserName).containsKey(aClass)) {
+                                        browserTestingMap.get(browserName).put(aClass, new ArrayList<>());
+                                    }
+                                    if (!browserTestingMap.get(browserName).get(aClass).contains(method)) {
+                                        browserTestingMap.get(browserName).get(aClass).add(method);
+                                    }
+                                } else {
+                                    String msg = "Class: [{}], Method: [{}] ignore browser [{}]"
+                                            + " execute as @Ignore{} found";
+                                    logger.info(msg,
+                                            aClass.getCanonicalName(), method.getName(),
+                                            browserName,
+                                            browserName.substring(0, 1).toUpperCase()
+                                                    + browserName.substring(1).toLowerCase());
+                                }
+                            })));
+            return browserTestingMap;
+        }
+
+        testNGClass2MethodMap.keySet().forEach(aClass ->
             testNGClass2MethodMap.get(aClass).forEach(method -> {
                 // add default browser if the testng method without any browser annotations
                 Set<String> methodSupportedBrowsers = addIncludedDefaultBrowser(method);
@@ -121,8 +170,7 @@ public class TestNGFilter {
                         browserTestingMap.get(browserName).get(aClass).add(method);
                     }
                 });
-            });
-        });
+            }));
         return browserTestingMap;
     }
 
