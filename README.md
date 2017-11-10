@@ -19,7 +19,7 @@ Add the below dependencies in your `pom.xml` (Master)
 <dependency>
     <groupId>com.github.ansonliao</groupId>
     <artifactId>Selenium-Extensions</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
@@ -329,3 +329,57 @@ The keyword to change the default browser is: `defaultBrowser`.
         }
     }
     ```
+    
+## Parameterized and overwrite browser type annotation of test cases
+Though add browser annotation to test method or test class that test cases run against what browsers.
+Actually, for some cases it is not good for change all test cases run against the browser you want as 
+it is need to modify all test case's browser.
+
+`Selenium-Extensions` provide a parameterize method to change all test cases run against the browsers without
+update the test case's browser annotation.
+
+Please note that `Run By Browsers` parameterize is temporary method, it will not effect any browser annotation 
+setting of test case.
+It means that, if the browser annotations of test case nothing change, when the test case run at next time, 
+without the `Run By Browsers` parameter the test cases will run against the browser depends on 
+browser annotations of test cases.
+
+### How to use external parameter/property to overwrite the browser annotations of test case
+
+1. By Maven, only apply property `runByBrowsers` and value with the browsers the test case expect to run.
+    
+    ```bash
+    mvn clean test -Dtest=MyTestRunner -DrunByBrowsers="EDGE, PHANTOMJS" 
+    ```
+   
+2. By programming in Java
+
+    ```java
+    public class MyTestRunner {
+                
+            @Test
+            public void run() {
+                System.setProperty("runByBrowsers", "EDGE, PHANTOMJS");
+                TestNGRunner.Run();
+            }
+        }
+    ```
+
+The sample above, all test cases will be run against browsers `Edge`, `PhantomJs`, 
+the test will ignore the existed browser annotations of test cases.
+
+Please note that, please be careful the browser ignore annotation, for example:
+`@IgnoreChrome`, `@IgnorePhantomJs`, etc..
+Browser ignore annotation will effect the parameterized/external browser.
+For example,
+
+```java
+@org.testng.annotations.Test
+@com.github.ansonliao.selenium.annotations.browser.PhantomJs
+public void f1() {
+    ...
+}
+```
+
+above test case, if paremeterized browsers includes browser type `PhantomJs`, this 
+test case will be ignore, because this test case includes ignore browser `PhantomJs` annotation.
