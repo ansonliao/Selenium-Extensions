@@ -120,7 +120,7 @@ public class TestNGFilter {
                             Sets.newHashSet(BrowserUtils.getSupportedBrowsers()))
                     .parallelStream().collect(Collectors.toList());
 
-            logger.info("Run Tests by browser: " + browsers);
+            logger.info("Run Tests by browsers: {}", browsers);
 
             if (browsers.isEmpty()) {
                 return browserTestingMap;
@@ -171,6 +171,8 @@ public class TestNGFilter {
                     }
                 });
             }));
+
+        logger.info("Run Tests by browsers: {}", browserTestingMap.keySet());
         return browserTestingMap;
     }
 

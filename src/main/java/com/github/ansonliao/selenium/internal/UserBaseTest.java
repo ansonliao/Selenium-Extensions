@@ -49,7 +49,7 @@ public class UserBaseTest extends SeleniumParallel {
                 ? TestGroupUtils.getMethodTestGroups(method)
                 : Variables.TESTING_TEST_GROUPS;
 
-        if (SEConfig.getBoolean("se.addBrowserGroupToReport")) {
+        if (SEConfig.getBoolean("addBrowserGroupToReport")) {
             groups.add(browserName);
         }
 
