@@ -14,7 +14,7 @@ public class SEConfig {
 
     protected SEConfig() {
         config = ConfigFactory.load(SEConfig.class.getClassLoader(),
-                System.getProperty("se.conf", "seleniumextensions.conf"));
+                System.getProperty("se.properties", "seleniumextensions.properties"));
     }
 
     public synchronized static SEConfig getInstance() {
