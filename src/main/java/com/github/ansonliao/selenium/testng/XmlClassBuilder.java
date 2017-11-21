@@ -1,6 +1,5 @@
 package com.github.ansonliao.selenium.testng;
 
-import com.github.ansonliao.selenium.utils.WDMHelper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import org.testng.xml.XmlClass;
@@ -22,15 +21,6 @@ public class XmlClassBuilder {
 
                     browserXmlClassMap.put(browserName, xmlClass);
                 }));
-
-        /** TODO:
-         * until WDM 1.7.2, download WebDriver binary only works at single thread,
-         * upgrade WebDriver binary to Async with multi-threads once WDM support
-         * multi-thread download
-         */
-        browserXmlClassMap.keySet().stream()
-                .map(String::toUpperCase)
-                .forEach(WDMHelper::downloadWebDriverBinary);
 
         return browserXmlClassMap;
     }

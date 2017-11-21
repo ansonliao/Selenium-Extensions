@@ -13,6 +13,8 @@ public class XmlSuiteBuilder {
         xmlSuite.setParallel(XmlSuite.ParallelMode.TESTS);
         xmlSuite.setPreserveOrder(false);
         xmlSuite.setThreadCount(Runtime.getRuntime().availableProcessors());
+        xmlSuite.addListener("com.github.ansonliao.selenium.testng.TestResultListener");
+        xmlSuite.addListener("com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener");
         xmlSuite.setVerbose(2);
 
         XmlTestBuilder.setXmlSuite(xmlSuite);
