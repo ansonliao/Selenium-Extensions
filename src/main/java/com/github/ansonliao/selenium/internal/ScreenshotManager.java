@@ -15,18 +15,15 @@ public class ScreenshotManager {
         File scrFile = ((TakesScreenshot) WDManager.getDriver())
                 .getScreenshotAs(OutputType.FILE);
 
-        String destDir = Constants.SCREENSHOT_DIR
-                .concat(Constants.FILE_SEPARATOR)
-                .concat(clazz.getPackage().getName())
-                .concat(Constants.FILE_SEPARATOR)
-                .concat(this.getClass().getSimpleName())
-                .concat(Constants.FILE_SEPARATOR)
-                .concat(browserName)
-                .concat(Constants.FILE_SEPARATOR)
-                .concat(imgPrefix)
-                .concat("_")
-                .concat(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))
-                .concat(".jpeg");
+        String destDir = String.join(
+                Constants.FILE_SEPARATOR,
+                Constants.SCREENSHOT_DIR,
+                clazz.getPackage().getName(),
+                clazz.getSimpleName(),
+                browserName,
+                imgPrefix.concat("_").concat(String.valueOf(
+                                new Timestamp(System.currentTimeMillis()).getTime()))
+                        .concat(".jpeg"));
         try {
             MyFileUtils.copyFile(scrFile, new File(destDir));
         } catch (IOException e) {
