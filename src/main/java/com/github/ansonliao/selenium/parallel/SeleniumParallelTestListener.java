@@ -1,15 +1,18 @@
 package com.github.ansonliao.selenium.parallel;
 
+import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.factory.DriverManagerFactory;
-import com.github.ansonliao.selenium.factory.WebDriverManager;
+import com.github.ansonliao.selenium.factory.WDManager;
 import com.github.ansonliao.selenium.internal.Constants;
-import com.github.ansonliao.selenium.internal.Variables;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 import com.github.ansonliao.selenium.utils.AuthorUtils;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
 import com.github.ansonliao.selenium.utils.SEConfig;
 import com.github.ansonliao.selenium.utils.TestGroupUtils;
 import com.github.ansonliao.selenium.utils.WDMHelper;
+import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.IClassListener;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
@@ -20,27 +23,37 @@ import org.testng.ITestResult;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class SeleniumParallelTestListener implements
-        IClassListener, IInvokedMethodListener, ISuiteListener {
+import static com.github.ansonliao.selenium.factory.WDManager.getDriver;
+import static com.github.ansonliao.selenium.factory.WDManager.setDriver;
+
+public class SeleniumParallelTestListener implements IClassListener,
+        IInvokedMethodListener, ISuiteListener {
+    private static final Logger logger =
+            LoggerFactory.getLogger(SeleniumParallelTestListener.class);
 
     @Override
     public void beforeInvocation(IInvokedMethod iInvokedMethod, ITestResult iTestResult) {
         String browserName = iInvokedMethod.getTestMethod().getXmlTest()
                 .getParameter(Constants.TESTNG_XML_BROWSER_PARAMETER_KEY);
-        WebDriverManager.setDriver(
-                DriverManagerFactory.getManager(browserName).getDriver());
+        setDriver(DriverManagerFactory.getManager(browserName).getDriver());
 
-        Method method = iInvokedMethod.getTestMethod().getConstructorOrMethod().getMethod();
+        Method method =
+                iInvokedMethod.getTestMethod().getConstructorOrMethod().getMethod();
 
-        List<String> groups = Variables.TESTING_TEST_GROUPS.isEmpty()
-                ? TestGroupUtils.getMethodTestGroups(method)
-                : Variables.TESTING_TEST_GROUPS;
+        List<String> groups = TestGroupUtils.getMethodTestGroups(method);
         if (SEConfig.getBoolean("addBrowserGroupToReport")) {
             groups.add(browserName);
         }
 
-        ExtentTestManager.createTest(method, browserName, AuthorUtils.getMethodAuthors(method), groups);
+        ExtentTestManager.createTest(method, browserName,
+                AuthorUtils.getMethodAuthors(method), groups);
+
+        // open url if URL annotation had value
+        Optional.ofNullable(method.getAnnotation(URL.class))
+                .ifPresent(url -> openRemoteURL(url.value().trim()));
     }
 
     @Override
@@ -55,9 +68,11 @@ public class SeleniumParallelTestListener implements
          * upgrade WebDriver binary to Async with multi-threads once WDM support
          * multi-thread download
          */
-        iSuite.getXmlSuite().getTests().stream()
+        List<String> browserList = iSuite.getXmlSuite().getTests().stream()
                 .map(xmlTest -> xmlTest.getParameter(Constants.TESTNG_XML_BROWSER_PARAMETER_KEY))
-                .forEach(WDMHelper::downloadWebDriverBinary);
+                .distinct().collect(Collectors.toList());
+        browserList.forEach(WDMHelper::downloadWebDriverBinary);
+        logger.info("Completed WebDriver binary download: {}", browserList);
     }
 
     @Override
@@ -77,5 +92,11 @@ public class SeleniumParallelTestListener implements
     @Override
     public void onAfterClass(ITestClass iTestClass) {
 
+    }
+
+    private void openRemoteURL(String url) {
+        if (!Strings.isNullOrEmpty(url)) {
+            getDriver().get(url);
+        }
     }
 }
