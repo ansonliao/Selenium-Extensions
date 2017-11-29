@@ -4,20 +4,23 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.annotations.Description;
+import com.google.common.collect.Maps;
 import org.testng.Reporter;
+import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ExtentTestManager {
     public static ThreadLocal<ExtentTest> extentTests = new ThreadLocal<>();
     public static ExtentReports extentReport = ExtentManager.getExtentReports();
     private static ExtentTest extentTest;
 
-    public static Map<String, ExtentTest> parentTests = new HashMap<>();
-    public static Map<String, ExtentTest> childTests = new HashMap<>();
+    public static Map<String, ExtentTest> parentTests = Maps.newHashMap();
+    public static Map<String, ExtentTest> childTests = Maps.newHashMap();
     public static ThreadLocal<ExtentTest> grandTests = new ThreadLocal<>();
 
     public synchronized static ExtentTest getExtentTest() {
@@ -26,11 +29,11 @@ public class ExtentTestManager {
 
     public synchronized static ExtentTest createTest(
             String name, String description, String browserType) {
-        extentTest = extentReport.createTest(name, description).assignCategory(browserType);
+        extentTest = extentReport.createTest(name, description)
+                .assignCategory(browserType);
         extentTests.set(extentTest);
-        return getExtentTest();
+        return extentTests.get();
     }
-
 
     public synchronized static ExtentTest createTest(String name, String description) {
         return createTest(name, description, String.valueOf(Thread.currentThread().getId()));
@@ -51,7 +54,8 @@ public class ExtentTestManager {
             parentTests.put(className, test);
         }
 
-        if (!childTests.containsKey(method.getName())) {
+        String childNodeKey = String.join(".", clazz.getName(), method.getName());
+        if (!childTests.containsKey(childNodeKey)) {
             description = method.isAnnotationPresent(Description.class)
                     ? (method.getAnnotation(Description.class)).value().trim()
                     : "";
@@ -61,10 +65,10 @@ public class ExtentTestManager {
                     test.assignAuthor(author);
                 }
             }
-            childTests.put(method.getName(), test);
+            childTests.put(childNodeKey, test);
         }
 
-        test = childTests.get(method.getName()).createNode(browserName);
+        test = childTests.get(childNodeKey).createNode(browserName);
         if (groups != null && groups.size() > 0) {
             for (String group : groups) {
                 test.assignCategory(group);
