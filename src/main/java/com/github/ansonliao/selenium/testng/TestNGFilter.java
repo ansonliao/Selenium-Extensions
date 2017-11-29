@@ -11,6 +11,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.collections.Lists;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class TestNGFilter {
     private static final Logger logger = LoggerFactory.getLogger(TestNGFilter.class);
-    private static List<Class<?>> testngClasses = new ArrayList<>();
+    private static List<Class<?>> testngClasses = Lists.newArrayList();
     private static Multimap<Class<?>, Method> testNGClass2MethodMap = HashMultimap.create();
     private static final String EXTERNAL_RUN_BROWSER_KEY = "runByBrowsers";
 
@@ -64,7 +65,7 @@ public class TestNGFilter {
      */
     public static Multimap<Class<?>, Method> filterTestNGMethodByTestGroups() {
         testNGClass2MethodMap = HashMultimap.create();
-        if (Variables.TESTING_TEST_GROUPS.isEmpty()) {
+        if (Strings.isNullOrEmpty(SEConfig.getString("testingTestGroups"))) {
             testngClasses.stream()
                     .forEach(aClass ->
                             MethodFinder.findAllAnnotatedTestMethodInClass(aClass)
@@ -72,6 +73,10 @@ public class TestNGFilter {
 
             return testNGClass2MethodMap;
         }
+
+        Variables.TESTING_TEST_GROUPS =
+                Arrays.stream(SEConfig.getString("testingTestGroups").split(","))
+                .map(String::trim).collect(Collectors.toList());
 
         testngClasses.stream().forEach(aClass -> {
             List<Method> methodList = Variables.TESTING_TEST_GROUPS

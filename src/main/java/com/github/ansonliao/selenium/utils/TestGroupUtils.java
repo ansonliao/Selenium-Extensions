@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.utils;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
@@ -7,13 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TestGroupUtils {
-    private static final Logger logger = LoggerFactory.getLogger(TestGroupUtils.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(TestGroupUtils.class);
 
     public static List<String> getClassTestGroups(Class<?> clazz) {
         if (!clazz.isAnnotationPresent(Test.class)) {
@@ -31,6 +34,11 @@ public class TestGroupUtils {
     }
 
     public static List<String> getMethodTestGroups(Method method) {
+        if (!Strings.isNullOrEmpty(SEConfig.getString("testingTestGroups"))) {
+            return Arrays.stream(SEConfig.getString("testingTestGroups").split(","))
+                    .map(String::trim).collect(Collectors.toList());
+        }
+
         Set<String> classTestGroups =
                 getClassTestGroups(method.getDeclaringClass())
                         .parallelStream().collect(Collectors.toSet());

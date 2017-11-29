@@ -1,6 +1,6 @@
 package com.github.ansonliao.selenium.internal;
 
-import com.github.ansonliao.selenium.factory.WebDriverManager;
+import com.github.ansonliao.selenium.factory.WDManager;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -12,7 +12,8 @@ import java.sql.Timestamp;
 public class ScreenshotManager {
 
     public String capture(Class<?> clazz, String imgPrefix, String browserName) {
-        File scrFile = ((TakesScreenshot) WebDriverManager.getDriver()).getScreenshotAs(OutputType.FILE);
+        File scrFile = ((TakesScreenshot) WDManager.getDriver())
+                .getScreenshotAs(OutputType.FILE);
 
         String destDir = Constants.SCREENSHOT_DIR
                 .concat(Constants.FILE_SEPARATOR)

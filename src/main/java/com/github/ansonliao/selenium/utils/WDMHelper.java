@@ -1,6 +1,5 @@
 package com.github.ansonliao.selenium.utils;
 
-import com.github.ansonliao.selenium.factory.InternetExplorerFactory;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.EdgeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
@@ -12,51 +11,113 @@ import org.slf4j.LoggerFactory;
 
 public class WDMHelper {
     private static final Logger logger = LoggerFactory.getLogger(WDMHelper.class);
+    private static boolean useTaobaoMirror;
 
-    public synchronized static void downloadWebDriverBinary(String browserName) {
+    static {
+        useTaobaoMirror = SEConfig.getBoolean("wd.useTaobaoMirror");
+    }
+
+    public static void downloadWebDriverBinary(String browserName) {
         String bn = browserName.toUpperCase();
-        String parameterKey;
 
         switch (bn) {
             case "CHROME":
-                ChromeDriverManager.getInstance().setup();
-                //parameterKey = ChromeFactory.getInstance().getExportParameterKey();
-                //WDMHelper.exportDriver(parameterKey, ChromeDriverManager.getInstance().getBinaryPath());
+                downloadWebDriver(Platform.CHROME, useTaobaoMirror);
                 break;
             case "FIREFOX":
-                FirefoxDriverManager.getInstance().setup();
-                //parameterKey = FirefoxFactory.getInstance().getExportParameterKey();
-                //WDMHelper.exportDriver(parameterKey, FirefoxDriverManager.getInstance().getBinaryPath());
+                downloadWebDriver(Platform.FIREFOX, useTaobaoMirror);
                 break;
             case "PHANTOMJS":
-                PhantomJsDriverManager.getInstance().setup();
-                //parameterKey = PhantomJsFactory.getInstance().getExportParameterKey();
-                //WDMHelper.exportDriver(parameterKey, PhantomJsDriverManager.getInstance().getBinaryPath());
+                downloadWebDriver(Platform.PHANTOMJS, useTaobaoMirror);
                 break;
             case "EDGE":
-                EdgeDriverManager.getInstance().setup();
-                //parameterKey = EdgeFactory.getInstance().getExportParameterKey();
-                //WDMHelper.exportDriver(parameterKey, PhantomJsDriverManager.getInstance().getBinaryPath());
+                downloadWebDriver(Platform.EDGE, useTaobaoMirror);
                 break;
             case "INTERNETEXPLORER":
-                InternetExplorerDriverManager.getInstance().setup();
-                parameterKey = InternetExplorerFactory.getInstance().getExportParameterKey();
-                //WDMHelper.exportDriver(parameterKey, InternetExplorerDriverManager.getInstance().getBinaryPath());
+                downloadWebDriver(Platform.IE, useTaobaoMirror);
                 break;
             case "OPERA":
-                OperaDriverManager.getInstance().setup();
-                //parameterKey = OperaFactory.getInstance().getExportParameterKey();
-                //WDMHelper.exportDriver(parameterKey, OperaDriverManager.getInstance().getBinaryPath());
+                downloadWebDriver(Platform.OPERA, useTaobaoMirror);
                 break;
             default:
-                ChromeDriverManager.getInstance().setup();
-                //parameterKey = ChromeFactory.getInstance().getExportParameterKey();
-                //WDMHelper.exportDriver(parameterKey, ChromeDriverManager.getInstance().getBinaryPath());
+                downloadWebDriver(Platform.CHROME, useTaobaoMirror);
         }
     }
 
     public static void exportDriver(String key, String value) {
         logger.info("Export {} = {}", key, value);
         System.setProperty(key, value);
+    }
+
+    private static void downloadWebDriver(Platform platform, boolean taobaoMirror) {
+        if (taobaoMirror) {
+            logger.info("Use TaoBao Mirror to download WebDriver binary");
+            downloadWDBinaryFromTB(platform);
+        } else {
+            downloadWDBinary(platform);
+        }
+    }
+
+    private static void downloadWDBinary(Platform platform) {
+        switch (platform) {
+            case CHROME:
+                ChromeDriverManager.getInstance().setup();
+                break;
+            case FIREFOX:
+                FirefoxDriverManager.getInstance().setup();
+                break;
+            case PHANTOMJS:
+                PhantomJsDriverManager.getInstance().setup();
+                break;
+            case EDGE:
+                EdgeDriverManager.getInstance().setup();
+                break;
+            case IE:
+                InternetExplorerDriverManager.getInstance().setup();
+                break;
+            case OPERA:
+                OperaDriverManager.getInstance().setup();
+                break;
+            default:
+                ChromeDriverManager.getInstance().setup();
+                break;
+        }
+    }
+
+    private static void downloadWDBinaryFromTB(Platform platform) {
+        switch (platform) {
+            case CHROME:
+                ChromeDriverManager.getInstance()
+                        .useTaobaoMirror().setup();
+                break;
+            case FIREFOX:
+                FirefoxDriverManager.getInstance()
+                        .useTaobaoMirror().setup();
+                break;
+            case PHANTOMJS:
+                PhantomJsDriverManager.getInstance()
+                        .useTaobaoMirror().setup();
+                break;
+            case EDGE:
+                EdgeDriverManager.getInstance()
+                        .useTaobaoMirror().setup();
+                break;
+            case IE:
+                InternetExplorerDriverManager.getInstance()
+                        .useTaobaoMirror().setup();
+                break;
+            case OPERA:
+                OperaDriverManager.getInstance()
+                        .useTaobaoMirror().setup();
+                break;
+            default:
+                ChromeDriverManager.getInstance()
+                        .useTaobaoMirror().setup();
+                break;
+        }
+    }
+
+    private enum Platform {
+        CHROME, FIREFOX, PHANTOMJS, EDGE, IE, OPERA
     }
 }

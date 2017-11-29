@@ -1,13 +1,10 @@
 package com.github.ansonliao.selenium.factory;
 
-import com.github.ansonliao.selenium.utils.SEConfig;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.util.Strings;
 
 public class ChromeFactory extends DriverManager {
     private static final Logger logger =
@@ -16,18 +13,6 @@ public class ChromeFactory extends DriverManager {
 
     private ChromeFactory() {
         super();
-//        if (!SEConfig.isKeyExisted(exportParameter)
-//                || Strings.isNullOrEmpty(SEConfig.getString(exportParameter))) {
-//            logger.info("ChromeDriver export parameter was not found, {}: {}",
-//                    getExportParameterKey(), exportParameter);
-//            ChromeDriverManager.getInstance().setup();
-//
-//            // sometimes the webdriver binary download completed,
-//            // but export parameter was not set,
-//            // set it in case
-//            exportDriver(getExportParameterKey(),
-//                    ChromeDriverManager.getInstance().getBinaryPath());
-//        }
     }
 
     public synchronized static ChromeFactory getInstance() {
