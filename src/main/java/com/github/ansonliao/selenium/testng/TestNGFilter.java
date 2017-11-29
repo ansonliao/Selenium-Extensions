@@ -11,6 +11,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.Test;
 import org.testng.collections.Lists;
 
 import java.lang.reflect.Method;
@@ -68,7 +69,8 @@ public class TestNGFilter {
         if (Strings.isNullOrEmpty(SEConfig.getString("testingTestGroups"))) {
             testngClasses.stream()
                     .forEach(aClass ->
-                            MethodFinder.findAllAnnotatedTestMethodInClass(aClass)
+                            MethodFinder.findAllAnnotatedTestMethodInClass(aClass).stream()
+                                    .filter(method -> method.getAnnotation(Test.class).enabled())
                                     .forEach(method -> testNGClass2MethodMap.put(aClass, method)));
 
             return testNGClass2MethodMap;
@@ -84,6 +86,7 @@ public class TestNGFilter {
                     .map(group -> MethodFinder.findTestNGMethodInClassByGroup(aClass, group))
                     .flatMap(Collection::stream)
                     .distinct()
+                    .filter(method -> method.getAnnotation(Test.class).enabled())
                     .collect(Collectors.toList());
             if (methodList.size() > 0) {
                 methodList.forEach(method -> testNGClass2MethodMap.put(aClass, method));

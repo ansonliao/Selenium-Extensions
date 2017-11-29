@@ -9,12 +9,18 @@ import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 public class WDMHelper {
     private static final Logger logger = LoggerFactory.getLogger(WDMHelper.class);
     private static boolean useTaobaoMirror;
+    private static final String TAOBAO_MIRROR_KEY = "wd.useTaobaoMirror";
 
     static {
-        useTaobaoMirror = SEConfig.getBoolean("wd.useTaobaoMirror");
+        useTaobaoMirror =
+                Optional.ofNullable(SEConfig.getBoolean(TAOBAO_MIRROR_KEY))
+                        .orElse(false);
     }
 
     public static void downloadWebDriverBinary(String browserName) {
@@ -51,7 +57,7 @@ public class WDMHelper {
 
     private static void downloadWebDriver(Platform platform, boolean taobaoMirror) {
         if (taobaoMirror) {
-            logger.info("Use TaoBao Mirror to download WebDriver binary");
+            logger.info("Use TaoBao Mirror to download WebDriver binary.");
             downloadWDBinaryFromTB(platform);
         } else {
             downloadWDBinary(platform);

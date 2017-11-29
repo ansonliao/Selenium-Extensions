@@ -100,6 +100,7 @@ public class ClassFinder {
                 .map(className -> createClass(className))
                 .filter(clazz ->
                         clazz.getSimpleName().toLowerCase().startsWith(TESTNG_TEST_CLASS_PREFIX))
+                .filter(clazz -> clazz.getAnnotation(Test.class).enabled())
                 .forEach(clazz -> classes.add(clazz));
 
         // find all testng test classes with method annotated @Test
@@ -108,6 +109,8 @@ public class ClassFinder {
                 .map(className -> createClass(className))
                 .filter(clazz ->
                         clazz.getSimpleName().toLowerCase().startsWith(TESTNG_TEST_CLASS_PREFIX))
+                .filter(clazz -> !clazz.isAnnotationPresent(Test.class)
+                        || clazz.getAnnotation(Test.class).enabled())
                 .forEach(clazz -> classes.add(clazz));
 
         if (packages == null || packages.length == 0) {
