@@ -11,9 +11,9 @@ public class MyFileUtils extends FileUtils {
             Class clazz, String browserName) {
         String className = clazz.getSimpleName();
         String packageName = clazz.getPackage().getName();
-        String destDir = Constants.SCREENSHOT_DIR + Constants.FILE_SEPARATOR
-                + packageName + Constants.FILE_SEPARATOR
-                + className + Constants.FILE_SEPARATOR + browserName;
+        String destDir = String.join(
+                Constants.FILE_SEPARATOR, Constants.SCREENSHOT_DIR,
+                packageName, className, browserName);
 
         if ((new File(destDir)).exists()) {
             return new File(destDir);
