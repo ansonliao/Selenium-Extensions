@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -38,7 +39,7 @@ public class FirefoxFactory extends DriverManager {
 
     @Override
     public String getExportParameterKey() {
-        return "webdriver.gecko.driver";
+        return SEFilterUtils.getFirefoxDriverExportKey();
     }
 
     @Override

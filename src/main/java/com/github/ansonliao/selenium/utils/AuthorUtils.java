@@ -20,10 +20,9 @@ import java.util.stream.Collectors;
 
 public class AuthorUtils {
     private static final Logger logger = LoggerFactory.getLogger(AuthorUtils.class);
-    private static JavaProjectBuilder javaProjectBuilder;
+    private static JavaProjectBuilder javaProjectBuilder = new JavaProjectBuilder();
 
     static {
-        javaProjectBuilder = new JavaProjectBuilder();
         javaProjectBuilder.addSourceTree(new File(
                 Constants.PROJECT_ROOT_DIR
                         .concat(Constants.FILE_SEPARATOR)
@@ -39,7 +38,7 @@ public class AuthorUtils {
 
         // get class authors
         getClassAuthors(clazz)
-                .ifPresent(authorList -> classAuthors.addAll(authorList));
+                .ifPresent(classAuthors::addAll);
 
         // get method authors
         javaProjectBuilder.getClassByName(className).getMethods().stream()

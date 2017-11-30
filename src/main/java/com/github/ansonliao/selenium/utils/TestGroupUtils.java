@@ -1,6 +1,5 @@
 package com.github.ansonliao.selenium.utils;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
@@ -8,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -34,9 +32,8 @@ public class TestGroupUtils {
     }
 
     public static List<String> getMethodTestGroups(Method method) {
-        if (!Strings.isNullOrEmpty(SEConfig.getString("testingTestGroups"))) {
-            return Arrays.stream(SEConfig.getString("testingTestGroups").split(","))
-                    .map(String::trim).collect(Collectors.toList());
+        if (!SEFilterUtils.testingTestGroups().isEmpty()) {
+            return SEFilterUtils.testingTestGroups();
         }
 
         Set<String> classTestGroups =

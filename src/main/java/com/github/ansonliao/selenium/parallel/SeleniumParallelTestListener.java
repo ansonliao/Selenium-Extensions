@@ -2,12 +2,11 @@ package com.github.ansonliao.selenium.parallel;
 
 import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.factory.DriverManagerFactory;
-import com.github.ansonliao.selenium.factory.WDManager;
 import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 import com.github.ansonliao.selenium.utils.AuthorUtils;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
-import com.github.ansonliao.selenium.utils.SEConfig;
+import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import com.github.ansonliao.selenium.utils.TestGroupUtils;
 import com.github.ansonliao.selenium.utils.WDMHelper;
 import com.google.common.base.Strings;
@@ -44,7 +43,7 @@ public class SeleniumParallelTestListener implements IClassListener,
                 iInvokedMethod.getTestMethod().getConstructorOrMethod().getMethod();
 
         List<String> groups = TestGroupUtils.getMethodTestGroups(method);
-        if (SEConfig.getBoolean("addBrowserGroupToReport")) {
+        if (SEFilterUtils.addBrowserGroupToReport()) {
             groups.add(browserName);
         }
 
