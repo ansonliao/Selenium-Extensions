@@ -31,7 +31,9 @@ public class SEConfig {
             }
 
         }
-        return value;
+        return value.contains("\"") || value.contains("'")
+                ? value.replace("\"", "").replace("'", "")
+                : value;
     }
 
     public static int getInt(String key) {

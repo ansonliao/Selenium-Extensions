@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -36,7 +37,7 @@ public class ChromeFactory extends DriverManager {
 
     @Override
     public String getExportParameterKey() {
-        return "webdriver.chrome.driver";
+        return SEFilterUtils.getChromeDriverExportKey();
     }
 
     @Override

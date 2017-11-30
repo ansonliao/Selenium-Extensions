@@ -6,13 +6,10 @@ import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.annotations.Description;
 import com.google.common.collect.Maps;
 import org.testng.Reporter;
-import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class ExtentTestManager {
     public static ThreadLocal<ExtentTest> extentTests = new ThreadLocal<>();

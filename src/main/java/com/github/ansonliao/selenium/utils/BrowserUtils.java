@@ -23,7 +23,8 @@ public class BrowserUtils {
                 .filter(className ->
                         className.startsWith(Constants.BROWSER_ANNOTATION_PACKAGE))
                 .map(ClassFinder::createClass)
-                .filter(aClass -> aClass.isAnnotation())
+                //.filter(aClass -> aClass.isAnnotation())
+                .filter(Class::isAnnotation)
                 .map(aClass -> aClass.getSimpleName().toUpperCase())
                 .filter(className ->
                         !className.startsWith(Constants.BROWSER_IGNORE_ANNOTATION_PREFIX))
@@ -37,7 +38,8 @@ public class BrowserUtils {
                 .filter(className ->
                         className.startsWith(Constants.BROWSER_ANNOTATION_PACKAGE))
                 .map(ClassFinder::createClass)
-                .filter(aClass -> aClass.isAnnotation())
+                //.filter(aClass -> aClass.isAnnotation())
+                .filter(Class::isAnnotation)
                 .map(aClass -> aClass.getSimpleName().toUpperCase())
                 .filter(className ->
                         className.startsWith(Constants.BROWSER_IGNORE_ANNOTATION_PREFIX))
@@ -82,7 +84,9 @@ public class BrowserUtils {
         enabledBrowsers = Sets.union(classSupportedBrowsers, enabledBrowsers);
         ignoredBrowsers = Sets.union(classIgnoredBrowsers, ignoredBrowsers);
 
-        return Sets.difference(enabledBrowsers, Sets.intersection(enabledBrowsers, ignoredBrowsers))
+        return Sets.difference(
+                enabledBrowsers,
+                Sets.intersection(enabledBrowsers, ignoredBrowsers))
                 .parallelStream().collect(Collectors.toSet());
     }
 

@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public class EdgeFactory extends DriverManager {
 
     @Override
     public String getExportParameterKey() {
-        return "webdriver.edge.driver";
+        return SEFilterUtils.getEdgeDriverExportKey();
     }
 
     @Override

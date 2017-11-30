@@ -1,7 +1,7 @@
 package com.github.ansonliao.selenium.testng;
 
 import com.github.ansonliao.selenium.internal.Constants;
-import com.github.ansonliao.selenium.internal.Variables;
+import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -20,13 +20,13 @@ public class XmlTestBuilder {
     public static List<XmlTest> build() {
         Set<XmlTest> xmlTestList = Sets.newHashSet();
         Multimap<String, XmlClass> browserXmlclassMap = XmlClassBuilder.build();
-        final int DEFAULT_TEST_CLASS_SIZE = Variables.DEFAULT_TEST_CLASS_SIZE_OF_TESTNG_XML;
+        final int DEFAULT_TEST_CLASS_SIZE = SEFilterUtils.defaultTestClassesSizeOfTestNGXML();
 
         browserXmlclassMap.keySet().forEach(browserName -> {
             List<XmlClass> xmlClassList = browserXmlclassMap.get(browserName)
                     .stream().distinct().collect(Collectors.toList());
             ArrayList<XmlClass> tempXmlClass = Lists.newArrayList(xmlClassList);
-            int xmlClassGroupSize = xmlClassList.size() / Variables.DEFAULT_TEST_CLASS_SIZE_OF_TESTNG_XML + 1;
+            int xmlClassGroupSize = xmlClassList.size() / SEFilterUtils.defaultTestClassesSizeOfTestNGXML() + 1;
             int counter = xmlClassGroupSize;
 
             int startIndex = 0;
