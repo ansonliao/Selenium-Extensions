@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.parallel;
 
+import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.factory.DriverManagerFactory;
 import com.github.ansonliao.selenium.internal.Constants;
@@ -9,7 +10,6 @@ import com.github.ansonliao.selenium.utils.MyFileUtils;
 import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import com.github.ansonliao.selenium.utils.TestGroupUtils;
 import com.github.ansonliao.selenium.utils.WDMHelper;
-import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.IClassListener;
@@ -19,6 +19,7 @@ import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestClass;
 import org.testng.ITestResult;
+import org.testng.util.Strings;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -94,8 +95,11 @@ public class SeleniumParallelTestListener implements IClassListener,
     }
 
     private void openRemoteURL(String url) {
-        if (!Strings.isNullOrEmpty(url)) {
+        if (Strings.isNotNullAndNotEmpty(url)) {
             getDriver().get(url);
+            ExtentTestManager.getExtentTest().log(
+                    Status.INFO,
+                    String.format("Open URL: %s", url));
         }
     }
 }
