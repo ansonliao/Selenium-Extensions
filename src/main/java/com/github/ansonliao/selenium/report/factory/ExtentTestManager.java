@@ -4,14 +4,20 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.annotations.Description;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Reporter;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ExtentTestManager {
+    private static final Logger sfl4jLogger = LoggerFactory.getLogger(ExtentTestManager.class);
     public static ThreadLocal<ExtentTest> extentTests = new ThreadLocal<>();
     public static ExtentReports extentReport = ExtentManager.getExtentReports();
     private static ExtentTest extentTest;
@@ -37,7 +43,7 @@ public class ExtentTestManager {
     }
 
     public synchronized static ExtentTest createTest(Method method, String browserName,
-                                                     List<String> authors, List<String> groups) {
+                                                     List<String> authors, List<String> groups, Object... parameters) {
         ExtentTest test;
         String description;
         Class clazz = method.getDeclaringClass();
@@ -65,7 +71,19 @@ public class ExtentTestManager {
             childTests.put(childNodeKey, test);
         }
 
-        test = childTests.get(childNodeKey).createNode(browserName);
+        String extTestNodeName = browserName;
+        if (parameters != null && parameters.length != 0) {
+            String paramStr = Lists.newArrayList(parameters).parallelStream()
+                    .map(param -> {
+                        return param instanceof String
+                                ? "\"".concat(param.toString()).concat("\"")
+                                : String.valueOf(param);
+                    }).collect(Collectors.joining(", "));
+            extTestNodeName = extTestNodeName.concat("(").concat(paramStr).concat(")");
+        }
+
+        sfl4jLogger.info("Create ExtentReport test node: {}", extTestNodeName);
+        test = childTests.get(childNodeKey).createNode(extTestNodeName);
         if (groups != null && groups.size() > 0) {
             for (String group : groups) {
                 test.assignCategory(group);

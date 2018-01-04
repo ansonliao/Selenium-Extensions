@@ -49,7 +49,8 @@ public class SeleniumParallelTestListener implements IClassListener,
         }
 
         ExtentTestManager.createTest(method, browserName,
-                AuthorUtils.getMethodAuthors(method), groups);
+                AuthorUtils.getMethodAuthors(method), groups,
+                iTestResult.getParameters());
 
         // open url if URL annotation had value
         Optional.ofNullable(method.getAnnotation(URL.class))
