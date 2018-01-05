@@ -57,7 +57,7 @@
     <dependency>
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
-      <version>LATEST</version>
+      <version>2.1.0</version>
     </dependency>
     <dependency>
       <groupId>io.github.lukehutch</groupId>

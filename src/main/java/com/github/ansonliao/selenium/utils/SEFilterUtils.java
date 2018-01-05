@@ -1,6 +1,7 @@
 package com.github.ansonliao.selenium.utils;
 
 import com.google.common.collect.Lists;
+import org.testng.annotations.Test;
 import org.testng.util.Strings;
 
 import java.util.Arrays;
@@ -125,8 +126,6 @@ public class SEFilterUtils {
 
     public static boolean useTaobaoMirror() {
         final String KEY = "wd.useTaobaoMirror";
-        return Optional.ofNullable(SEConfig.getBoolean(KEY))
-                .orElse(false);
+        return SEConfig.getBoolean(KEY);
     }
-
 }

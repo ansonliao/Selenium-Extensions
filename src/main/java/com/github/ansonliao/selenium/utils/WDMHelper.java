@@ -84,31 +84,31 @@ public class WDMHelper {
         switch (platform) {
             case CHROME:
                 ChromeDriverManager.getInstance()
-                        .useTaobaoMirror().setup();
+                        .useMirror().setup();
                 break;
             case FIREFOX:
                 FirefoxDriverManager.getInstance()
-                        .useTaobaoMirror().setup();
+                        .useMirror().setup();
                 break;
             case PHANTOMJS:
                 PhantomJsDriverManager.getInstance()
-                        .useTaobaoMirror().setup();
+                        .useMirror().setup();
                 break;
             case EDGE:
                 EdgeDriverManager.getInstance()
-                        .useTaobaoMirror().setup();
+                        .useMirror().setup();
                 break;
             case IE:
                 InternetExplorerDriverManager.getInstance()
-                        .useTaobaoMirror().setup();
+                        .useMirror().setup();
                 break;
             case OPERA:
                 OperaDriverManager.getInstance()
-                        .useTaobaoMirror().setup();
+                        .useMirror().setup();
                 break;
             default:
                 ChromeDriverManager.getInstance()
-                        .useTaobaoMirror().setup();
+                        .useMirror().setup();
                 break;
         }
     }

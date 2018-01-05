@@ -5,6 +5,7 @@ import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.util.Strings;
 
 public class SEConfig {
     private static final Logger logger =
@@ -41,7 +42,10 @@ public class SEConfig {
     }
 
     public static boolean getBoolean(String key) {
-        return SEConfig.getInstance().config.getBoolean(key);
+        String value = SEConfig.getInstance().config.getString(key);
+        return Strings.isNotNullAndNotEmpty(value)
+                ? Boolean.valueOf(value)
+                : false;
     }
 
     public static boolean isKeyExisted(String key) {
