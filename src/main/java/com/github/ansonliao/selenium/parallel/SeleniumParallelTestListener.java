@@ -1,7 +1,10 @@
 package com.github.ansonliao.selenium.parallel;
 
 import com.aventstack.extentreports.Status;
+import com.github.ansonliao.selenium.annotations.Headless;
+import com.github.ansonliao.selenium.annotations.Incognito;
 import com.github.ansonliao.selenium.annotations.URL;
+import com.github.ansonliao.selenium.factory.DriverManager;
 import com.github.ansonliao.selenium.factory.DriverManagerFactory;
 import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
@@ -38,10 +41,14 @@ public class SeleniumParallelTestListener implements IClassListener,
     public void beforeInvocation(IInvokedMethod iInvokedMethod, ITestResult iTestResult) {
         String browserName = iInvokedMethod.getTestMethod().getXmlTest()
                 .getParameter(Constants.TESTNG_XML_BROWSER_PARAMETER_KEY);
-        setDriver(DriverManagerFactory.getManager(browserName).getDriver());
 
         Method method =
                 iInvokedMethod.getTestMethod().getConstructorOrMethod().getMethod();
+        DriverManager driverManager =
+            DriverManagerFactory.getManager(browserName);
+        driverManager.setHeadless(method.isAnnotationPresent(Headless.class));
+        driverManager.setIncognito(method.isAnnotationPresent(Incognito.class));
+        setDriver(driverManager.getDriver());
 
         List<String> groups = TestGroupUtils.getMethodTestGroups(method);
         if (SEFilterUtils.addBrowserGroupToReport()) {
