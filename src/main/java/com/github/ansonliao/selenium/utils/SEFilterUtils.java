@@ -20,7 +20,7 @@ public class SEFilterUtils {
         final String KEY = "runByBrowsers";
         return Strings.isNotNullAndNotEmpty(SEConfig.getString(KEY))
                 ? Arrays.asList(SEConfig.getString(KEY).split(","))
-                .parallelStream().map(String::trim).distinct()
+                .parallelStream().map(String::trim).map(String::toUpperCase).distinct()
                 .collect(Collectors.toList())
                 : Lists.newLinkedList();
     }

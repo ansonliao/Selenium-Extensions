@@ -115,7 +115,7 @@ public class TestNGFilter {
             // only fetch support browsers
             List<String> browsers =
                     Sets.intersection(
-                            SEFilterUtils.runByBrowsers().stream().collect(Collectors.toSet()),
+                            SEFilterUtils.runByBrowsers().parallelStream().collect(Collectors.toSet()),
                             Sets.newHashSet(BrowserUtils.getSupportedBrowsers()))
                     .parallelStream().collect(Collectors.toList());
 
