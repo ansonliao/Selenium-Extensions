@@ -42,7 +42,7 @@ public class TestNGFilter {
     // filter testng classes by given testng class list
     public static List<Class<?>> filterClassesByTestingClassList() {
         if (!SEFilterUtils.testingTestNGClasses().isEmpty()) {
-            return testngClasses.parallelStream()
+            testngClasses = testngClasses.parallelStream()
                     .filter(aClass ->
                             SEFilterUtils.testingTestNGClasses()
                                     .parallelStream()
@@ -51,8 +51,8 @@ public class TestNGFilter {
                                     .contains(aClass.getCanonicalName().toUpperCase()))
                     .distinct()
                     .collect(Collectors.toList());
+            return testngClasses;
         }
-
         return testngClasses;
     }
 
