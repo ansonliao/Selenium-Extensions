@@ -51,10 +51,8 @@ public class TestNGFilter {
                                     .contains(aClass.getCanonicalName().toUpperCase()))
                     .distinct()
                     .collect(Collectors.toList());
-            testngClasses.forEach(aClass -> System.out.println("filterClassesByTestingClassList: " + aClass.getName()));
             return testngClasses;
         }
-        testngClasses.forEach(aClass -> System.out.println("filterClassesByTestingClassList: " + aClass.getName()));
         return testngClasses;
     }
 
@@ -63,7 +61,6 @@ public class TestNGFilter {
      * @return A map that key = testng class, value = list of testng method of the testng class
      */
     public static Multimap<Class<?>, Method> filterTestNGMethodByTestGroups() {
-        testNGClass2MethodMap = HashMultimap.create();
         if (SEFilterUtils.testingTestGroups().isEmpty()) {
             testngClasses.stream()
                     .forEach(aClass ->
@@ -93,14 +90,14 @@ public class TestNGFilter {
     // filter testng method by given test browser list
     public static Multimap<Class<?>, Method> filterTestNGMethodByBrowsers() {
         if (!SEFilterUtils.testingBrowserNames().isEmpty()) {
+            logger.info("Detected testing browser filter to: {}", SEFilterUtils.testingBrowserNames());
+            Set<String> browserFilters = SEFilterUtils.testingBrowserNames()
+                    .parallelStream().map(String::toUpperCase).collect(Collectors.toSet());
             Multimap<Class<?>, Method> resultMap = HashMultimap.create(testNGClass2MethodMap);
             testNGClass2MethodMap.keySet().stream().forEach(aClass ->
                     testNGClass2MethodMap.get(aClass).stream().forEach(method -> {
-                        Sets.SetView result = Sets.intersection(
-                                BrowserUtils.getMethodSupportedBrowsers(method),
-                                SEFilterUtils.testingBrowserNames()
-                                        .parallelStream().map(String::toUpperCase)
-                                        .collect(Collectors.toSet()));
+                        Sets.SetView result =
+                                Sets.intersection(BrowserUtils.getMethodSupportedBrowsers(method), browserFilters);
                         if (result.size() == 0) {
                             if (testNGClass2MethodMap.get(aClass).contains(method)) {
                                 resultMap.get(aClass).remove(method);
