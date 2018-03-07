@@ -51,8 +51,10 @@ public class TestNGFilter {
                                     .contains(aClass.getCanonicalName().toUpperCase()))
                     .distinct()
                     .collect(Collectors.toList());
+            testngClasses.forEach(aClass -> System.out.println("filterClassesByTestingClassList: " + aClass.getName()));
             return testngClasses;
         }
+        testngClasses.forEach(aClass -> System.out.println("filterClassesByTestingClassList: " + aClass.getName()));
         return testngClasses;
     }
 
@@ -91,19 +93,24 @@ public class TestNGFilter {
     // filter testng method by given test browser list
     public static Multimap<Class<?>, Method> filterTestNGMethodByBrowsers() {
         if (!SEFilterUtils.testingBrowserNames().isEmpty()) {
-            testNGClass2MethodMap.keySet().parallelStream().forEach(aClass ->
+            Multimap<Class<?>, Method> resultMap = HashMultimap.create(testNGClass2MethodMap);
+            testNGClass2MethodMap.keySet().stream().forEach(aClass ->
                     testNGClass2MethodMap.get(aClass).stream().forEach(method -> {
                         Sets.SetView result = Sets.intersection(
                                 BrowserUtils.getMethodSupportedBrowsers(method),
-                                Sets.newHashSet(SEFilterUtils.testingBrowserNames()));
+                                SEFilterUtils.testingBrowserNames()
+                                        .parallelStream().map(String::toUpperCase)
+                                        .collect(Collectors.toSet()));
                         if (result.size() == 0) {
                             if (testNGClass2MethodMap.get(aClass).contains(method)) {
-                                testNGClass2MethodMap.get(aClass).remove(method);
+                                resultMap.get(aClass).remove(method);
                             }
                         }
                     }));
+            testNGClass2MethodMap.clear();
+            testNGClass2MethodMap = HashMultimap.create(resultMap);
+            return resultMap;
         }
-
         return testNGClass2MethodMap;
     }
 
