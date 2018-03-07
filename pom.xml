@@ -4,7 +4,7 @@
 
   <groupId>com.github.ansonliao</groupId>
   <artifactId>Selenium-Extensions</artifactId>
-  <version>2.3.4-BETA</version>
+  <version>2.3.4</version>
   <packaging>jar</packaging>
 
   <name>Selenium-Extensions</name>
@@ -31,9 +31,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <testng.version>6.10</testng.version>
-
     <slf4j.api.version>1.7.24</slf4j.api.version>
-
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <slf4j.simple.version>1.7.24</slf4j.simple.version>
