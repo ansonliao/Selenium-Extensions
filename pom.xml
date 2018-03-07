@@ -4,7 +4,7 @@
 
   <groupId>com.github.ansonliao</groupId>
   <artifactId>Selenium-Extensions</artifactId>
-  <version>2.3.3</version>
+  <version>2.3.4-BETA</version>
   <packaging>jar</packaging>
 
   <name>Selenium-Extensions</name>
@@ -28,57 +28,80 @@
     </developer>
   </developers>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <testng.version>6.10</testng.version>
+
+    <slf4j.api.version>1.7.24</slf4j.api.version>
+
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <slf4j.simple.version>1.7.24</slf4j.simple.version>
+    <selenium.java.version>3.5.3</selenium.java.version>
+    <lalyos.jfiglet.version>0.0.8</lalyos.jfiglet.version>
+    <typesafe.config.version>1.3.2</typesafe.config.version>
+    <maven.jxr.plugin.version>2.3</maven.jxr.plugin.version>
+    <webdrivermanager.version>2.1.0</webdrivermanager.version>
+    <thoughtworks.qdox.version>2.0-M7</thoughtworks.qdox.version>
+    <puppycrawl.checkstyle.version>6.1.1</puppycrawl.checkstyle.version>
+    <maven.compiler.plugin.version>3.6.0</maven.compiler.plugin.version>
+    <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
+    <fast.classpath.scanner.version>2.4.7</fast.classpath.scanner.version>
+    <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
+    <aventstack.extentreports.version>3.1.3</aventstack.extentreports.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>3.5.3</version>
+      <version>${selenium.java.version}</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.10</version>
+      <version>${testng.version}</version>
     </dependency>
     <dependency>
       <groupId>com.aventstack</groupId>
       <artifactId>extentreports</artifactId>
-      <version>LATEST</version>
+      <version>${aventstack.extentreports.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.24</version>
+      <version>${slf4j.api.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.24</version>
+      <version>${slf4j.simple.version}</version>
     </dependency>
     <dependency>
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
-      <version>2.1.0</version>
+      <version>${webdrivermanager.version}</version>
     </dependency>
     <dependency>
       <groupId>io.github.lukehutch</groupId>
       <artifactId>fast-classpath-scanner</artifactId>
-      <version>2.4.7</version>
+      <version>${fast.classpath.scanner.version}</version>
     </dependency>
     <dependency>
       <groupId>com.thoughtworks.qdox</groupId>
       <artifactId>qdox</artifactId>
-      <version>2.0-M7</version>
+      <version>${thoughtworks.qdox.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.github.lalyos</groupId>
       <artifactId>jfiglet</artifactId>
-      <version>0.0.8</version>
+      <version>${lalyos.jfiglet.version}</version>
     </dependency>
     <dependency>
       <groupId>com.typesafe</groupId>
       <artifactId>config</artifactId>
-      <version>1.3.2</version>
+      <version>${typesafe.config.version}</version>
     </dependency>
   </dependencies>
 
@@ -87,10 +110,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>${maven.compiler.plugin.version}</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>${maven.compiler.target}</source>
+          <target>${maven.compiler.source}</target>
         </configuration>
       </plugin>
     </plugins>
@@ -103,22 +126,22 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.19.1</version>
+            <version>${maven.surefire.plugin.version}</version>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>2.17</version>
+            <version>${maven.checkstyle.plugin.version}</version>
             <dependencies>
               <dependency>
                 <groupId>com.puppycrawl.tools</groupId>
                 <artifactId>checkstyle</artifactId>
-                <version>6.1.1</version>
+                <version>${puppycrawl.checkstyle.version}</version>
               </dependency>
             </dependencies>
             <configuration>
               <configLocation>${basedir}/google-style.xml</configLocation>
-              <encoding>UTF-8</encoding>
+              <encoding>${project.build.sourceEncoding}</encoding>
               <linkXRef>true</linkXRef>
               <consoleOutput>true</consoleOutput>
               <failsOnError>true</failsOnError>
@@ -144,10 +167,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.17</version>
+        <version>${maven.checkstyle.plugin.version}</version>
         <configuration>
           <configLocation>${basedir}/google-style.xml</configLocation>
-          <encoding>UTF-8</encoding>
+          <encoding>${project.build.sourceEncoding}</encoding>
           <linkXRef>false</linkXRef>
           <consoleOutput>true</consoleOutput>
           <failsOnError>true</failsOnError>
@@ -164,7 +187,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.3</version>
+        <version>${maven.jxr.plugin.version}</version>
         <configuration>
           <aggregate>true</aggregate>
         </configuration>
