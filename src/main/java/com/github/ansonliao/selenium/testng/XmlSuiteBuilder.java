@@ -19,7 +19,7 @@ public class XmlSuiteBuilder {
         xmlSuite.setVerbose(2);
 
         // listeners
-        List<String> listeners = TestNGListenerUtils.getDefaultTestNGListners();
+        List<String> listeners = TestNGListenerUtils.getTestNGListeners();
         if (listeners.size() != 0) {
             logger.info("TestNG Listeners found: {}", listeners);
             listeners.forEach(xmlSuite::addListener);
