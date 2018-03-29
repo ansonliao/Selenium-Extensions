@@ -4,7 +4,6 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.annotations.Description;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
@@ -14,7 +13,8 @@ import org.testng.Reporter;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
 
 public class ExtentTestManager {
     private static final Logger sfl4jLogger = LoggerFactory.getLogger(ExtentTestManager.class);
@@ -71,19 +71,19 @@ public class ExtentTestManager {
             childTests.put(childNodeKey, test);
         }
 
-        String extTestNodeName = browserName;
+        String extTestNodeName = "";
         if (parameters != null && parameters.length != 0) {
             String paramStr = Lists.newArrayList(parameters).parallelStream()
-                    .map(param -> {
-                        return param instanceof String
-                                ? "\"".concat(param.toString()).concat("\"")
-                                : String.valueOf(param);
-                    }).collect(Collectors.joining(", "));
-            extTestNodeName = extTestNodeName.concat("(").concat(paramStr).concat(")");
+                    .map(param ->
+                            param instanceof String
+                                    ? "\"".concat(param.toString()).concat("\"")
+                                    : String.valueOf(param))
+                    .collect(joining(", "));
+            extTestNodeName = extTestNodeName.concat("Parames: ").concat(paramStr);
         }
 
         sfl4jLogger.info("Create ExtentReport test node: {}", extTestNodeName);
-        test = childTests.get(childNodeKey).createNode(extTestNodeName);
+        test = childTests.get(childNodeKey).createNode(browserName, extTestNodeName);
         if (groups != null && groups.size() > 0) {
             for (String group : groups) {
                 test.assignCategory(group);
