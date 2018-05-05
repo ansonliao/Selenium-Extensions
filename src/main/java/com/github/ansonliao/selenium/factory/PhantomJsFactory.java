@@ -7,9 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PhantomJsFactory extends DriverManager {
-
     private static final Logger logger =
-        LoggerFactory.getLogger(PhantomJsFactory.class);
+            LoggerFactory.getLogger(PhantomJsFactory.class);
     private static PhantomJsFactory instance = new PhantomJsFactory();
 
     private PhantomJsFactory() {
@@ -24,11 +23,6 @@ public class PhantomJsFactory extends DriverManager {
     public WebDriver getDriver() {
         driver = new PhantomJSDriver();
         return driver;
-    }
-
-    @Override
-    protected WebDriver buildRemoteWebDriver() {
-        return null;
     }
 
     @Override

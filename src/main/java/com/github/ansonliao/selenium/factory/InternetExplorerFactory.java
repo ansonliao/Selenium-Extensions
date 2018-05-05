@@ -26,11 +26,6 @@ public class InternetExplorerFactory extends DriverManager {
     }
 
     @Override
-    protected WebDriver buildRemoteWebDriver() {
-        return null;
-    }
-
-    @Override
     public String getExportParameterKey() {
         return SEFilterUtils.getIEDriverExportKey();
     }
