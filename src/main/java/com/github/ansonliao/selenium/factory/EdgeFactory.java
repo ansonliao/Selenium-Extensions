@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EdgeFactory extends DriverManager {
+
     private static final Logger logger =
             LoggerFactory.getLogger(EdgeFactory.class);
     private static EdgeFactory instance = new EdgeFactory();
@@ -23,6 +24,11 @@ public class EdgeFactory extends DriverManager {
     public WebDriver getDriver() {
         driver = new EdgeDriver();
         return driver;
+    }
+
+    @Override
+    protected WebDriver buildRemoteWebDriver() {
+        return null;
     }
 
     @Override
