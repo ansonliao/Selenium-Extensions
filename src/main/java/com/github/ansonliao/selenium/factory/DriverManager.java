@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.utils.SEConfig;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,7 +12,7 @@ public abstract class DriverManager {
     protected boolean isHeadless = false;
     protected boolean isIncognito = false;
     protected static final String SELENIUM_HUB_URL =
-            SEConfig.getString("SELENIUM_HUB_URL");
+            SEConfig.getString(Constants.SELENIUM_HUB_URL);
     public WebDriver driver;
     public String exportParameter = getExportParameterKey();
     public Logger logger = getLogger();
