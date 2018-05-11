@@ -86,7 +86,7 @@ public class SeleniumParallelTestListener implements IClassListener,
             logger.info("Completed WebDriver binary download: {}", browserList);
             return;
         }
-        logger.info("Selenium Hub found: ({}), WebDriver binaries will not be downloaded.", SELENIUM_HUB_URL);
+        logger.info("Selenium Hub found: [{}], WebDriver binaries will not be downloaded.", SELENIUM_HUB_URL);
     }
 
     @Override

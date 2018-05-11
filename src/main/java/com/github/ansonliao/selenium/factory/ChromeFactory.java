@@ -40,6 +40,7 @@ public class ChromeFactory extends DriverManager {
             options.addArguments("--incognito");
         }
         options.addArguments("--disable-gpu");
+        options.addArguments("--start-maximized");
 
         driver = Strings.isNullOrEmpty(SELENIUM_HUB_URL)
                 ? new ChromeDriver(options)
@@ -56,6 +57,7 @@ public class ChromeFactory extends DriverManager {
         capabilities.setCapability("tz", getTimezone());
         RemoteWebDriver remoteWebDriver = null;
         try {
+            logger.info("Create RemoteWebDriver instance with Selenium Hub URL: {}", SELENIUM_HUB_URL);
             remoteWebDriver = new RemoteWebDriver(new URL(SELENIUM_HUB_URL), capabilities);
         } catch (MalformedURLException e) {
             logger.error("Malformed URL found: {}", SELENIUM_HUB_URL);

@@ -2,17 +2,19 @@ package com.github.ansonliao.selenium.factory;
 
 import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.utils.SEConfig;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
+import org.testng.util.Strings;
 
 public abstract class DriverManager {
 
     protected boolean isHeadless = false;
     protected boolean isIncognito = false;
-    protected static final String SELENIUM_HUB_URL =
-            SEConfig.getString(Constants.SELENIUM_HUB_URL);
+    protected static final String SELENIUM_HUB_URL = retrieveSeleniumHubUrl();
     public WebDriver driver;
     public String exportParameter = getExportParameterKey();
     public Logger logger = getLogger();
@@ -37,6 +39,18 @@ public abstract class DriverManager {
 
     public void setIncognito(boolean isIncognito) {
         this.isIncognito = isIncognito;
+    }
+
+    public static String retrieveSeleniumHubUrl() {
+        String url = SEConfig.getString(Constants.SELENIUM_HUB_URL);
+        if (Strings.isNullOrEmpty(url)) {
+            return "";
+        }
+
+        if (!url.endsWith("wd/hub")) {
+            return url.endsWith("/") ? url + "wd/hub" : url + "/wd/hub";
+        }
+        return url;
     }
 
     public void exportDriver(String key, String value) {

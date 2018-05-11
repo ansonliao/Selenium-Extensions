@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Reporter;
+import org.testng.util.Strings;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -80,9 +81,12 @@ public class ExtentTestManager {
                                     : String.valueOf(param))
                     .collect(joining(", "));
             extTestNodeName = extTestNodeName.concat("Parames: ").concat(paramStr);
+            sfl4jLogger.info("Create ExtentReport test node: {}", extTestNodeName);
         }
 
-        sfl4jLogger.info("Create ExtentReport test node: {}", extTestNodeName);
+        sfl4jLogger.info("Create ExtentReport test node: {}.{} - {}, description: {}",
+                className, method.getName(),
+                browserName, Strings.isNullOrEmpty(extTestNodeName) ? "N/A" : extTestNodeName);
         test = childTests.get(childNodeKey).createNode(browserName, extTestNodeName);
         if (groups != null && groups.size() > 0) {
             for (String group : groups) {
