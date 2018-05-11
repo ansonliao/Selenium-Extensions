@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InternetExplorerFactory extends DriverManager {
+
     private static final Logger logger =
             LoggerFactory.getLogger(InternetExplorerFactory.class);
     private static InternetExplorerFactory instance = new InternetExplorerFactory();
@@ -23,6 +24,11 @@ public class InternetExplorerFactory extends DriverManager {
     public WebDriver getDriver() {
         driver = new InternetExplorerDriver();
         return driver;
+    }
+
+    @Override
+    protected WebDriver buildRemoteWebDriver() {
+        return null;
     }
 
     @Override

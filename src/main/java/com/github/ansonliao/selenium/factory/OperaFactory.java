@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OperaFactory extends DriverManager {
+
     private static final Logger logger =
             LoggerFactory.getLogger(OperaFactory.class);
     private static OperaFactory instance = new OperaFactory();
@@ -23,6 +24,11 @@ public class OperaFactory extends DriverManager {
     public WebDriver getDriver() {
         driver = new OperaDriver();
         return driver;
+    }
+
+    @Override
+    protected WebDriver buildRemoteWebDriver() {
+        return null;
     }
 
     @Override

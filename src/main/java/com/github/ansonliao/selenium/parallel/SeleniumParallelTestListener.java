@@ -10,6 +10,7 @@ import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 import com.github.ansonliao.selenium.utils.AuthorUtils;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
+import com.github.ansonliao.selenium.utils.SEConfig;
 import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import com.github.ansonliao.selenium.utils.TestGroupUtils;
 import com.github.ansonliao.selenium.utils.WDMHelper;
@@ -45,7 +46,7 @@ public class SeleniumParallelTestListener implements IClassListener,
         Method method =
                 iInvokedMethod.getTestMethod().getConstructorOrMethod().getMethod();
         DriverManager driverManager =
-            DriverManagerFactory.getManager(browserName);
+                DriverManagerFactory.getManager(browserName);
         driverManager.setHeadless(method.isAnnotationPresent(Headless.class));
         driverManager.setIncognito(method.isAnnotationPresent(Incognito.class));
         setDriver(driverManager.getDriver());
@@ -76,11 +77,16 @@ public class SeleniumParallelTestListener implements IClassListener,
          * upgrade WebDriver binary to Async with multi-threads once WDM support
          * multi-thread download
          */
-        List<String> browserList = iSuite.getXmlSuite().getTests().stream()
-                .map(xmlTest -> xmlTest.getParameter(Constants.TESTNG_XML_BROWSER_PARAMETER_KEY))
-                .distinct().collect(Collectors.toList());
-        browserList.forEach(WDMHelper::downloadWebDriverBinary);
-        logger.info("Completed WebDriver binary download: {}", browserList);
+        final String SELENIUM_HUB_URL = SEConfig.getString(Constants.SELENIUM_HUB_URL);
+        if (Strings.isNullOrEmpty(SELENIUM_HUB_URL)) {
+            List<String> browserList = iSuite.getXmlSuite().getTests().stream()
+                    .map(xmlTest -> xmlTest.getParameter(Constants.TESTNG_XML_BROWSER_PARAMETER_KEY))
+                    .distinct().collect(Collectors.toList());
+            browserList.forEach(WDMHelper::downloadWebDriverBinary);
+            logger.info("Completed WebDriver binary download: {}", browserList);
+            return;
+        }
+        logger.info("Selenium Hub found: [{}], WebDriver binaries will not be downloaded.", SELENIUM_HUB_URL);
     }
 
     @Override
@@ -92,9 +98,7 @@ public class SeleniumParallelTestListener implements IClassListener,
     public void onBeforeClass(ITestClass iTestClass) {
         String browserName =
                 iTestClass.getXmlTest().getParameter(Constants.TESTNG_XML_BROWSER_PARAMETER_KEY);
-        MyFileUtils.createScreenshotFolderForBrowser(
-                iTestClass.getRealClass(),
-                browserName);
+        MyFileUtils.createScreenshotFolderForBrowser(iTestClass.getRealClass(), browserName);
     }
 
     @Override

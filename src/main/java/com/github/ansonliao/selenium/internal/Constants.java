@@ -25,4 +25,6 @@ public class Constants {
 
     public static final String TESTNG_XML_BROWSER_PARAMETER_KEY = "browser";
 
+    public static final String SELENIUM_HUB_URL = "SELENIUM_HUB_URL";
+
 }
