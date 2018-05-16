@@ -34,10 +34,4 @@ public class TestNGListenerUtils {
         }
     }
 
-    @Test
-    public void f1() {
-        getDefaultTestNGListners().forEach(System.out::println);
-        getTestNGListeners().forEach(System.out::println);
-    }
-
 }
