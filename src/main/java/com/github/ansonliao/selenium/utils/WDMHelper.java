@@ -9,9 +9,11 @@ import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+
 public class WDMHelper {
     private static final Logger logger = LoggerFactory.getLogger(WDMHelper.class);
-    private static boolean useTaobaoMirror = SEFilterUtils.useTaobaoMirror();
+    private static boolean useTaobaoMirror = getConfigInstance().useTaobaoMirror();
 
     public static void downloadWebDriverBinary(String browserName) {
         String bn = browserName.toUpperCase();
