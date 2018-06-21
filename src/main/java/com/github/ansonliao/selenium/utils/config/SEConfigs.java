@@ -106,9 +106,4 @@ public class SEConfigs {
         return config;
     }
 
-    public static void main(String[] args) {
-        // System.setProperty("runByBrowsers", "Chrome, Firefox, Edge");
-        System.out.println(getConfigInstance().runByBrowsers());
-    }
-
 }
