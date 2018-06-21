@@ -50,7 +50,7 @@ public class XmlSuiteBuilder {
             return suite;
         }
 
-        List<String> defaultListeners = TestNGListenerUtils.getDefaultTestNGListners();
+        List<String> defaultListeners = TestNGListenerUtils.getDefaultTestNGListeners();
         logger.info("No TestNG Listener found, add default listeners: {}", defaultListeners);
         defaultListeners.forEach(suite::addListener);
         return suite;
