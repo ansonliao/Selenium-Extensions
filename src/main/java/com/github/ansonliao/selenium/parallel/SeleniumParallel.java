@@ -6,7 +6,6 @@ import com.github.ansonliao.selenium.annotations.Headless;
 import com.github.ansonliao.selenium.annotations.Incognito;
 import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.factory.DriverManager;
-import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
 import com.thoughtworks.qdox.JavaProjectBuilder;
@@ -35,6 +34,13 @@ public class SeleniumParallel {
             LoggerFactory.getLogger(SeleniumParallel.class);
     protected static JavaProjectBuilder javaProjectBuilder =
             new JavaProjectBuilder();
+    private static final String FILE_SEPARATOR = File.separator;
+    private static final String PROJECT_ROOT_DIR = System.getProperty("user.dir");
+    private static final String SCREENSHOT_DIR = PROJECT_ROOT_DIR
+            .concat(FILE_SEPARATOR)
+            .concat("target")
+            .concat(FILE_SEPARATOR)
+            .concat("screenshots");
 
     private WebDriver driver;
     protected DriverManager driverManager;
@@ -85,32 +91,32 @@ public class SeleniumParallel {
     protected String takeScreenShot(String imgPrefix) throws IOException {
         File scrFile = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
 
-        String destDir = Constants.SCREENSHOT_DIR
-                .concat(Constants.FILE_SEPARATOR)
+        String destDir = SCREENSHOT_DIR
+                .concat(FILE_SEPARATOR)
                 .concat(this.getClass().getPackage().getName())
-                .concat(Constants.FILE_SEPARATOR)
+                .concat(FILE_SEPARATOR)
                 .concat(this.getClass().getSimpleName())
-                .concat(Constants.FILE_SEPARATOR)
+                .concat(FILE_SEPARATOR)
                 .concat(this.browserName)
-                .concat(Constants.FILE_SEPARATOR)
+                .concat(FILE_SEPARATOR)
                 .concat(imgPrefix)
                 .concat("_")
                 .concat(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))
                 .concat(".jpeg");
         MyFileUtils.copyFile(scrFile, new File(destDir));
         return destDir.replace(
-                Constants.PROJECT_ROOT_DIR
-                        .concat(Constants.FILE_SEPARATOR)
+                PROJECT_ROOT_DIR
+                        .concat(FILE_SEPARATOR)
                         .concat("target")
-                        .concat(Constants.FILE_SEPARATOR), "");
+                        .concat(FILE_SEPARATOR), "");
     }
 
     public List<String> getAuthors(String className, Method method) {
         logger.info("Get authors of Class = " + className);
 
         javaProjectBuilder.addSourceTree(new File(
-                Constants.PROJECT_ROOT_DIR
-                        .concat(Constants.FILE_SEPARATOR)
+                PROJECT_ROOT_DIR
+                        .concat(FILE_SEPARATOR)
                         .concat("src")));
         JavaClass cls = javaProjectBuilder.getClassByName(className);
         List<DocletTag> authors = cls.getTags().stream()

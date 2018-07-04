@@ -1,7 +1,6 @@
 package com.github.ansonliao.selenium.utils;
 
 import com.github.ansonliao.selenium.annotations.Author;
-import com.github.ansonliao.selenium.internal.Constants;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.thoughtworks.qdox.JavaProjectBuilder;
@@ -21,12 +20,12 @@ import java.util.stream.Collectors;
 public class AuthorUtils {
     private static final Logger logger = LoggerFactory.getLogger(AuthorUtils.class);
     private static JavaProjectBuilder javaProjectBuilder = new JavaProjectBuilder();
+    private static final String PROJECT_ROOT_DIR = System.getProperty("user.dir");
+    private static final String FILE_SEPARATOR = File.separator;
 
     static {
         javaProjectBuilder.addSourceTree(new File(
-                Constants.PROJECT_ROOT_DIR
-                        .concat(Constants.FILE_SEPARATOR)
-                        .concat("src")));
+                PROJECT_ROOT_DIR.concat(FILE_SEPARATOR).concat("src")));
     }
 
     public synchronized static List<String> getMethodAuthors(Method method) {

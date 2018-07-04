@@ -4,17 +4,18 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.ChartLocation;
 import com.aventstack.extentreports.reporter.configuration.Theme;
-import com.github.ansonliao.selenium.internal.Constants;
 
 import java.io.File;
 import java.net.URL;
 
 public class ExtentManager {
+    private static final String PROJECT_ROOT_DIR = System.getProperty("user.dir");
+    private static final String FILE_SEPARATOR = File.separator;
     private static ExtentReports extentReports;
-    private static String filePath = Constants.PROJECT_ROOT_DIR
-            .concat(Constants.FILE_SEPARATOR)
+    private static String filePath = PROJECT_ROOT_DIR
+            .concat(FILE_SEPARATOR)
             .concat("target")
-            .concat(Constants.FILE_SEPARATOR)
+            .concat(FILE_SEPARATOR)
             .concat("ExtentReports.html");
 
     public synchronized static ExtentReports getExtentReports() {
@@ -38,10 +39,10 @@ public class ExtentManager {
             e.printStackTrace();
         }
         File dest = new File(
-                Constants.PROJECT_ROOT_DIR
-                        .concat(Constants.FILE_SEPARATOR)
+                PROJECT_ROOT_DIR
+                        .concat(FILE_SEPARATOR)
                         .concat("target")
-                        .concat(Constants.FILE_SEPARATOR)
+                        .concat(FILE_SEPARATOR)
                         .concat("extent.xml"));
 
         htmlReporter.config().setChartVisibilityOnOpen(true);
