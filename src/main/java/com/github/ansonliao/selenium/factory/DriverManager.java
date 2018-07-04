@@ -1,14 +1,13 @@
 package com.github.ansonliao.selenium.factory;
 
-import com.github.ansonliao.selenium.internal.Constants;
-import com.github.ansonliao.selenium.utils.SEConfig;
+import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.testng.util.Strings;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
-import org.testng.util.Strings;
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public abstract class DriverManager {
 
@@ -42,7 +41,7 @@ public abstract class DriverManager {
     }
 
     public static String retrieveSeleniumHubUrl() {
-        String url = SEConfig.getString(Constants.SELENIUM_HUB_URL);
+        String url = getConfigInstance().seleniumHubUrl();
         if (Strings.isNullOrEmpty(url)) {
             return "";
         }

@@ -6,12 +6,9 @@ import com.github.ansonliao.selenium.annotations.Incognito;
 import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.factory.DriverManager;
 import com.github.ansonliao.selenium.factory.DriverManagerFactory;
-import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
 import com.github.ansonliao.selenium.utils.AuthorUtils;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
-import com.github.ansonliao.selenium.utils.SEConfig;
-import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import com.github.ansonliao.selenium.utils.TestGroupUtils;
 import com.github.ansonliao.selenium.utils.WDMHelper;
 import org.slf4j.Logger;
@@ -32,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.github.ansonliao.selenium.factory.WDManager.getDriver;
 import static com.github.ansonliao.selenium.factory.WDManager.setDriver;
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public class SeleniumParallelTestListener implements IClassListener,
         IInvokedMethodListener, ISuiteListener {
@@ -41,7 +39,7 @@ public class SeleniumParallelTestListener implements IClassListener,
     @Override
     public void beforeInvocation(IInvokedMethod iInvokedMethod, ITestResult iTestResult) {
         String browserName = iInvokedMethod.getTestMethod().getXmlTest()
-                .getParameter(Constants.TESTNG_XML_BROWSER_PARAMETER_KEY);
+                .getParameter(getConfigInstance().testngXmlBrowserParamKey());
 
         Method method =
                 iInvokedMethod.getTestMethod().getConstructorOrMethod().getMethod();
@@ -52,7 +50,7 @@ public class SeleniumParallelTestListener implements IClassListener,
         setDriver(driverManager.getDriver());
 
         List<String> groups = TestGroupUtils.getMethodTestGroups(method);
-        if (SEFilterUtils.addBrowserGroupToReport()) {
+        if (getConfigInstance().addBrowserGroupToReport()) {
             groups.add(browserName);
         }
 
@@ -77,10 +75,10 @@ public class SeleniumParallelTestListener implements IClassListener,
          * upgrade WebDriver binary to Async with multi-threads once WDM support
          * multi-thread download
          */
-        final String SELENIUM_HUB_URL = SEConfig.getString(Constants.SELENIUM_HUB_URL);
+        final String SELENIUM_HUB_URL = getConfigInstance().seleniumHubUrl();
         if (Strings.isNullOrEmpty(SELENIUM_HUB_URL)) {
             List<String> browserList = iSuite.getXmlSuite().getTests().stream()
-                    .map(xmlTest -> xmlTest.getParameter(Constants.TESTNG_XML_BROWSER_PARAMETER_KEY))
+                    .map(xmlTest -> xmlTest.getParameter(getConfigInstance().testngXmlBrowserParamKey()))
                     .distinct().collect(Collectors.toList());
             browserList.forEach(WDMHelper::downloadWebDriverBinary);
             logger.info("Completed WebDriver binary download: {}", browserList);
@@ -97,7 +95,7 @@ public class SeleniumParallelTestListener implements IClassListener,
     @Override
     public void onBeforeClass(ITestClass iTestClass) {
         String browserName =
-                iTestClass.getXmlTest().getParameter(Constants.TESTNG_XML_BROWSER_PARAMETER_KEY);
+                iTestClass.getXmlTest().getParameter(getConfigInstance().testngXmlBrowserParamKey());
         MyFileUtils.createScreenshotFolderForBrowser(iTestClass.getRealClass(), browserName);
     }
 

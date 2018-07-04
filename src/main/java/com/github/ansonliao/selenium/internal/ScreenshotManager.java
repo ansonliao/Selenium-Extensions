@@ -10,19 +10,26 @@ import java.io.IOException;
 import java.sql.Timestamp;
 
 public class ScreenshotManager {
+    private static final String FILE_SEPARATOR = File.separator;
+    private static final String PROJECT_ROOT_DIR = System.getProperty("user.dir");
+    private static final String SCREENSHOT_DIR = PROJECT_ROOT_DIR
+            .concat(FILE_SEPARATOR)
+            .concat("target")
+            .concat(FILE_SEPARATOR)
+            .concat("screenshots");
 
     public String capture(Class<?> clazz, String imgPrefix, String browserName) {
         File scrFile = ((TakesScreenshot) WDManager.getDriver())
                 .getScreenshotAs(OutputType.FILE);
 
         String destDir = String.join(
-                Constants.FILE_SEPARATOR,
-                Constants.SCREENSHOT_DIR,
+                FILE_SEPARATOR,
+                SCREENSHOT_DIR,
                 clazz.getPackage().getName(),
                 clazz.getSimpleName(),
                 browserName,
                 imgPrefix.concat("_").concat(String.valueOf(
-                                new Timestamp(System.currentTimeMillis()).getTime()))
+                        new Timestamp(System.currentTimeMillis()).getTime()))
                         .concat(".jpeg"));
         try {
             MyFileUtils.copyFile(scrFile, new File(destDir));
@@ -30,9 +37,9 @@ public class ScreenshotManager {
             e.printStackTrace();
         }
         return destDir.replace(
-                Constants.PROJECT_ROOT_DIR
-                        .concat(Constants.FILE_SEPARATOR)
+                PROJECT_ROOT_DIR
+                        .concat(FILE_SEPARATOR)
                         .concat("target")
-                        .concat(Constants.FILE_SEPARATOR), "");
+                        .concat(FILE_SEPARATOR), "");
     }
 }

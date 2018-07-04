@@ -1,6 +1,5 @@
 package com.github.ansonliao.selenium.utils;
 
-import com.github.ansonliao.selenium.internal.Constants;
 import com.github.ansonliao.selenium.parallel.ClassFinder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -13,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+
 public class BrowserUtils {
     private static Logger logger = LoggerFactory.getLogger(BrowserUtils.class);
 
@@ -21,13 +22,13 @@ public class BrowserUtils {
                 .getNamesOfAllClasses()
                 .parallelStream()
                 .filter(className ->
-                        className.startsWith(Constants.BROWSER_ANNOTATION_PACKAGE))
+                        className.startsWith(getConfigInstance().defaultBrowserAnnotationPackage()))
                 .map(ClassFinder::createClass)
                 //.filter(aClass -> aClass.isAnnotation())
                 .filter(Class::isAnnotation)
                 .map(aClass -> aClass.getSimpleName().toUpperCase())
                 .filter(className ->
-                        !className.startsWith(Constants.BROWSER_IGNORE_ANNOTATION_PREFIX))
+                        !className.startsWith(getConfigInstance().brwoserIgnoreAnnotationPrefix()))
                 .collect(Collectors.toList());
     }
 
@@ -36,15 +37,15 @@ public class BrowserUtils {
                 .getNamesOfAllClasses()
                 .parallelStream()
                 .filter(className ->
-                        className.startsWith(Constants.BROWSER_ANNOTATION_PACKAGE))
+                        className.startsWith(getConfigInstance().defaultBrowserAnnotationPackage()))
                 .map(ClassFinder::createClass)
                 //.filter(aClass -> aClass.isAnnotation())
                 .filter(Class::isAnnotation)
                 .map(aClass -> aClass.getSimpleName().toUpperCase())
                 .filter(className ->
-                        className.startsWith(Constants.BROWSER_IGNORE_ANNOTATION_PREFIX))
+                        className.startsWith(getConfigInstance().brwoserIgnoreAnnotationPrefix()))
                 .map(className ->
-                        className.substring(Constants.BROWSER_IGNORE_ANNOTATION_PREFIX.length()))
+                        className.substring(getConfigInstance().brwoserIgnoreAnnotationPrefix().length()))
                 .collect(Collectors.toList());
     }
 
@@ -121,9 +122,9 @@ public class BrowserUtils {
                 .map(annotation ->
                         annotation.annotationType().getSimpleName().toUpperCase())
                 .filter(className ->
-                        className.startsWith(Constants.BROWSER_IGNORE_ANNOTATION_PREFIX))
+                        className.startsWith(getConfigInstance().brwoserIgnoreAnnotationPrefix()))
                 .map(className ->
-                        className.substring(Constants.BROWSER_IGNORE_ANNOTATION_PREFIX.length()))
+                        className.substring(getConfigInstance().brwoserIgnoreAnnotationPrefix().length()))
                 .collect(Collectors.toSet());
     }
 }

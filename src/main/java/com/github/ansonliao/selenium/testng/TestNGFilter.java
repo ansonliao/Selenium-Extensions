@@ -3,7 +3,6 @@ package com.github.ansonliao.selenium.testng;
 import com.github.ansonliao.selenium.parallel.ClassFinder;
 import com.github.ansonliao.selenium.parallel.MethodFinder;
 import com.github.ansonliao.selenium.utils.BrowserUtils;
-import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -21,14 +20,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+
 public class TestNGFilter {
     private static final Logger logger = LoggerFactory.getLogger(TestNGFilter.class);
     private static List<Class<?>> testngClasses = Lists.newArrayList();
     private static Multimap<Class<?>, Method> testNGClass2MethodMap = HashMultimap.create();
 
     static {
-        String[] testingPackageNames = SEFilterUtils.testingPackageNames().toArray(
-                new String[SEFilterUtils.testingPackageNames().size()]);
+        String[] testingPackageNames = getConfigInstance().testingPackageNames().toArray(
+                new String[getConfigInstance().testingPackageNames().size()]);
         testngClasses = ClassFinder.findAllTestNGTestClasses(testingPackageNames);
     }
 
@@ -41,10 +42,10 @@ public class TestNGFilter {
 
     // filter testng classes by given testng class list
     public static List<Class<?>> filterClassesByTestingClassList() {
-        if (!SEFilterUtils.testingTestNGClasses().isEmpty()) {
+        if (!getConfigInstance().testingTestNGClasses().isEmpty()) {
             testngClasses = testngClasses.parallelStream()
                     .filter(aClass ->
-                            SEFilterUtils.testingTestNGClasses()
+                            getConfigInstance().testingTestNGClasses()
                                     .parallelStream()
                                     .map(String::toUpperCase)
                                     .collect(Collectors.toList())
@@ -57,11 +58,10 @@ public class TestNGFilter {
     }
 
     /**
-     *
      * @return A map that key = testng class, value = list of testng method of the testng class
      */
     public static Multimap<Class<?>, Method> filterTestNGMethodByTestGroups() {
-        if (SEFilterUtils.testingTestGroups().isEmpty()) {
+        if (getConfigInstance().testingTestGroups().isEmpty()) {
             testngClasses.stream()
                     .forEach(aClass ->
                             MethodFinder.findAllAnnotatedTestMethodInClass(aClass).stream()
@@ -72,7 +72,7 @@ public class TestNGFilter {
         }
 
         testngClasses.stream().forEach(aClass -> {
-            List<Method> methodList = SEFilterUtils.testingTestGroups()
+            List<Method> methodList = getConfigInstance().testingTestGroups()
                     .parallelStream()
                     .map(group -> MethodFinder.findTestNGMethodInClassByGroup(aClass, group))
                     .flatMap(Collection::stream)
@@ -89,9 +89,9 @@ public class TestNGFilter {
 
     // filter testng method by given test browser list
     public static Multimap<Class<?>, Method> filterTestNGMethodByBrowsers() {
-        if (!SEFilterUtils.testingBrowserNames().isEmpty()) {
-            logger.info("Detected testing browser filter to: {}", SEFilterUtils.testingBrowserNames());
-            Set<String> browserFilters = SEFilterUtils.testingBrowserNames()
+        if (!getConfigInstance().testingBrowserNames().isEmpty()) {
+            logger.info("Detected testing browser filter to: {}", getConfigInstance().testingBrowserNames());
+            Set<String> browserFilters = getConfigInstance().testingBrowserNames()
                     .parallelStream().map(String::toUpperCase).collect(Collectors.toSet());
             Multimap<Class<?>, Method> resultMap = HashMultimap.create(testNGClass2MethodMap);
             testNGClass2MethodMap.keySet().stream().forEach(aClass ->
@@ -115,13 +115,13 @@ public class TestNGFilter {
         Map<String, Map<Class<?>, List<Method>>> browserTestingMap = new HashMap<>();
         Multimap<String, Method> browserTestngMethodMap = HashMultimap.create();
 
-        if (!SEFilterUtils.runByBrowsers().isEmpty()) {
+        if (!getConfigInstance().runByBrowsers().isEmpty()) {
             // only fetch support browsers
             List<String> browsers =
                     Sets.intersection(
-                            SEFilterUtils.runByBrowsers().parallelStream().collect(Collectors.toSet()),
+                            getConfigInstance().runByBrowsers().parallelStream().collect(Collectors.toSet()),
                             Sets.newHashSet(BrowserUtils.getSupportedBrowsers()))
-                    .parallelStream().collect(Collectors.toList());
+                            .parallelStream().collect(Collectors.toList());
 
             logger.info("Run Tests by browsers: {}", browsers);
 
@@ -157,35 +157,34 @@ public class TestNGFilter {
         }
 
         testNGClass2MethodMap.keySet().forEach(aClass ->
-            testNGClass2MethodMap.get(aClass).forEach(method -> {
-                // add default browser if the testng method without any browser annotations
-                Set<String> methodSupportedBrowsers = addIncludedDefaultBrowser(method);
-                methodSupportedBrowsers.forEach(browserName ->
-                        browserTestngMethodMap.put(browserName, method));
-                methodSupportedBrowsers.forEach(browserName -> {
-                    if (!browserTestingMap.containsKey(browserName)) {
-                        browserTestingMap.put(browserName, new HashMap<>());
-                    }
-                    if (!browserTestingMap.get(browserName).containsKey(aClass)) {
-                        browserTestingMap.get(browserName).put(aClass, new ArrayList<>());
-                    }
-                    if (!browserTestingMap.get(browserName).get(aClass).contains(method)) {
-                        browserTestingMap.get(browserName).get(aClass).add(method);
-                    }
-                });
-            }));
+                testNGClass2MethodMap.get(aClass).forEach(method -> {
+                    // add default browser if the testng method without any browser annotations
+                    Set<String> methodSupportedBrowsers = addIncludedDefaultBrowser(method);
+                    methodSupportedBrowsers.forEach(browserName ->
+                            browserTestngMethodMap.put(browserName, method));
+                    methodSupportedBrowsers.forEach(browserName -> {
+                        if (!browserTestingMap.containsKey(browserName)) {
+                            browserTestingMap.put(browserName, new HashMap<>());
+                        }
+                        if (!browserTestingMap.get(browserName).containsKey(aClass)) {
+                            browserTestingMap.get(browserName).put(aClass, new ArrayList<>());
+                        }
+                        if (!browserTestingMap.get(browserName).get(aClass).contains(method)) {
+                            browserTestingMap.get(browserName).get(aClass).add(method);
+                        }
+                    });
+                }));
 
         logger.info("Run Tests by browsers: {}", browserTestingMap.keySet());
         return browserTestingMap;
     }
 
     private static Set<String> addIncludedDefaultBrowser(Method method) {
-        String DEFAULT_BROWSER_TYPE_NAME = SEFilterUtils.defaultBrowser().toUpperCase();
+        String DEFAULT_BROWSER_TYPE_NAME = getConfigInstance().defaultBrowser().toUpperCase();
         Set<String> methodSupportedBrowsers = BrowserUtils.getMethodSupportedBrowsers(method);
         Set<String> methodBrowsers = BrowserUtils.getMethodBrowsers(method);
         Set<String> ignoreBrowsers = BrowserUtils.getMethodIgnoredBrowsers(method);
-        if (methodBrowsers.isEmpty()
-                && !ignoreBrowsers.contains(DEFAULT_BROWSER_TYPE_NAME)) {
+        if (methodBrowsers.isEmpty() && !ignoreBrowsers.contains(DEFAULT_BROWSER_TYPE_NAME)) {
             methodSupportedBrowsers.add(DEFAULT_BROWSER_TYPE_NAME);
         }
         return methodSupportedBrowsers;

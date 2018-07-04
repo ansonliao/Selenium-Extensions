@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+
 public class TestGroupUtils {
     private static final Logger logger =
             LoggerFactory.getLogger(TestGroupUtils.class);
@@ -32,8 +34,8 @@ public class TestGroupUtils {
     }
 
     public static List<String> getMethodTestGroups(Method method) {
-        if (!SEFilterUtils.testingTestGroups().isEmpty()) {
-            return SEFilterUtils.testingTestGroups();
+        if (!getConfigInstance().testingTestGroups().isEmpty()) {
+            return getConfigInstance().testingTestGroups();
         }
 
         Set<String> classTestGroups =

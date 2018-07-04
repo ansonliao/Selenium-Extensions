@@ -1,10 +1,11 @@
 package com.github.ansonliao.selenium.factory;
 
-import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.opera.OperaDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public class OperaFactory extends DriverManager {
 
@@ -33,7 +34,7 @@ public class OperaFactory extends DriverManager {
 
     @Override
     public String getExportParameterKey() {
-        return SEFilterUtils.getOperaDriverExportKey();
+        return getConfigInstance().operaDriverProperty();
     }
 
     @Override

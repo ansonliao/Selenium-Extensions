@@ -1,11 +1,5 @@
 package com.github.ansonliao.selenium.factory;
 
-import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
-
-import com.github.ansonliao.selenium.utils.SEFilterUtils;
-import java.net.MalformedURLException;
-import java.net.URL;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -16,6 +10,13 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.util.Strings;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static org.openqa.selenium.remote.BrowserType.FIREFOX;
 
 public class FirefoxFactory extends DriverManager {
 
@@ -70,7 +71,7 @@ public class FirefoxFactory extends DriverManager {
 
     @Override
     public String getExportParameterKey() {
-        return SEFilterUtils.getFirefoxDriverExportKey();
+        return getConfigInstance().firefoxDriverProperty();
     }
 
     @Override

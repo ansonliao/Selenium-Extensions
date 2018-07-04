@@ -1,10 +1,11 @@
 package com.github.ansonliao.selenium.factory;
 
-import com.github.ansonliao.selenium.utils.SEFilterUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public class PhantomJsFactory extends DriverManager {
 
@@ -33,7 +34,7 @@ public class PhantomJsFactory extends DriverManager {
 
     @Override
     public String getExportParameterKey() {
-        return SEFilterUtils.getPhantomJsDriverExportKey();
+        return getConfigInstance().phantomjsDriverProperty();
     }
 
     @Override

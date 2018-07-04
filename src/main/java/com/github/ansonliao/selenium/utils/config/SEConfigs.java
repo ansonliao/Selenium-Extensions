@@ -4,14 +4,21 @@ import org.aeonbits.owner.Config;
 import org.aeonbits.owner.ConfigFactory;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.aeonbits.owner.Config.HotReloadType.ASYNC;
 
 public class SEConfigs {
-    private static SEConfig config;
+    private static SEConfiguration config = ConfigFactory.create(
+            SEConfiguration.class, System.getProperties(), System.getenv());
 
-    @Config.HotReload(value = 500, unit = TimeUnit.MILLISECONDS)
-    @Config.Sources({"classpath:seleniumextensions.properties", "classpath:se.properties"})
-    public interface SEConfig extends Config {
+    /**
+     * TODO: The sources set to classpath doesn't work, need to investigate and solve the problem
+     */
+    @Config.HotReload(value = 500, unit = MILLISECONDS, type = ASYNC)
+    @Config.LoadPolicy(Config.LoadType.FIRST)
+    @Config.Sources({"file:src/test/resources/seleniumextensions.properties", "file:src/test/resources/se.properties"})
+    public interface SEConfiguration extends Config {
 
         @Key("addBrowserGroupToReport")
         @DefaultValue("false")
@@ -28,8 +35,7 @@ public class SEConfigs {
 
         @Key("defaultBrowserAnnotationPackage")
         @DefaultValue("com.github.ansonliao.selenium.annotations.browser")
-        @Separator(",")
-        List<String> defaultBrowserAnnotationPackage();
+        String defaultBrowserAnnotationPackage();
 
         @Key("defaultTestClassesSizeOfTestNGXML")
         @DefaultValue("10")
@@ -62,7 +68,8 @@ public class SEConfigs {
 
         @Key("defaultTestNGListeners")
         @DefaultValue(
-                "com.github.ansonliao.selenium.testng.TestResultListener, com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener")
+                "com.github.ansonliao.selenium.testng.TestResultListener, "
+                        + "com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener")
         @Separator(",")
         List<String> defaultTestNGListeners();
 
@@ -94,15 +101,28 @@ public class SEConfigs {
         @DefaultValue("false")
         boolean useTaobaoMirror();
 
-        @Key("SELENIUM_HUB_URL")
+        @Key("selenium.hub.url")
         @DefaultValue("")
         String seleniumHubUrl();
+
+        // key set to "browser.ignore.anntation.prefix" if needed
+        @DefaultValue("IGNORE")
+        String brwoserIgnoreAnnotationPrefix();
+
+        // key set to "testng.xml.browser.parameter.key" if needed
+        @DefaultValue("browser")
+        String testngXmlBrowserParamKey();
+
+        // key set to "BROWSER_IGNORE_ANNOTATION_TYPE_PROPERTY" if needed
+        @DefaultValue("BROWSER_IGNORE")
+        String browserIgnoreAnnotationTypeProp();
+
+        // key set to "BROWSER_ANNOTATION_TYPE_PROPERTY" if needed
+        @DefaultValue("BROWSER")
+        String browserAnnotationTypeProp();
     }
 
-    public static synchronized SEConfig getConfigInstance() {
-        if (config == null) {
-            config = ConfigFactory.create(SEConfig.class, System.getProperties(), System.getenv());
-        }
+    public static synchronized SEConfiguration getConfigInstance() {
         return config;
     }
 
