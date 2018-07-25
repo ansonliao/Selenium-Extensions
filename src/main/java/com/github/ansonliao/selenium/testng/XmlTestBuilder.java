@@ -10,9 +10,9 @@ import org.testng.xml.XmlTest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static java.util.stream.Collectors.toList;
 
 public class XmlTestBuilder {
     private static XmlSuite xmlSuite;
@@ -24,7 +24,7 @@ public class XmlTestBuilder {
 
         browserXmlclassMap.keySet().forEach(browserName -> {
             List<XmlClass> xmlClassList = browserXmlclassMap.get(browserName)
-                    .stream().distinct().collect(Collectors.toList());
+                    .stream().distinct().collect(toList());
             ArrayList<XmlClass> tempXmlClass = Lists.newArrayList(xmlClassList);
             int xmlClassGroupSize = xmlClassList.size() / DEFAULT_TEST_CLASS_SIZE + 1;
             int counter = xmlClassGroupSize;
