@@ -9,17 +9,17 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.aeonbits.owner.Config.HotReloadType.ASYNC;
 
 public class SEConfigs {
-    private static SEConfiguration config = ConfigFactory.create(
-            SEConfiguration.class, System.getProperties(), System.getenv());
+    private static SEConfiguration config =
+            ConfigFactory.create(SEConfiguration.class, System.getProperties(), System.getenv());
 
     /**
      * TODO: The sources set to classpath doesn't work, need to investigate and solve the problem
      */
     @Config.HotReload(value = 500, unit = MILLISECONDS, type = ASYNC)
-    @Config.LoadPolicy(Config.LoadType.FIRST)
     @Config.Sources({"file:src/test/resources/seleniumextensions.properties", "file:src/test/resources/se.properties"})
     public interface SEConfiguration extends Config {
 
+        // SE utils identify keys
         @Key("addBrowserGroupToReport")
         @DefaultValue("false")
         boolean addBrowserGroupToReport();
@@ -62,17 +62,29 @@ public class SEConfigs {
         List<String> testingTestNGClasses();
 
         @Key("testngListeners")
-        @DefaultValue("")
-        @Separator(",")
-        List<String> testngListeners();
-
-        @Key("defaultTestNGListeners")
         @DefaultValue(
                 "com.github.ansonliao.selenium.testng.TestResultListener, "
                         + "com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener")
         @Separator(",")
-        List<String> defaultTestNGListeners();
+        List<String> testngListeners();
 
+        // key set to "browser.ignore.anntation.prefix" if needed
+        @DefaultValue("IGNORE")
+        String brwoserIgnoreAnnotationPrefix();
+
+        // key set to "testng.xml.browser.parameter.key" if needed
+        @DefaultValue("browser")
+        String testngXmlBrowserParamKey();
+
+        // key set to "BROWSER_IGNORE_ANNOTATION_TYPE_PROPERTY" if needed
+        @DefaultValue("BROWSER_IGNORE")
+        String browserIgnoreAnnotationTypeProp();
+
+        // key set to "BROWSER_ANNOTATION_TYPE_PROPERTY" if needed
+        @DefaultValue("BROWSER")
+        String browserAnnotationTypeProp();
+
+        // webdriver export property key
         @Key("wdParameterKey.chrome")
         @DefaultValue("webdriver.chrome.driver")
         String chromeDriverProperty();
@@ -101,29 +113,20 @@ public class SEConfigs {
         @DefaultValue("false")
         boolean useTaobaoMirror();
 
+        // selenium grid, remote webdriver
         @Key("selenium.hub.url")
         @DefaultValue("")
         String seleniumHubUrl();
 
-        // key set to "browser.ignore.anntation.prefix" if needed
-        @DefaultValue("IGNORE")
-        String brwoserIgnoreAnnotationPrefix();
-
-        // key set to "testng.xml.browser.parameter.key" if needed
-        @DefaultValue("browser")
-        String testngXmlBrowserParamKey();
-
-        // key set to "BROWSER_IGNORE_ANNOTATION_TYPE_PROPERTY" if needed
-        @DefaultValue("BROWSER_IGNORE")
-        String browserIgnoreAnnotationTypeProp();
-
-        // key set to "BROWSER_ANNOTATION_TYPE_PROPERTY" if needed
-        @DefaultValue("BROWSER")
-        String browserAnnotationTypeProp();
     }
 
     public static synchronized SEConfiguration getConfigInstance() {
         return config;
+    }
+
+    public static void main(String[] args) {
+        System.setProperty("selenium.hub.url", "hello");
+        System.out.println(getConfigInstance().seleniumHubUrl());
     }
 
 }

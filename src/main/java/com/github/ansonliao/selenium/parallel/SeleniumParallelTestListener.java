@@ -4,6 +4,7 @@ import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.annotations.Headless;
 import com.github.ansonliao.selenium.annotations.Incognito;
 import com.github.ansonliao.selenium.annotations.URL;
+import com.github.ansonliao.selenium.exceptions.IllegalBrowserDriverName;
 import com.github.ansonliao.selenium.factory.DriverManager;
 import com.github.ansonliao.selenium.factory.DriverManagerFactory;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
@@ -54,9 +55,9 @@ public class SeleniumParallelTestListener implements IClassListener,
             groups.add(browserName);
         }
 
-        ExtentTestManager.createTest(method, browserName,
-                AuthorUtils.getMethodAuthors(method), groups,
-                iTestResult.getParameters());
+        ExtentTestManager.createTest(
+                method, browserName, AuthorUtils.getMethodAuthors(method),
+                groups, iTestResult.getParameters());
 
         // open url if URL annotation had value
         Optional.ofNullable(method.getAnnotation(URL.class))
@@ -80,7 +81,15 @@ public class SeleniumParallelTestListener implements IClassListener,
             List<String> browserList = iSuite.getXmlSuite().getTests().stream()
                     .map(xmlTest -> xmlTest.getParameter(getConfigInstance().testngXmlBrowserParamKey()))
                     .distinct().collect(Collectors.toList());
-            browserList.forEach(WDMHelper::downloadWebDriverBinary);
+            for (String browser : browserList) {
+                try {
+                    WDMHelper.downloadWebDriverBinary(browser);
+                } catch (IllegalBrowserDriverName illegalBrowserDriverName) {
+                    illegalBrowserDriverName.printStackTrace();
+                    // interrupt the session
+                    System.exit(1);
+                }
+            }
             logger.info("Completed WebDriver binary download: {}", browserList);
             return;
         }

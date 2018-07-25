@@ -1,11 +1,13 @@
 package com.github.ansonliao.selenium.testng;
 
-import com.github.ansonliao.selenium.utils.TestNGListenerUtils;
 import com.google.common.collect.ImmutableMultiset;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.xml.XmlSuite;
+
+import java.util.List;
+
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public class XmlSuiteBuilder {
 
@@ -16,17 +18,11 @@ public class XmlSuiteBuilder {
 
     public static XmlSuite build() {
         XmlSuite xmlSuite = new XmlSuite();
-
         // set generate xml suite information
         xmlSuite = setXmlSuiteGenerateInfo(xmlSuite);
-
         // listeners
         xmlSuite = addXmlSuiteListeners(xmlSuite);
-
         // add xml tests
-        // XmlTestBuilder.setXmlSuite(xmlSuite);
-        // XmlTestBuilder.build();
-        // xmlSuite = XmlTestBuilder.getXmlSuite();
         xmlSuite = addXmlSuiteTests(xmlSuite);
         logger.info("\n" + xmlSuite.toXml());
 
@@ -43,16 +39,9 @@ public class XmlSuiteBuilder {
     }
 
     public static XmlSuite addXmlSuiteListeners(XmlSuite suite) {
-        List<String> listeners = TestNGListenerUtils.getTestNGListeners();
-        if (listeners.size() != 0) {
-            logger.info("TestNG Listeners found: {}", listeners);
-            listeners.forEach(suite::addListener);
-            return suite;
-        }
-
-        List<String> defaultListeners = TestNGListenerUtils.getDefaultTestNGListeners();
-        logger.info("No TestNG Listener found, add default listeners: {}", defaultListeners);
-        defaultListeners.forEach(suite::addListener);
+        List<String> listeners = getConfigInstance().testngListeners();
+        logger.info("TestNG Listeners found: {}", listeners);
+        listeners.forEach(suite::addListener);
         return suite;
     }
 
