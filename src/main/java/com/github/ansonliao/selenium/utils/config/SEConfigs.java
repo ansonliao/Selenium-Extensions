@@ -9,14 +9,12 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.aeonbits.owner.Config.HotReloadType.ASYNC;
 
 public class SEConfigs {
-    private static SEConfiguration config =
-            ConfigFactory.create(SEConfiguration.class, System.getProperties(), System.getenv());
+    private static SEConfiguration config;
 
-    /**
-     * TODO: The sources set to classpath doesn't work, need to investigate and solve the problem
-     */
     @Config.HotReload(value = 500, unit = MILLISECONDS, type = ASYNC)
-    @Config.Sources({"file:src/test/resources/seleniumextensions.properties", "file:src/test/resources/se.properties"})
+    @Config.Sources({
+            "classpath:seleniumextensions.properties",
+            "classpath:se.properties"})
     public interface SEConfiguration extends Config {
 
         // SE utils identify keys
@@ -35,11 +33,11 @@ public class SEConfigs {
 
         @Key("defaultBrowserAnnotationPackage")
         @DefaultValue("com.github.ansonliao.selenium.annotations.browser")
-        String defaultBrowserAnnotationPackage();
+        String browserAnnotationPackage();
 
-        @Key("defaultTestClassesSizeOfTestNGXML")
+        @Key("testTagClassSizeOfTestNgXml")
         @DefaultValue("10")
-        int defaultTestClassesSizeOfTestNGXML();
+        int testTagClassSizeOfTestNgXml();
 
         @Key("testingPackageNames")
         @DefaultValue("")
@@ -121,12 +119,10 @@ public class SEConfigs {
     }
 
     public static synchronized SEConfiguration getConfigInstance() {
+        if (config == null) {
+            config = ConfigFactory.create(SEConfiguration.class, System.getProperties(), System.getenv());
+        }
         return config;
-    }
-
-    public static void main(String[] args) {
-        System.setProperty("selenium.hub.url", "hello");
-        System.out.println(getConfigInstance().seleniumHubUrl());
     }
 
 }

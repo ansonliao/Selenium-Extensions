@@ -22,7 +22,7 @@ public class BrowserUtils {
                 .getNamesOfAllClasses()
                 .parallelStream()
                 .filter(className ->
-                        className.startsWith(getConfigInstance().defaultBrowserAnnotationPackage()))
+                        className.startsWith(getConfigInstance().browserAnnotationPackage()))
                 .map(ClassFinder::createClass)
                 //.filter(aClass -> aClass.isAnnotation())
                 .filter(Class::isAnnotation)
@@ -37,9 +37,8 @@ public class BrowserUtils {
                 .getNamesOfAllClasses()
                 .parallelStream()
                 .filter(className ->
-                        className.startsWith(getConfigInstance().defaultBrowserAnnotationPackage()))
+                        className.startsWith(getConfigInstance().browserAnnotationPackage()))
                 .map(ClassFinder::createClass)
-                //.filter(aClass -> aClass.isAnnotation())
                 .filter(Class::isAnnotation)
                 .map(aClass -> aClass.getSimpleName().toUpperCase())
                 .filter(className ->
