@@ -20,7 +20,7 @@ public class XmlTestBuilder {
     public static List<XmlTest> build() {
         Set<XmlTest> xmlTestList = Sets.newHashSet();
         Multimap<String, XmlClass> browserXmlclassMap = XmlClassBuilder.build();
-        final int DEFAULT_TEST_CLASS_SIZE = getConfigInstance().defaultTestClassesSizeOfTestNGXML();
+        final int DEFAULT_TEST_CLASS_SIZE = getConfigInstance().testTagClassSizeOfTestNgXml();
 
         browserXmlclassMap.keySet().forEach(browserName -> {
             List<XmlClass> xmlClassList = browserXmlclassMap.get(browserName)
