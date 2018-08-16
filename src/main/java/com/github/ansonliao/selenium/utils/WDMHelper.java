@@ -124,6 +124,7 @@ public class WDMHelper {
             case OPERA:
                 OperaDriverManager.getInstance().useMirror().setup();
                 logger.info("Downloaded OperaDriver from mirror (Taobao)");
+                break;
             default:
                 ChromeDriverManager.getInstance().useMirror().setup();
                 logger.info("Downloaded ChromeDriver from mirror (Taobao)");
