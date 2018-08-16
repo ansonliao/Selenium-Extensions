@@ -26,11 +26,11 @@ import org.testng.util.Strings;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.github.ansonliao.selenium.factory.WDManager.getDriver;
 import static com.github.ansonliao.selenium.factory.WDManager.setDriver;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static java.util.stream.Collectors.toList;
 
 public class SeleniumParallelTestListener implements IClassListener,
         IInvokedMethodListener, ISuiteListener {
@@ -80,16 +80,17 @@ public class SeleniumParallelTestListener implements IClassListener,
         if (Strings.isNullOrEmpty(SELENIUM_HUB_URL)) {
             List<String> browserList = iSuite.getXmlSuite().getTests().stream()
                     .map(xmlTest -> xmlTest.getParameter(getConfigInstance().testngXmlBrowserParamKey()))
-                    .distinct().collect(Collectors.toList());
-            for (String browser : browserList) {
+                    .map(browserName -> browserName.replace("\"", ""))
+                    .distinct().collect(toList());
+
+            browserList.parallelStream().forEach(browser -> {
                 try {
                     WDMHelper.downloadWebDriverBinary(browser);
-                } catch (IllegalBrowserDriverName illegalBrowserDriverName) {
-                    illegalBrowserDriverName.printStackTrace();
-                    // interrupt the session
+                } catch (IllegalBrowserDriverName e) {
+                    e.printStackTrace();
                     System.exit(1);
                 }
-            }
+            });
             logger.info("Completed WebDriver binary download: {}", browserList);
             return;
         }

@@ -43,7 +43,7 @@ public class XmlTestBuilder {
                         : String.format("Selenium Test - %s %d", browserName, browserIndex);
                 xmlTest.setName(xmlTestName);
                 xmlTest.addParameter(getConfigInstance().testngXmlBrowserParamKey(), browserName);
-                xmlTest.setPreserveOrder(false);
+                xmlTest.setPreserveOrder(getConfigInstance().testngPreserveOrder());
 
                 if (tempXmlClass.size() < DEFAULT_TEST_CLASS_SIZE) {
                     xmlTest.setXmlClasses(tempXmlClass.subList(startIndex, tempXmlClass.size()));

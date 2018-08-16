@@ -66,7 +66,6 @@ public class FirefoxFactory extends DriverManager {
             e.printStackTrace();
         }
         return remoteWebDriver;
-
     }
 
     @Override
