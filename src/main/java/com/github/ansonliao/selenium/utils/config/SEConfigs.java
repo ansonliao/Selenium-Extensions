@@ -74,6 +74,10 @@ public class SEConfigs {
         @DefaultValue("browser")
         String testngXmlBrowserParamKey();
 
+        @Key("testng.test.preserve.order")
+        @DefaultValue("false")
+        boolean testngPreserveOrder();
+
         // key set to "BROWSER_IGNORE_ANNOTATION_TYPE_PROPERTY" if needed
         @DefaultValue("BROWSER_IGNORE")
         String browserIgnoreAnnotationTypeProp();

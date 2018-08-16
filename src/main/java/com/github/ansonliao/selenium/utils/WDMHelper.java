@@ -11,22 +11,24 @@ import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public class WDMHelper {
     private static final Logger logger = LoggerFactory.getLogger(WDMHelper.class);
+    private static final List<String> BROWSER_LIST =
+            Arrays.asList("CHROME", "FIREFOX", "EDGE", "INTERNETEXPLORER", "PHANTOMJS", "OPERA");
     private static boolean useTaobaoMirror = getConfigInstance().useTaobaoMirror();
 
     public static void downloadWebDriverBinary(String browserName) throws IllegalBrowserDriverName {
-        String bn = browserName.toUpperCase();
-        if (!browserList().contains(bn)) {
-            throw new IllegalBrowserDriverName("Illegal webdriver browser name found: " + bn
+        if (!BROWSER_LIST.parallelStream().anyMatch(s -> s.equalsIgnoreCase(browserName))) {
+            throw new IllegalBrowserDriverName("Illegal webdriver browser name was found: " + browserName
                     + ", please provide the correct webdriver browser name: " + browserList());
         }
 
-        switch (bn) {
+        switch (browserName.toUpperCase()) {
             case "CHROME":
                 downloadWebDriver(Platform.CHROME, useTaobaoMirror);
                 break;
@@ -134,7 +136,6 @@ public class WDMHelper {
     }
 
     private static List<String> browserList() {
-        return ImmutableMultiset.of("CHROME", "FIREFOX", "EDGE", "INTERNETEXPLORER", "PHANTOMJS", "OPERA").asList();
+        return Arrays.asList("CHROME", "FIREFOX", "EDGE", "INTERNETEXPLORER", "PHANTOMJS", "OPERA");
     }
-
 }
