@@ -1,7 +1,5 @@
 package com.github.ansonliao.selenium.utils;
 
-import com.github.ansonliao.selenium.exceptions.IllegalBrowserDriverName;
-import com.google.common.collect.ImmutableMultiset;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.EdgeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
