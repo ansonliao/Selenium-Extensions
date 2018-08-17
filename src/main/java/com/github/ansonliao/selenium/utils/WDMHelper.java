@@ -22,9 +22,9 @@ public class WDMHelper {
             Arrays.asList("CHROME", "FIREFOX", "EDGE", "INTERNETEXPLORER", "PHANTOMJS", "OPERA");
     private static boolean useTaobaoMirror = getConfigInstance().useTaobaoMirror();
 
-    public static void downloadWebDriverBinary(String browserName) throws IllegalBrowserDriverName {
+    public static void downloadWebDriverBinary(String browserName) {
         if (!BROWSER_LIST.parallelStream().anyMatch(s -> s.equalsIgnoreCase(browserName))) {
-            throw new IllegalBrowserDriverName("Illegal webdriver browser name was found: " + browserName
+            throw new IllegalArgumentException("Illegal webdriver browser name was found: " + browserName
                     + ", please provide the correct webdriver browser name: " + browserList());
         }
 
@@ -57,7 +57,7 @@ public class WDMHelper {
         System.setProperty(key, value);
     }
 
-    private static void downloadWebDriver(Platform platform, boolean taobaoMirror) throws IllegalBrowserDriverName {
+    private static void downloadWebDriver(Platform platform, boolean taobaoMirror) {
         if (taobaoMirror) {
             logger.info("Use TaoBao Mirror to download WebDriver binary.");
             downloadWDBinaryFromMirror(platform);
