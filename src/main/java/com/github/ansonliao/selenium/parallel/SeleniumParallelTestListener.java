@@ -4,7 +4,6 @@ import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.annotations.Headless;
 import com.github.ansonliao.selenium.annotations.Incognito;
 import com.github.ansonliao.selenium.annotations.URL;
-import com.github.ansonliao.selenium.exceptions.IllegalBrowserDriverName;
 import com.github.ansonliao.selenium.factory.DriverManager;
 import com.github.ansonliao.selenium.factory.DriverManagerFactory;
 import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
