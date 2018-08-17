@@ -83,14 +83,7 @@ public class SeleniumParallelTestListener implements IClassListener,
                     .map(browserName -> browserName.replace("\"", ""))
                     .distinct().collect(toList());
 
-            browserList.parallelStream().forEach(browser -> {
-                try {
-                    WDMHelper.downloadWebDriverBinary(browser);
-                } catch (IllegalBrowserDriverName e) {
-                    e.printStackTrace();
-                    System.exit(1);
-                }
-            });
+            browserList.parallelStream().forEach(WDMHelper::downloadWebDriverBinary);
             logger.info("Completed WebDriver binary download: {}", browserList);
             return;
         }
