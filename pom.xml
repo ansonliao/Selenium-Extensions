@@ -48,6 +48,7 @@
     <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
     <aventstack.extentreports.version>3.1.3</aventstack.extentreports.version>
     <aeonbits.owner.version>1.0.10</aeonbits.owner.version>
+    <dependency.locations.enabled>false</dependency.locations.enabled>
   </properties>
 
   <dependencies>
@@ -122,6 +123,7 @@
       </plugin>
     </plugins>
   </build>
+
   <profiles>
     <profile>
       <id>release</id>
@@ -195,6 +197,11 @@
         <configuration>
           <aggregate>true</aggregate>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.9</version>
       </plugin>
     </plugins>
   </reporting>
