@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.utils;
 
+import com.google.common.collect.ImmutableMultiset;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.EdgeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
@@ -17,7 +18,7 @@ import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInst
 public class WDMHelper {
     private static final Logger logger = LoggerFactory.getLogger(WDMHelper.class);
     private static final List<String> BROWSER_LIST =
-            Arrays.asList("CHROME", "FIREFOX", "EDGE", "INTERNETEXPLORER", "PHANTOMJS", "OPERA");
+            ImmutableMultiset.of("CHROME", "FIREFOX", "EDGE", "INTERNETEXPLORER", "PHANTOMJS", "OPERA").asList();
     private static boolean useTaobaoMirror = getConfigInstance().useTaobaoMirror();
 
     public static void downloadWebDriverBinary(String browserName) {

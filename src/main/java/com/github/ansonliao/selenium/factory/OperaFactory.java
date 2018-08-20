@@ -5,6 +5,7 @@ import org.openqa.selenium.opera.OperaDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public class OperaFactory extends DriverManager {
@@ -34,7 +35,7 @@ public class OperaFactory extends DriverManager {
 
     @Override
     public String getExportParameterKey() {
-        return getConfigInstance().operaDriverProperty();
+        return removeQuoteMark(getConfigInstance().operaDriverProperty());
     }
 
     @Override

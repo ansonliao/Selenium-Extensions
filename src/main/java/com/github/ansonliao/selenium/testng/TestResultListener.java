@@ -15,6 +15,7 @@ import org.testng.TestListenerAdapter;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public class TestResultListener extends TestListenerAdapter {
@@ -152,7 +153,7 @@ public class TestResultListener extends TestListenerAdapter {
 
     private String getTestBrowser(ITestResult iTestResult) {
         return iTestResult.getTestContext().getCurrentXmlTest()
-                .getAllParameters().get(getConfigInstance().testngXmlBrowserParamKey());
+                .getAllParameters().get(removeQuoteMark(getConfigInstance().testngXmlBrowserParamKey()));
     }
 
     private int getTestId(ITestResult result) {

@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.testng;
 
+import com.github.ansonliao.selenium.utils.StringUtils;
 import com.google.common.collect.ImmutableMultiset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,13 +9,10 @@ import org.testng.xml.XmlSuite;
 import java.util.List;
 
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static java.util.stream.Collectors.toList;
 
 public class XmlSuiteBuilder {
-
     private static final Logger logger = LoggerFactory.getLogger(XmlSuiteBuilder.class);
-    private static final List<String> defaultListeners = ImmutableMultiset.of(
-            "com.github.ansonliao.selenium.testng.TestResultListener",
-            "com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener").asList();
 
     public static XmlSuite build() {
         XmlSuite xmlSuite = new XmlSuite();
@@ -39,7 +37,8 @@ public class XmlSuiteBuilder {
     }
 
     public static XmlSuite addXmlSuiteListeners(XmlSuite suite) {
-        List<String> listeners = getConfigInstance().testngListeners();
+        List<String> listeners = getConfigInstance().testngListeners().parallelStream()
+                .map(StringUtils::removeQuoteMark).distinct().collect(toList());
         logger.info("TestNG Listeners found: {}", listeners);
         listeners.forEach(suite::addListener);
         return suite;

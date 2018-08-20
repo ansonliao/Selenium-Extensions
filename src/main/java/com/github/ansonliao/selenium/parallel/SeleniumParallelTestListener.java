@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static com.github.ansonliao.selenium.factory.WDManager.getDriver;
 import static com.github.ansonliao.selenium.factory.WDManager.setDriver;
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 import static java.util.stream.Collectors.toList;
 
@@ -35,11 +36,13 @@ public class SeleniumParallelTestListener implements IClassListener,
         IInvokedMethodListener, ISuiteListener {
     private static final Logger logger =
             LoggerFactory.getLogger(SeleniumParallelTestListener.class);
+    private static final String TESTNG_BROWSER_PARAM_KEY =
+            removeQuoteMark(getConfigInstance().testngXmlBrowserParamKey());
 
     @Override
     public void beforeInvocation(IInvokedMethod iInvokedMethod, ITestResult iTestResult) {
         String browserName = iInvokedMethod.getTestMethod().getXmlTest()
-                .getParameter(getConfigInstance().testngXmlBrowserParamKey());
+                .getParameter(TESTNG_BROWSER_PARAM_KEY);
 
         Method method =
                 iInvokedMethod.getTestMethod().getConstructorOrMethod().getMethod();
@@ -78,8 +81,8 @@ public class SeleniumParallelTestListener implements IClassListener,
         final String SELENIUM_HUB_URL = getConfigInstance().seleniumHubUrl();
         if (Strings.isNullOrEmpty(SELENIUM_HUB_URL)) {
             List<String> browserList = iSuite.getXmlSuite().getTests().stream()
-                    .map(xmlTest -> xmlTest.getParameter(getConfigInstance().testngXmlBrowserParamKey()))
-                    .map(browserName -> browserName.replace("\"", ""))
+                    .map(xmlTest -> removeQuoteMark(
+                            xmlTest.getParameter(TESTNG_BROWSER_PARAM_KEY)))
                     .distinct().collect(toList());
 
             browserList.parallelStream().forEach(WDMHelper::downloadWebDriverBinary);
@@ -97,7 +100,7 @@ public class SeleniumParallelTestListener implements IClassListener,
     @Override
     public void onBeforeClass(ITestClass iTestClass) {
         String browserName =
-                iTestClass.getXmlTest().getParameter(getConfigInstance().testngXmlBrowserParamKey());
+                iTestClass.getXmlTest().getParameter(TESTNG_BROWSER_PARAM_KEY);
         MyFileUtils.createScreenshotFolderForBrowser(iTestClass.getRealClass(), browserName);
     }
 

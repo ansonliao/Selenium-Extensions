@@ -7,6 +7,7 @@ import org.testng.util.Strings;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public abstract class DriverManager {
@@ -41,7 +42,7 @@ public abstract class DriverManager {
     }
 
     public static String retrieveSeleniumHubUrl() {
-        String url = getConfigInstance().seleniumHubUrl();
+        String url = removeQuoteMark(getConfigInstance().seleniumHubUrl());
         if (Strings.isNullOrEmpty(url)) {
             return "";
         }

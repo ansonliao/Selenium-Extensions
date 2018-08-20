@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.util.Strings;
 
+@Deprecated
 public class SEConfig {
     private static final Logger logger =
             LoggerFactory.getLogger(SEConfig.class);

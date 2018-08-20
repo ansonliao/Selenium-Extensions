@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public class BrowserUtils {
@@ -22,13 +23,15 @@ public class BrowserUtils {
                 .getNamesOfAllClasses()
                 .parallelStream()
                 .filter(className ->
-                        className.startsWith(getConfigInstance().browserAnnotationPackage()))
+                        className.startsWith(
+                                removeQuoteMark(getConfigInstance().browserAnnotationPackage())))
                 .map(ClassFinder::createClass)
                 //.filter(aClass -> aClass.isAnnotation())
                 .filter(Class::isAnnotation)
                 .map(aClass -> aClass.getSimpleName().toUpperCase())
                 .filter(className ->
-                        !className.startsWith(getConfigInstance().brwoserIgnoreAnnotationPrefix()))
+                        !className.startsWith(
+                                removeQuoteMark(getConfigInstance().brwoserIgnoreAnnotationPrefix())))
                 .collect(Collectors.toList());
     }
 
@@ -37,14 +40,17 @@ public class BrowserUtils {
                 .getNamesOfAllClasses()
                 .parallelStream()
                 .filter(className ->
-                        className.startsWith(getConfigInstance().browserAnnotationPackage()))
+                        className.startsWith(
+                                removeQuoteMark(getConfigInstance().browserAnnotationPackage())))
                 .map(ClassFinder::createClass)
                 .filter(Class::isAnnotation)
                 .map(aClass -> aClass.getSimpleName().toUpperCase())
                 .filter(className ->
-                        className.startsWith(getConfigInstance().brwoserIgnoreAnnotationPrefix()))
+                        className.startsWith(
+                                removeQuoteMark(getConfigInstance().brwoserIgnoreAnnotationPrefix())))
                 .map(className ->
-                        className.substring(getConfigInstance().brwoserIgnoreAnnotationPrefix().length()))
+                        className.substring(
+                                removeQuoteMark(getConfigInstance().brwoserIgnoreAnnotationPrefix()).length()))
                 .collect(Collectors.toList());
     }
 
@@ -121,9 +127,11 @@ public class BrowserUtils {
                 .map(annotation ->
                         annotation.annotationType().getSimpleName().toUpperCase())
                 .filter(className ->
-                        className.startsWith(getConfigInstance().brwoserIgnoreAnnotationPrefix()))
+                        className.startsWith(
+                                removeQuoteMark(getConfigInstance().brwoserIgnoreAnnotationPrefix())))
                 .map(className ->
-                        className.substring(getConfigInstance().brwoserIgnoreAnnotationPrefix().length()))
+                        className.substring(
+                                removeQuoteMark(getConfigInstance().brwoserIgnoreAnnotationPrefix()).length()))
                 .collect(Collectors.toSet());
     }
 }

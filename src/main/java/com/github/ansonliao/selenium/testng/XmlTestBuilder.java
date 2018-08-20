@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 import static java.util.stream.Collectors.toList;
 
@@ -21,12 +22,14 @@ public class XmlTestBuilder {
         Set<XmlTest> xmlTestList = Sets.newHashSet();
         Multimap<String, XmlClass> browserXmlclassMap = XmlClassBuilder.build();
         final int DEFAULT_TEST_CLASS_SIZE = getConfigInstance().testTagClassSizeOfTestNgXml();
+        boolean isPreserveOrder = getConfigInstance().testngPreserveOrder();
 
         browserXmlclassMap.keySet().forEach(browserName -> {
             List<XmlClass> xmlClassList = browserXmlclassMap.get(browserName)
                     .stream().distinct().collect(toList());
             ArrayList<XmlClass> tempXmlClass = Lists.newArrayList(xmlClassList);
             int xmlClassGroupSize = xmlClassList.size() / DEFAULT_TEST_CLASS_SIZE + 1;
+            String browserParamKey = removeQuoteMark(getConfigInstance().testngXmlBrowserParamKey());
             int counter = xmlClassGroupSize;
 
             int startIndex = 0;
@@ -42,8 +45,8 @@ public class XmlTestBuilder {
                         ? String.format("Selenium Test - %s", browserName)
                         : String.format("Selenium Test - %s %d", browserName, browserIndex);
                 xmlTest.setName(xmlTestName);
-                xmlTest.addParameter(getConfigInstance().testngXmlBrowserParamKey(), browserName);
-                xmlTest.setPreserveOrder(getConfigInstance().testngPreserveOrder());
+                xmlTest.addParameter(browserParamKey, browserName);
+                xmlTest.setPreserveOrder(isPreserveOrder);
 
                 if (tempXmlClass.size() < DEFAULT_TEST_CLASS_SIZE) {
                     xmlTest.setXmlClasses(tempXmlClass.subList(startIndex, tempXmlClass.size()));
