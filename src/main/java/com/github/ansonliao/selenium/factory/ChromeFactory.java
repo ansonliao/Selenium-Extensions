@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 import static org.openqa.selenium.remote.BrowserType.CHROME;
 
@@ -69,7 +70,7 @@ public class ChromeFactory extends DriverManager {
 
     @Override
     public String getExportParameterKey() {
-        return getConfigInstance().chromeDriverProperty();
+        return removeQuoteMark(getConfigInstance().chromeDriverProperty());
     }
 
     @Override

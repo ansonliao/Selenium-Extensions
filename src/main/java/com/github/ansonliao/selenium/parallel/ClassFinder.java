@@ -14,7 +14,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class ClassFinder {
     private static Logger logger = LoggerFactory.getLogger(ClassFinder.class);
@@ -115,20 +116,20 @@ public class ClassFinder {
 
         if (packages == null || packages.length == 0) {
             logger.info("Find all TestNG test classes in current project.");
-            return classes.stream().collect(Collectors.toList());
+            return classes.stream().collect(toList());
         }
 
         List<String> packageNames = Arrays.asList(packages);
         logger.info("Find TestNG classes in package(s): " + packageNames);
 
         //TODO: replace forEach() with filter of stream
-        classes.stream().collect(Collectors.toList()).forEach(aClass -> {
+        classes.stream().collect(toList()).forEach(aClass -> {
             if (!packageNames.contains(aClass.getPackage().getName())) {
                 classes.remove(aClass);
             }
         });
 
-        return classes.stream().collect(Collectors.toList());
+        return classes.stream().collect(toList());
     }
 
     public synchronized static Class<?> createClass(String className) {

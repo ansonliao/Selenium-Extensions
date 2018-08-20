@@ -6,7 +6,8 @@ import org.testng.xml.XmlClass;
 import org.testng.xml.XmlInclude;
 
 import java.lang.reflect.Method;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class XmlClassBuilder {
 
@@ -17,7 +18,7 @@ public class XmlClassBuilder {
                     XmlClass xmlClass = new XmlClass(aClass.getCanonicalName());
                     xmlClass.setIncludedMethods(methods.parallelStream()
                             .map(Method::getName).map(XmlInclude::new)
-                            .distinct().collect(Collectors.toList()));
+                            .distinct().collect(toList()));
 
                     browserXmlClassMap.put(browserName, xmlClass);
                 }));

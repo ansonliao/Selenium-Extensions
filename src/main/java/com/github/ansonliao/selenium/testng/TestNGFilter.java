@@ -3,6 +3,7 @@ package com.github.ansonliao.selenium.testng;
 import com.github.ansonliao.selenium.parallel.ClassFinder;
 import com.github.ansonliao.selenium.parallel.MethodFinder;
 import com.github.ansonliao.selenium.utils.BrowserUtils;
+import com.github.ansonliao.selenium.utils.StringUtils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -18,9 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class TestNGFilter {
     private static final Logger logger = LoggerFactory.getLogger(TestNGFilter.class);
@@ -28,8 +31,9 @@ public class TestNGFilter {
     private static Multimap<Class<?>, Method> testNGClass2MethodMap = HashMultimap.create();
 
     static {
-        String[] testingPackageNames = getConfigInstance().testingPackageNames().toArray(
-                new String[getConfigInstance().testingPackageNames().size()]);
+        String[] testingPackageNames = getConfigInstance().testingPackageNames().parallelStream()
+                .map(StringUtils::removeQuoteMark).collect(toList())
+                .toArray(new String[getConfigInstance().testingPackageNames().size()]);
         testngClasses = ClassFinder.findAllTestNGTestClasses(testingPackageNames);
     }
 
@@ -47,11 +51,12 @@ public class TestNGFilter {
                     .filter(aClass ->
                             getConfigInstance().testingTestNGClasses()
                                     .parallelStream()
+                                    .map(StringUtils::removeQuoteMark)
                                     .map(String::toUpperCase)
-                                    .collect(Collectors.toList())
+                                    .collect(toList())
                                     .contains(aClass.getCanonicalName().toUpperCase()))
                     .distinct()
-                    .collect(Collectors.toList());
+                    .collect(toList());
             return testngClasses;
         }
         return testngClasses;
@@ -74,11 +79,12 @@ public class TestNGFilter {
         testngClasses.stream().forEach(aClass -> {
             List<Method> methodList = getConfigInstance().testingTestGroups()
                     .parallelStream()
+                    .map(StringUtils::removeQuoteMark)
                     .map(group -> MethodFinder.findTestNGMethodInClassByGroup(aClass, group))
                     .flatMap(Collection::stream)
                     .distinct()
                     .filter(method -> method.getAnnotation(Test.class).enabled())
-                    .collect(Collectors.toList());
+                    .collect(toList());
             if (methodList.size() > 0) {
                 methodList.forEach(method -> testNGClass2MethodMap.put(aClass, method));
             }
@@ -92,7 +98,7 @@ public class TestNGFilter {
         if (!getConfigInstance().testingBrowserNames().isEmpty()) {
             logger.info("Detected testing browser filter to: {}", getConfigInstance().testingBrowserNames());
             Set<String> browserFilters = getConfigInstance().testingBrowserNames()
-                    .parallelStream().map(String::toUpperCase).collect(Collectors.toSet());
+                    .parallelStream().map(String::toUpperCase).map(StringUtils::removeQuoteMark).collect(toSet());
             Multimap<Class<?>, Method> resultMap = HashMultimap.create(testNGClass2MethodMap);
             testNGClass2MethodMap.keySet().stream().forEach(aClass ->
                     testNGClass2MethodMap.get(aClass).stream().forEach(method -> {
@@ -119,9 +125,11 @@ public class TestNGFilter {
             // only fetch support browsers
             List<String> browsers =
                     Sets.intersection(
-                            getConfigInstance().runByBrowsers().parallelStream().collect(Collectors.toSet()),
+                            getConfigInstance().runByBrowsers().parallelStream()
+                                    .map(StringUtils::removeQuoteMark)
+                                    .map(String::toUpperCase).collect(toSet()),
                             Sets.newHashSet(BrowserUtils.getSupportedBrowsers()))
-                            .parallelStream().collect(Collectors.toList());
+                            .parallelStream().collect(toList());
 
             logger.info("Run Tests by browsers: {}", browsers);
 
@@ -180,7 +188,7 @@ public class TestNGFilter {
     }
 
     private static Set<String> addIncludedDefaultBrowser(Method method) {
-        String DEFAULT_BROWSER_TYPE_NAME = getConfigInstance().defaultBrowser().toUpperCase();
+        String DEFAULT_BROWSER_TYPE_NAME = removeQuoteMark(getConfigInstance().defaultBrowser().toUpperCase());
         Set<String> methodSupportedBrowsers = BrowserUtils.getMethodSupportedBrowsers(method);
         Set<String> methodBrowsers = BrowserUtils.getMethodBrowsers(method);
         Set<String> ignoreBrowsers = BrowserUtils.getMethodIgnoredBrowsers(method);

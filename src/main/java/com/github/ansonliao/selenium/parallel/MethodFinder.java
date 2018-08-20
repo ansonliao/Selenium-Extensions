@@ -7,7 +7,8 @@ import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class MethodFinder {
     private static Logger logger = LoggerFactory.getLogger(MethodFinder.class);
@@ -17,13 +18,13 @@ public class MethodFinder {
         logger.info("Find all @Test method in class: " + clazz.getName());
         return findMethodInClass(clazz).stream().distinct()
                 .filter(method -> method.isAnnotationPresent(Test.class))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public static List<Method> findMethodInClass(Class clazz) {
         logger.info("Find all declared methods in class: " + clazz.getName());
         return Lists.newArrayList(clazz.getDeclaredMethods()).parallelStream()
-                .distinct().collect(Collectors.toList());
+                .distinct().collect(toList());
     }
 
     public static List<Method> findTestNGMethodInClassByGroup(
@@ -52,6 +53,6 @@ public class MethodFinder {
                         Lists.newArrayList(
                                 m.getAnnotation(Test.class).groups())
                                 .contains(groupName))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }

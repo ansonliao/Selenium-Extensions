@@ -10,9 +10,10 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class TestGroupUtils {
     private static final Logger logger =
@@ -29,33 +30,35 @@ public class TestGroupUtils {
         }
 
         return Lists.newArrayList(annotation.groups())
-                .stream().collect(Collectors.toSet())
-                .stream().collect(Collectors.toList());
+                .stream().collect(toSet())
+                .stream().collect(toList());
     }
 
     public static List<String> getMethodTestGroups(Method method) {
         if (!getConfigInstance().testingTestGroups().isEmpty()) {
-            return getConfigInstance().testingTestGroups();
+            return getConfigInstance().testingTestGroups().parallelStream()
+                    .map(StringUtils::removeQuoteMark)
+                    .collect(toList());
         }
 
         Set<String> classTestGroups =
                 getClassTestGroups(method.getDeclaringClass())
-                        .parallelStream().collect(Collectors.toSet());
+                        .parallelStream().collect(toSet());
 
         if (!method.isAnnotationPresent(Test.class)) {
-            return classTestGroups.parallelStream().collect(Collectors.toList());
+            return classTestGroups.parallelStream().collect(toList());
         }
 
         Test annotation = method.getAnnotation(Test.class);
         if (annotation.groups().length == 0) {
-            return classTestGroups.parallelStream().collect(Collectors.toList());
+            return classTestGroups.parallelStream().collect(toList());
         }
 
         return Sets.union(
                 classTestGroups,
                 Lists.newArrayList(annotation.groups())
-                        .parallelStream().collect(Collectors.toSet()))
-                .parallelStream().collect(Collectors.toList());
+                        .parallelStream().collect(toSet()))
+                .parallelStream().collect(toList());
     }
 
 }
