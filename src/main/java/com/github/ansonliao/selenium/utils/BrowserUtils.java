@@ -31,7 +31,7 @@ public class BrowserUtils {
                 .map(aClass -> aClass.getSimpleName().toUpperCase())
                 .filter(className ->
                         !className.startsWith(
-                                removeQuoteMark(getConfigInstance().brwoserIgnoreAnnotationPrefix())))
+                                removeQuoteMark(getConfigInstance().browserIgnoreAnnotationPrefix())))
                 .collect(Collectors.toList());
     }
 
@@ -47,10 +47,10 @@ public class BrowserUtils {
                 .map(aClass -> aClass.getSimpleName().toUpperCase())
                 .filter(className ->
                         className.startsWith(
-                                removeQuoteMark(getConfigInstance().brwoserIgnoreAnnotationPrefix())))
+                                removeQuoteMark(getConfigInstance().browserIgnoreAnnotationPrefix())))
                 .map(className ->
                         className.substring(
-                                removeQuoteMark(getConfigInstance().brwoserIgnoreAnnotationPrefix()).length()))
+                                removeQuoteMark(getConfigInstance().browserIgnoreAnnotationPrefix()).length()))
                 .collect(Collectors.toList());
     }
 
@@ -128,10 +128,10 @@ public class BrowserUtils {
                         annotation.annotationType().getSimpleName().toUpperCase())
                 .filter(className ->
                         className.startsWith(
-                                removeQuoteMark(getConfigInstance().brwoserIgnoreAnnotationPrefix())))
+                                removeQuoteMark(getConfigInstance().browserIgnoreAnnotationPrefix())))
                 .map(className ->
                         className.substring(
-                                removeQuoteMark(getConfigInstance().brwoserIgnoreAnnotationPrefix()).length()))
+                                removeQuoteMark(getConfigInstance().browserIgnoreAnnotationPrefix()).length()))
                 .collect(Collectors.toSet());
     }
 }
