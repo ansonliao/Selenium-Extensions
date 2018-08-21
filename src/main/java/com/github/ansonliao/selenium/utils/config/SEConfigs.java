@@ -18,48 +18,57 @@ public class SEConfigs {
     public interface SEConfiguration extends Config {
 
         // SE utils identify keys
-        @Key("addBrowserGroupToReport")
+        // @Key("addBrowserGroupToReport")
+        @Key("add.browsergroup.to.report")
         @DefaultValue("false")
         boolean addBrowserGroupToReport();
 
-        @Key("runByBrowsers")
+        @Key("run.by.browsers")
         @DefaultValue("")
         @Separator(",")
         List<String> runByBrowsers();
 
-        @Key("defaultBrowser")
+        // @Key("defaultBrowser")
+        @Key("default.browser")
         @DefaultValue("Chrome")
         String defaultBrowser();
 
-        @Key("defaultBrowserAnnotationPackage")
+        // @Key("defaultBrowserAnnotationPackage")
+        @Key("browser.annotation.package")
         @DefaultValue("com.github.ansonliao.selenium.annotations.browser")
         String browserAnnotationPackage();
 
-        @Key("testTagClassSizeOfTestNgXml")
+        // @Key("testTagClassSizeOfTestNgXml")
+        @Key("test.tag.class.size.of.testngxml")
         @DefaultValue("10")
         int testTagClassSizeOfTestNgXml();
 
-        @Key("testingPackageNames")
+        // @Key("testingPackageNames")
+        @Key("testing.package.names")
         @DefaultValue("")
         @Separator(",")
         List<String> testingPackageNames();
 
-        @Key("testingBrowserNames")
+        // @Key("testingBrowserNames")
+        @Key("testing.browser.names")
         @DefaultValue("")
         @Separator(",")
         List<String> testingBrowserNames();
 
-        @Key("testingTestGroups")
+        // @Key("testingTestGroups")
+        @Key("testing.test.groups")
         @DefaultValue("")
         @Separator(",")
         List<String> testingTestGroups();
 
-        @Key("testingTestNGClasses")
+        // @Key("testingTestNGClasses")
+        @Key("testing.testng.classes")
         @DefaultValue("")
         @Separator(",")
         List<String> testingTestNGClasses();
 
-        @Key("testngListeners")
+        // @Key("testngListeners")
+        @Key("testng.listeners")
         @DefaultValue(
                 "com.github.ansonliao.selenium.testng.TestResultListener, "
                         + "com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener")
@@ -68,7 +77,7 @@ public class SEConfigs {
 
         // key set to "browser.ignore.anntation.prefix" if needed
         @DefaultValue("IGNORE")
-        String brwoserIgnoreAnnotationPrefix();
+        String browserIgnoreAnnotationPrefix();
 
         // key set to "testng.xml.browser.parameter.key" if needed
         @DefaultValue("browser")
@@ -87,31 +96,31 @@ public class SEConfigs {
         String browserAnnotationTypeProp();
 
         // webdriver export property key
-        @Key("wdParameterKey.chrome")
+        @Key("wd.parameter.key.chrome")
         @DefaultValue("webdriver.chrome.driver")
         String chromeDriverProperty();
 
-        @Key("wdParameterKey.firefox")
+        @Key("wd.parameter.key.firefox")
         @DefaultValue("webdriver.gecko.driver")
         String firefoxDriverProperty();
 
-        @Key("wdParameterKey.phantomjs")
+        @Key("wd.parameter.key.phantomjs")
         @DefaultValue("phantomjs.binary.path")
         String phantomjsDriverProperty();
 
-        @Key("wdParameterKey.edge")
+        @Key("wd.parameter.key.edge")
         @DefaultValue("webdriver.edge.driver")
         String edgeDriverProperty();
 
-        @Key("wdParameterKey.ie")
+        @Key("wd.parameter.key.ie")
         @DefaultValue("webdriver.ie.driver")
         String ieDriverProperty();
 
-        @Key("wdParameterKey.opera")
+        @Key("wd.parameter.key.opera")
         @DefaultValue("webdriver.opera.driver")
         String operaDriverProperty();
 
-        @Key("wd.useTaobaoMirror")
+        @Key("wd.use.mirror")
         @DefaultValue("false")
         boolean useTaobaoMirror();
 
