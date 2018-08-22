@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.parallel;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
@@ -11,10 +12,11 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 import static java.util.stream.Collectors.toList;
 
 public class ClassFinder {
@@ -22,7 +24,8 @@ public class ClassFinder {
     private static final String PACKAGE_SEPARATOR = ".";
     private static final String DIR_SEPARATOR = File.separator;
     private static final String CLASS_FILE_SUFFIX = ".class";
-    private static final String TESTNG_TEST_CLASS_PREFIX = "test";
+    private static final String TESTNG_TEST_CLASS_PREFIX =
+            removeQuoteMark(getConfigInstance().testngTestClassPrefix().toLowerCase().trim());
     private static final String BAD_PACKAGE_ERROR =
             "Unable to get resources from path '%s'. Are you sure the package '%s' exists?";
 
@@ -30,8 +33,7 @@ public class ClassFinder {
     private static ScanResult scanResult;
 
     static {
-        classpathScanner = new FastClasspathScanner()
-                .enableMethodAnnotationIndexing();
+        classpathScanner = new FastClasspathScanner().enableMethodAnnotationIndexing();
         scanResult = classpathScanner.scan();
     }
 
@@ -54,7 +56,7 @@ public class ClassFinder {
                     String.format(BAD_PACKAGE_ERROR, scannedPath, scannedPackage));
         }
         File scannedDir = new File(scannedUrl.getFile());
-        List<Class<?>> classes = new ArrayList<>();
+        List<Class<?>> classes = Lists.newArrayList();
         for (File file : scannedDir.listFiles()) {
             classes.addAll(find(file, scannedPackage));
         }
@@ -62,7 +64,7 @@ public class ClassFinder {
     }
 
     private static List<Class<?>> find(File file, String scannedPackage) {
-        List<Class<?>> classes = new ArrayList<>();
+        List<Class<?>> classes = Lists.newArrayList();
         String resource = scannedPackage + PACKAGE_SEPARATOR + file.getName();
         if (file.isDirectory()) {
             for (File child : file.listFiles()) {
@@ -81,9 +83,9 @@ public class ClassFinder {
     }
 
     public static Set<Class<?>> findAnnotatedTestClasses(List<Class<?>> classes) {
-        Set<Class<?>> annotatedTestClasses = new HashSet<>();
+        Set<Class<?>> annotatedTestClasses = Sets.newHashSet();
         classes.forEach(clazz -> {
-            if (clazz.getName().toLowerCase().contains("test")) {
+            if (clazz.getName().toLowerCase().startsWith(TESTNG_TEST_CLASS_PREFIX)) {
                 annotatedTestClasses.add(clazz);
             }
         });

@@ -66,6 +66,10 @@ public class SEConfigs {
         @Separator(",")
         List<String> testngListeners();
 
+        @Key("testng.class.prefix")
+        @DefaultValue("test")
+        String testngTestClassPrefix();
+
         // key set to "browser.ignore.anntation.prefix" if needed
         @DefaultValue("IGNORE")
         String browserIgnoreAnnotationPrefix();
