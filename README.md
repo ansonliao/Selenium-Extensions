@@ -3,6 +3,8 @@
 This is a extension for Selenium in Java to extend Selenium for make Selenium test case can be run in parallel, and make it easy to support multiple browsers.
 Integrated beautiful and powerful HTML test report: [ExtentReports](http://extentreports.com/).
 
+[TOC]
+
 ## Maven Dependency
 Add the below dependencies in your `pom.xml` (Master)
 
@@ -19,7 +21,7 @@ Add the below dependencies in your `pom.xml` (Master)
 <dependency>
     <groupId>com.github.ansonliao</groupId>
     <artifactId>Selenium-Extensions</artifactId>
-    <version>2.3.4</version>
+    <version>2.3.7</version>
 </dependency>
 ```
 
@@ -30,7 +32,9 @@ Parallel mode is by Test, the tag `<test>` of TestNG test suite xml.
 ## Visual TestNG test suite XML generation
 No need to provide TestNG test suite XMl file to start the test, TestNG test suite XML file will be generated programmatically.
 
-## Test Report
+## Report
+### Testing Report
+
 After test completed, Extents test report can be found `target/ExtentReports.html`.
 
 ### Screenshot for test fail
@@ -53,20 +57,17 @@ Browser support:
 
 ## Multiple browsers in Runtime
 ```java
-public class BrowserTest extends UserBaseTest {
-
+public class TestBrowser {
     @Test
     @Chrome
     public void f1() {
-        openUrl(getUrl());
-        System.out.println("I'm in f1 - " + browserName + " : " + Thread.currentThread().getId());
+        // your testing code here
     }
 
     @Test
     @Firefox
     public void f2() {
-        openUrl(getUrl());
-        System.out.println("I'm in f2 - "+ browserName + " : " + Thread.currentThread().getId());
+        // your testing code here
     }
 }
 ```
@@ -74,20 +75,17 @@ public class BrowserTest extends UserBaseTest {
 Even, you can annotated your test class:
 ```java
 @Chrome
-public class BrowserTest extends UserBaseTest {
-
+public class TestBrowser {
     @Test
     @Edge
     public void f1() {
-        openUrl(getUrl());
-        System.out.println("I'm in f1 - " + browserName + " : " + Thread.currentThread().getId());
+        // your testing code here
     }
 
     @Test
     @Firefox
     public void f2() {
-        openUrl(getUrl());
-        System.out.println("I'm in f2 - "+ browserName + " : " + Thread.currentThread().getId());
+        // your testing code here
     }
 }
 ```
@@ -99,55 +97,55 @@ So finally, test method:
 
 ## Dynamic URL support for test method
 ```java
-public class BrowserTest extends UserBaseTest {
+public class TestBrowser {
 
     @Test
     @Chrome
     @URL("https://www.google.com/")
     public void f1() {
-        openUrl(getUrl());
-        System.out.println("I'm in f1 - " + browserName + " : " + Thread.currentThread().getId());
+        // your testing code here
     }
 
     @Test
     @Firefox
     @URL("https://www.wordpress.com")
     public void f2() {
-        openUrl(getUrl());
-        System.out.println("I'm in f2 - "+ browserName + " : " + Thread.currentThread().getId());
+        // your testing code here
     }
 }
 ```
 
+When the test start (test cases `f1`, `f2`), the URL will be open automatically, URL `https://www.google.com/` will be 
+launched for test case `f1`, URL `https://www.wordpress.com` will be launched for test case `f2`.
+
 also, you can annotate test class by `@URL`, such as:
 ```java
 @URL("http://www.google.com")
-public class BrowserTest extends UserBaseTest {
-
+public class TestBrowser {
     @Test
     @Chrome
     public void f1() {
-        openUrl(getUrl());
-        System.out.println("I'm in f1 - " + browserName + " : " + Thread.currentThread().getId());
+        // your testing code here
     }
 
     @Test
     @Firefox
     public void f2() {
-        openUrl(getUrl());
-        System.out.println("I'm in f2 - "+ browserName + " : " + Thread.currentThread().getId());
+        // your testing code here
     }
 }
 ```
 
+Above two test cases `f1`, `f2` will be lauch URL `http://www.google.com` automatically.
+
 ## Run test case
+
 You need to create the `runner` to trigger the testing run.
 
 Below is a sample, it is the simplest sample run all test cases, only run method `TestNGRunner.Run()`.
 
 ```java
 public class MyTestRunner {
-
     @Test
     public void run() {
         TestNGRunner.Run();
@@ -171,215 +169,115 @@ The filter includes:
 - *Test class*: run test cases by specify test classes which are TestNG test class
 - *Browser*: run test cases by specify browser, such as `CHROME`, `FIREFOX`
 
-## Setting your filter
+### Full configuration list
+You can create your owned configuration and named to `seleniumextentsions.properties` or `se.properties`.
+Please note that make sure put your owned configuration file to the resources directory of under `src` that the main Java code (`src/main/resources`) or test Java code (`src/test/resources`).
 
-The keywords for you to setting the filters:
+| **Key** | **Description** | **Value** | **Default Value**|
+| --- | --- | ---| --- |
+| add.browser.group.to.report | Whether add testing browser to ExtentReports as a group of ExtentReport | Boolean: `true` / `false` | `false` |
+| run.by.browsers | Run all TestNG test by the specified browser(s). This setting will ignore the existing browser annotation of TestNG test class, and will resign all valid TestNG test class to this setting browser |  `CHROME`, `FIREFOX`, `IE`, `OPERA`, `PHAMTOMJS`, `EDGE`, `INTEREXPLORER`| null |
+| default.browser | Setting the default browser for the valid TestNG test case which without any valid browser annotation| `CHROME`, `FIREFOX`, `IE`, `OPERA`, `PHAMTOMJS`, `EDGE`, `INTEREXPLORER` | `CHROME` |
+| browser.annotation.package | The package that places all browser annotations and all ignore browser annotations. | string | com.github.ansonliao.selenium.annotations.browser |
+| test.tag.class.size.of.testngxml | The setting for how many TestNG test class will be held for each `Test` tag of TestNG XML | positive integer | 10 |
+| testing.package.names | Specified what test script under the package(s)  will be run | string or string of list | nulll |
+| testing.browser.names | Run the test cases which specified annotated by browser annotation match to this setting | string or string of list | null |
+| testing.test.groups | Run the test cases which are assigned to the testing group of TestNG of this setting | string or string of list | null |
+| testingTestNGClasses | Specified what valid TestNG testing class will be executed | string or string of list | null |
+| testng.listeners | Provided your owned TestNG listener(s) | string or string of list | `com.github.ansonliao.selenium.testng.TestResultListener`, `com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener` |
 
-- Package: `testPackages`
-- Test Group: `testGroups`
-- Test Class: `testClasses`
-- Browsers: `testBrowsers`
+> Please note that, for the setting can be string of list, please use comma (`,`) as the separator
 
+### Sample configuration: `src/test/resources/seleniumextensions.properties`
 
-There are two ways to setting your filter for package list, test groups list, test class list, and browser list.
+```
+add.browser.group.to.report=true
+run.by.browsers=CHROME, FIREFOX
+default.browser=CHROME															// can be removed
+browser.annotation.package=com.github.ansonliao.selenium.annotations.browser	// can be removed
+testing.package.names=example.phase1, example.phase2
+test.tag.class.size.of.testngxml=20
+testing.test.groups=REGRESSION, SMOKE
+testng.listeners=example.listeners.mylistener1, example.listeners.mylistener2
 
-1. Setting by `System Property`, can set `System Property` by `mvn` command or `export` method of Unix/Linux OS:
-    
-    Maven:
-    ```bash
-    mvn clean test -Dtest=MyTestRunner -DtestBrowsers="CHROME, FIREFOX, SAFARI" -DtestClasses="com.example.Test_HomePage.java, com.example.Test_LoginPage.java"
-    ```
-    
-    Export:
-    ```bash
-    export testClasses="com.example.Test_HomePage.java, com.example.Test_LoginPage.java"
-    export testBrowsers="CHROME, FIREFOX, SAFARI"
-    export testPackages="com.example.test1, com.example.test2"
-    export testGroups="@SMOKE, @REGRESSION, @BLOCKER"
-    ```   
-    
-    after that, add method call in your test runner Java class, before `TestNGRunner.Run()`, sample is below.
-    
-    ```java
-    public class MyTestRunner {
-    
-        @Test
-        public void run() {
-            DefaultSettingUtils.set();     // try to fetch filters from system properties setting
-            TestNGRunner.Run();
-        }
-    }
-    ```
-
-2. Setting by programming
-
-    Setting custom filter programmatically is easy, `DefaultSettingUtils` can approach it.
-    Below is the sample.
-    
-    ```java
-    public class MyTestRunner {
-    
-        @Test
-        public void run() {
-            List<String> packageList = com.google.common.collect.Lists.newArrayList("com.example.test1", com.example.test2);
-            List<String> groupList = com.google.common.collect.Lists.newArrayList("@SMOKE", "@REGRESSION", "@BLOCKER");
-            DefaultSettingUtils.setTestingPackages(packageList);
-            DefaultSettingUtils.setTestingGroups(groupList);
-            
-            TestNGRunner.Run();
-        }
-    }
-    ```
-    
-    For example, we can create a test runner for `Smoke Test`, to run the test cases tagged as `@SMOKE` test group.
-    
-    ```java
-    public class SmokeTestRunner {
-    
-        @Test
-        public void run() {
-            List<String> groupList = com.google.common.collect.Lists.newArrayList("@SMOKE");
-            DefaultSettingUtils.setTestingGroups(groupList);
-            
-            TestNGRunner.Run();
-        }
-    }
-    ```
-    
-    or in Jenkins, export `testGroups` before Maven command to trigger the test run.
-    
-    ```bash
-    export testGroups="@SMOKE"
-    ```
-    
-    Make sure the test runner includes: `DefaultSettingUtils.set();`
-    
-    ```java
-    public class SmokeTestRunner {
-        
-            @Test
-            public void run() {
-                DefaultSettingUtils.set();
-                TestNGRunner.Run();
-            }
-    }
-    ```
-    
-    And then the command to trigger the test by Maven command:
-    
-    ```bash
-    mvn clean test -Dtest=SmokeTestRunner
-    ```
-
-### Importance: Put all items of packages, test classes, test groups, test browsers in a string,
-separated by comma `,`. please check below:
-
-```bash
-# below are wrong
-$: mvn test -Dtest=MyTestRunner -DtestGroups="@SMOKE" -DtestGroups="@BLOCKER"
-
-
-$: export testGroups="@SMOKE"
-$: export testGroups="@BLOCKER"
-$: export testPackages="com.example.test1"
-$: export testpackages="com.example.test2"
 ```
 
-below are correct
+### Provide  filters as Maven command line argument
+
+also you can provide the configuration by Maven's command line argument:
+
+Execute `Smoke` test case (TestNG test group includes `SMOKE`) only
 
 ```bash
-$: mvn test -Dtest=MyTestRunner -DtestGroups="@SMOKE, @BLOCKER" 
-
-$: export testGroups="@SMOKE, @BLOCKER"
-$: export testPackages="com.example.test1, com.example.test2"
+mvn clean test -Dtest=your_test_runner -Dtesting.test.groups=SMOKE
 ```
 
-## Default Browser
-If you test case is not annotated by any browser (test method and test class without any browser annotation),
-the default browser will be set to `CHROME`, it means that the test case will be added `CHROME` to its supported browser running list.
+Or have a package that place all `Smoke` test case together and the package name is `example.smoke`:
 
-## Change Default Browser
-`Selenium-Extensions` provide a method to change default browser.
+```bash
+mvn clean test -Dtest=your_test_runner -Dtesting.package.names=example.smokeProvide filter programmatically
+```
 
-Similar custom filters, change default browser can be approached by setting `System Property`, `export`, and prgramming.
+ ### Provide filters programmatically
 
-The keyword to change the default browser is: `defaultBrowser`.
-
-- Change default browser by Maven Command
-
-    ```bash
-    mvn clean test -Dtest=MyTestRunner -DdefaultBrowser="FIREFOX"
-    ```
-
-- Change default browser by export system environment variable
-
-    ```bash
-    export defaultBrowser="FIREFOX"
-    ```
-
-- Change default browser programmatically
-
-    ```java
-    public class SmokeTestRunner {
-            
-        @Test
-        public void run() {
-            DefaultSettingUtils.setDefaultBrowser("FIREFOX");
-            TestNGRunner.Run();
-        }
-    }
-    ```
-    
-## Parameterized and overwrite browser type annotation of test cases
-Though add browser annotation to test method or test class that test cases run against what browsers.
-Actually, for some cases it is not good for change all test cases run against the browser you want as 
-it is need to modify all test case's browser.
-
-`Selenium-Extensions` provide a parameterize method to change all test cases run against the browsers without
-update the test case's browser annotation.
-
-Please note that `Run By Browsers` parameterize is temporary method, it will not effect any browser annotation 
-setting of test case.
-It means that, if the browser annotations of test case nothing change, when the test case run at next time, 
-without the `Run By Browsers` parameter the test cases will run against the browser depends on 
-browser annotations of test cases.
-
-### How to use external parameter/property to overwrite the browser annotations of test case
-
-1. By Maven, only apply property `runByBrowsers` and value with the browsers the test case expect to run.
-    
-    ```bash
-    mvn clean test -Dtest=MyTestRunner -DrunByBrowsers="EDGE, PHANTOMJS" 
-    ```
-   
-2. By programming in Java
-
-    ```java
-    public class MyTestRunner {
-                
-            @Test
-            public void run() {
-                System.setProperty("runByBrowsers", "EDGE, PHANTOMJS");
-                TestNGRunner.Run();
-            }
-        }
-    ```
-
-The sample above, all test cases will be run against browsers `Edge`, `PhantomJs`, 
-the test will ignore the existed browser annotations of test cases.
-
-Please note that, please be careful the browser ignore annotation, for example:
-`@IgnoreChrome`, `@IgnorePhantomJs`, etc..
-Browser ignore annotation will effect the parameterized/external browser.
-For example,
+In your Test Runner, before calling `TestNGRunner.Run(...)`, you can set the configuration via set the values of `System.Properties` or `System.envs` of Java:
 
 ```java
-@org.testng.annotations.Test
-@com.github.ansonliao.selenium.annotations.browser.PhantomJs
-public void f1() {
-    ...
+public class RegressionRunner {
+    @Test
+    public void runner() {
+        System.setProperty("testing.test.groups", "REGRESSION");
+        TestNGRunner.run();
+    }
+}
+
+public class SmokeRunner {
+    @Test
+    public void runner() {
+        System.setProperty("testing.test.groups", "SMOKE");
+    }
+}
+
+public class ChromeTestRunner {
+    @Test
+    public void runner() {
+        System.setProperty("testing.browser.names", "CHROME");
+        TestNGRunner.run();
+    }
+}
+
+```
+
+
+
+#### Different between `default.browser` and `testing.browser.names`
+
+- `testing.browser.names`: The program will look for the valid TestNG testing class and testing method's browser annotations and check the browser annotation of test case whether contained in the setting of `testing.browser.names`, and then execute the test case which annotated by the browser annotation contains in the setting.
+- `run.by.browsers`: The programm will look for the valid TestNG test case and then ignore the browser annotation(s), and then add browser(s) of `run.by.browsers` as the new browser annotation(s) for the valid TestNG test case.
+
+**Sample:**
+
+Let's say we have two test methods below:
+
+```java
+public void TestCaseSample {
+    
+    @Test(groups={"Regresion", "SMOKE"})
+    @Chrome
+    public void regression1() {
+        // testing code here
+    }
+    
+    @Test(groups={"Regression", "BVT"})
+	@Firefox
+    public void regression2() {
+        // testing code here
+    }
 }
 ```
 
-above test case, if paremeterized browsers includes browser type `PhantomJs`, this 
-test case will be ignore, because this test case includes ignore browser `PhantomJs` annotation.
+1. Setting `run.by.browsers=EDGE, PHANTOMJS` applied, those two test cases will be executed against to browser `Edge`, `PhantomJS`
+2. Setting `testing.browser.names=FIREFOX` applied, only `regression2()` of those two test cases will be executed, because only test case `regression2()` have browser `Firefox` annotation
+3. Setting `testing.browser.names=PHANTOMJS` applied, no test case will be executed, because no test case annotated to browser `PHANTOMJS`
+
+
