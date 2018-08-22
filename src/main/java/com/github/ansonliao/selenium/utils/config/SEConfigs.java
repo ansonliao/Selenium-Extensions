@@ -18,8 +18,7 @@ public class SEConfigs {
     public interface SEConfiguration extends Config {
 
         // SE utils identify keys
-        // @Key("addBrowserGroupToReport")
-        @Key("add.browsergroup.to.report")
+        @Key("add.browser.group.to.report")
         @DefaultValue("false")
         boolean addBrowserGroupToReport();
 
@@ -28,46 +27,38 @@ public class SEConfigs {
         @Separator(",")
         List<String> runByBrowsers();
 
-        // @Key("defaultBrowser")
         @Key("default.browser")
         @DefaultValue("Chrome")
         String defaultBrowser();
 
-        // @Key("defaultBrowserAnnotationPackage")
         @Key("browser.annotation.package")
         @DefaultValue("com.github.ansonliao.selenium.annotations.browser")
         String browserAnnotationPackage();
 
-        // @Key("testTagClassSizeOfTestNgXml")
         @Key("test.tag.class.size.of.testngxml")
         @DefaultValue("10")
         int testTagClassSizeOfTestNgXml();
 
-        // @Key("testingPackageNames")
         @Key("testing.package.names")
         @DefaultValue("")
         @Separator(",")
         List<String> testingPackageNames();
 
-        // @Key("testingBrowserNames")
         @Key("testing.browser.names")
         @DefaultValue("")
         @Separator(",")
         List<String> testingBrowserNames();
 
-        // @Key("testingTestGroups")
         @Key("testing.test.groups")
         @DefaultValue("")
         @Separator(",")
         List<String> testingTestGroups();
 
-        // @Key("testingTestNGClasses")
         @Key("testing.testng.classes")
         @DefaultValue("")
         @Separator(",")
         List<String> testingTestNGClasses();
 
-        // @Key("testngListeners")
         @Key("testng.listeners")
         @DefaultValue(
                 "com.github.ansonliao.selenium.testng.TestResultListener, "
