@@ -198,7 +198,7 @@ Please note that make sure put your owned configuration file to the resources di
 ```
 add.browser.group.to.report=true
 run.by.browsers=CHROME, FIREFOX
-default.browser=CHROME															// can be removed
+default.browser=CHROME		// can be removed
 browser.annotation.package=com.github.ansonliao.selenium.annotations.browser	// can be removed
 testing.package.names=example.phase1, example.phase2
 test.tag.class.size.of.testngxml=20
@@ -220,7 +220,7 @@ mvn clean test -Dtest=your_test_runner -Dtesting.test.groups=SMOKE
 Or have a package that place all `Smoke` test case together and the package name is `example.smoke`:
 
 ```bash
-mvn clean test -Dtest=your_test_runner -Dtesting.package.names=example.smokeProvide filter programmatically
+mvn clean test -Dtest=your_test_runner -Dtesting.package.names=example.smoke
 ```
 
  ### Provide filters programmatically
