@@ -21,7 +21,7 @@ Add the below dependencies in your `pom.xml` (Master)
 <dependency>
     <groupId>com.github.ansonliao</groupId>
     <artifactId>Selenium-Extensions</artifactId>
-    <version>2.3.7</version>
+    <version>2.3.7-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -179,15 +179,15 @@ Please note that make sure put your owned configuration file to the resources di
 
 | **Key** | **Description** | **Value** | **Default Value**|
 | --- | --- | ---| --- |
-| add.browser.group.to.report | Whether add testing browser to ExtentReports as a group of ExtentReport | Boolean: `true` / `false` | `false` |
+| add.browser.group.to.report | Whether add testing browser to ExtentReports as a group of ExtentReport | Boolean: `true` / `false` | `false` (Java keyword in boolean, case sensitive) |
 | run.by.browsers | Run all TestNG test by the specified browser(s). This setting will ignore the existing browser annotation of TestNG test class, and will resign all valid TestNG test class to this setting browser |  `CHROME`, `FIREFOX`, `IE`, `OPERA`, `PHAMTOMJS`, `EDGE`, `INTEREXPLORER`| null |
-| default.browser | Setting the default browser for the valid TestNG test case which without any valid browser annotation| `CHROME`, `FIREFOX`, `IE`, `OPERA`, `PHAMTOMJS`, `EDGE`, `INTEREXPLORER` | `CHROME` |
-| browser.annotation.package | The package that places all browser annotations and all ignore browser annotations. | string | com.github.ansonliao.selenium.annotations.browser |
+| default.browser | Setting the default browser for the valid TestNG test case which without any valid browser annotation| `CHROME`, `FIREFOX`, `IE`, `OPERA`, `PHAMTOMJS`, `EDGE`, `INTEREXPLORER` | `CHROME` (no case sensitive) |
+| browser.annotation.package | The package that places all browser annotations and all ignore browser annotations. | string | `com.github.ansonliao.selenium.annotations.browser` |
 | test.tag.class.size.of.testngxml | The setting for how many TestNG test class will be held for each `Test` tag of TestNG XML | positive integer | 10 |
 | testing.package.names | Specified what test script under the package(s)  will be run | string or string of list | nulll |
 | testing.browser.names | Run the test cases which specified annotated by browser annotation match to this setting | string or string of list | null |
 | testing.test.groups | Run the test cases which are assigned to the testing group of TestNG of this setting | string or string of list | null |
-| testingTestNGClasses | Specified what valid TestNG testing class will be executed | string or string of list | null |
+| testing.testng.classes | Specified what valid TestNG testing class will be executed | string or string of list | null |
 | testng.listeners | Provided your owned TestNG listener(s) | string or string of list | `com.github.ansonliao.selenium.testng.TestResultListener`, `com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener` |
 | testng.class.prefix | Specified the specificed TestNG testing class that the leading, the TestNG testing class scanned will only filter the testing class which the class name starts with the setting | string | `test` (no case sensitive) |
 
