@@ -32,8 +32,7 @@ import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 import static java.util.stream.Collectors.toList;
 
-public class SeleniumParallelTestListener implements IClassListener,
-        IInvokedMethodListener, ISuiteListener {
+public class SeleniumParallelTestListener implements IClassListener, IInvokedMethodListener, ISuiteListener {
     private static final Logger logger =
             LoggerFactory.getLogger(SeleniumParallelTestListener.class);
     private static final String TESTNG_BROWSER_PARAM_KEY =
@@ -81,8 +80,7 @@ public class SeleniumParallelTestListener implements IClassListener,
         final String SELENIUM_HUB_URL = getConfigInstance().seleniumHubUrl();
         if (Strings.isNullOrEmpty(SELENIUM_HUB_URL)) {
             List<String> browserList = iSuite.getXmlSuite().getTests().stream()
-                    .map(xmlTest -> removeQuoteMark(
-                            xmlTest.getParameter(TESTNG_BROWSER_PARAM_KEY)))
+                    .map(xmlTest -> removeQuoteMark(xmlTest.getParameter(TESTNG_BROWSER_PARAM_KEY)))
                     .distinct().collect(toList());
 
             browserList.parallelStream().forEach(WDMHelper::downloadWebDriverBinary);

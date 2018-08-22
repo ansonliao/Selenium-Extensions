@@ -39,7 +39,7 @@
     <lalyos.jfiglet.version>0.0.8</lalyos.jfiglet.version>
     <typesafe.config.version>1.3.2</typesafe.config.version>
     <maven.jxr.plugin.version>2.3</maven.jxr.plugin.version>
-    <webdrivermanager.version>2.1.0</webdrivermanager.version>
+    <webdrivermanager.version>2.2.5</webdrivermanager.version>
     <thoughtworks.qdox.version>2.0-M7</thoughtworks.qdox.version>
     <puppycrawl.checkstyle.version>6.1.1</puppycrawl.checkstyle.version>
     <maven.compiler.plugin.version>3.6.0</maven.compiler.plugin.version>

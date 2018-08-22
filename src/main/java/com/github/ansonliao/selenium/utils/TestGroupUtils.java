@@ -7,11 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -21,43 +22,36 @@ public class TestGroupUtils {
 
     public static List<String> getClassTestGroups(Class<?> clazz) {
         if (!clazz.isAnnotationPresent(Test.class)) {
-            return Collections.emptyList();
+            return emptyList();
         }
 
         Test annotation = clazz.getAnnotation(Test.class);
         if (annotation.groups().length == 0) {
-            return Collections.emptyList();
+            return emptyList();
         }
 
-        return Lists.newArrayList(annotation.groups())
-                .stream().collect(toSet())
-                .stream().collect(toList());
+        return Arrays.stream(annotation.groups()).distinct().collect(toList());
     }
 
     public static List<String> getMethodTestGroups(Method method) {
         if (!getConfigInstance().testingTestGroups().isEmpty()) {
             return getConfigInstance().testingTestGroups().parallelStream()
                     .map(StringUtils::removeQuoteMark)
-                    .collect(toList());
+                    .distinct().collect(toList());
         }
 
-        Set<String> classTestGroups =
-                getClassTestGroups(method.getDeclaringClass())
-                        .parallelStream().collect(toSet());
+        Set<String> classTestGroups = Sets.newHashSet(getClassTestGroups(method.getDeclaringClass()));
 
         if (!method.isAnnotationPresent(Test.class)) {
-            return classTestGroups.parallelStream().collect(toList());
+            return Lists.newArrayList(classTestGroups);
         }
 
         Test annotation = method.getAnnotation(Test.class);
         if (annotation.groups().length == 0) {
-            return classTestGroups.parallelStream().collect(toList());
+            return Lists.newArrayList(classTestGroups);
         }
 
-        return Sets.union(
-                classTestGroups,
-                Lists.newArrayList(annotation.groups())
-                        .parallelStream().collect(toSet()))
+        return Sets.union(classTestGroups, Arrays.stream(annotation.groups()).collect(toSet()))
                 .parallelStream().collect(toList());
     }
 

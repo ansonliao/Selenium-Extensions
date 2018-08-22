@@ -44,6 +44,10 @@ Screenshot can be found at `target/screenshots` for the test failed.
 `Selenium-Extensions` will download `WebDriver` binaries for Test automatically, 
 no need download the binary manually before the test start.
 
+### WebDriverManager
+
+For download the webdriver binary, introduced the dependency `webdrivermanager` of `io.github.bonigarcia`, for more detail the setting for the `Web Driver Manager`, please refer to the official document: [Read Me](https://github.com/bonigarcia/webdrivermanager/), and the configuration file: [Configuration](https://github.com/bonigarcia/webdrivermanager#configuration) .
+
 ## Multiple browsers support
 Browser support:
 
@@ -185,6 +189,7 @@ Please note that make sure put your owned configuration file to the resources di
 | testing.test.groups | Run the test cases which are assigned to the testing group of TestNG of this setting | string or string of list | null |
 | testingTestNGClasses | Specified what valid TestNG testing class will be executed | string or string of list | null |
 | testng.listeners | Provided your owned TestNG listener(s) | string or string of list | `com.github.ansonliao.selenium.testng.TestResultListener`, `com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener` |
+| testng.class.prefix | Specified the specificed TestNG testing class that the leading, the TestNG testing class scanned will only filter the testing class which the class name starts with the setting | string | `test` (no case sensitive) |
 
 > Please note that, for the setting can be string of list, please use comma (`,`) as the separator
 
