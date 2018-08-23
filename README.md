@@ -1,5 +1,7 @@
 # Selenium-Extensions
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/saikrishna321/AppiumTestDistribution)
+![Travis (.org)](https://img.shields.io/travis/USER/REPO.svg)
+[![badge-jdk](https://img.shields.io/badge/jdk-8-green.svg)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 [![Build Status](https://travis-ci.org/ansonliao/Selenium-Extensions.svg?branch=master)](https://travis-ci.org/ansonliao/Selenium-Extensions/builds/)
 
 This is a extension for Selenium in Java to extend Selenium for make Selenium test case can be run in parallel, and make it easy to support multiple browsers.
