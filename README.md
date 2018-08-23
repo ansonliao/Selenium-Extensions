@@ -256,7 +256,7 @@ public class ChromeTestRunner {
 
 
 
-#### Different between `default.browser` and `testing.browser.names`
+#### Difference between `default.browser` and `testing.browser.names`
 
 - `testing.browser.names`: The program will look for the valid TestNG testing class and testing method's browser annotations and check the browser annotation of test case whether contained in the setting of `testing.browser.names`, and then execute the test case which annotated by the browser annotation contains in the setting.
 - `run.by.browsers`: The programm will look for the valid TestNG test case and then ignore the browser annotation(s), and then add browser(s) of `run.by.browsers` as the new browser annotation(s) for the valid TestNG test case.
