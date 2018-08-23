@@ -286,4 +286,6 @@ public void TestCaseSample {
 2. Setting `testing.browser.names=FIREFOX` applied, only `regression2()` of those two test cases will be executed, because only test case `regression2()` have browser `Firefox` annotation
 3. Setting `testing.browser.names=PHANTOMJS` applied, no test case will be executed, because no test case annotated to browser `PHANTOMJS`
 
-
+## License
+![GNU Public License version 3.0](http://www.gnu.org/graphics/gplv3-127x51.png)
+AppiumTestDistribution is released under [GNU Public License version 3.0](http://www.gnu.org/licenses/gpl-3.0.txt)
