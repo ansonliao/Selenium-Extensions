@@ -3,6 +3,7 @@ package com.github.ansonliao.selenium.utils.config;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.ConfigFactory;
 
+import java.io.File;
 import java.util.List;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -123,6 +124,10 @@ public class SEConfigs {
         @Key("selenium.hub.url")
         @DefaultValue("")
         String seleniumHubUrl();
+
+        @Key("wd.caps.file")
+        @DefaultValue("caps/caps.json")
+        String capsPath();
 
     }
 
