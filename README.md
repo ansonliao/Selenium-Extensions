@@ -266,7 +266,7 @@ public class ChromeTestRunner {
 Let's say we have two test methods below:
 
 ```java
-public void TestCaseSample {
+public class TestCaseSample {
     
     @Test(groups={"Regresion", "SMOKE"})
     @Chrome

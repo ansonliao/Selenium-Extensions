@@ -5,6 +5,6 @@ import com.google.common.base.Strings;
 public class StringUtils {
 
     public synchronized static String removeQuoteMark(String s) {
-        return Strings.isNullOrEmpty(s) ? s : s.replaceAll("(^\"|\"$|^'|'$)", "");
+        return Strings.isNullOrEmpty(s) ? s : s.replaceAll("^[\"']|[\"']$", "");
     }
 }

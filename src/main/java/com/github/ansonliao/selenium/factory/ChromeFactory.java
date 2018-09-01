@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.github.ansonliao.selenium.json.JsonParser;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -12,18 +13,24 @@ import org.testng.util.Strings;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
 import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.remote.BrowserType.CHROME;
 
 public class ChromeFactory extends DriverManager {
-
-    private static final Logger logger =
-            LoggerFactory.getLogger(ChromeFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChromeFactory.class);
+    private static final String CAPS_PATH = "chrome.caps";
+    private static final String ARGS_PATH = "chrome.args";
     private static ChromeFactory instance = new ChromeFactory();
     private ChromeOptions options = new ChromeOptions();
+    private Map<String, Object> caps = JsonParser.getMapNode(capsJsonElement, CAPS_PATH);
+    private List<Object> argList = JsonParser.getArrayNodeAsList(capsJsonElement, ARGS_PATH);
 
     private ChromeFactory() {
         super();
@@ -36,14 +43,28 @@ public class ChromeFactory extends DriverManager {
     @Override
     public WebDriver getDriver() {
         if (isHeadless) {
-            options.addArguments("--headless");
+            argList.add("headless");
         }
         if (isIncognito) {
-            options.addArguments("--incognito");
+            argList.add("incognito");
         }
-        options.addArguments("--disable-gpu");
-        options.addArguments("--start-maximized");
-
+        // options.addArguments("--disable-gpu");
+        // options.addArguments("--start-maximized");
+        if (!caps.containsKey(CapabilityType.BROWSER_NAME)) {
+            caps.put(CapabilityType.BROWSER_NAME, CHROME);
+        }
+        if (!caps.containsKey(CapabilityType.PLATFORM)) {
+            caps.put(CapabilityType.PLATFORM, getPlatform());
+        }
+        caps.put("tz", getTimezone());
+        argList.parallelStream()
+                .map(String::valueOf)
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .distinct().collect(toList())
+                .parallelStream()
+                .forEach(options::addArguments);
+        options.setExperimentalOption("prefs", caps);
         driver = Strings.isNullOrEmpty(SELENIUM_HUB_URL)
                 ? new ChromeDriver(options)
                 : buildRemoteWebDriver();
