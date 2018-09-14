@@ -11,7 +11,6 @@ import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +47,7 @@ public class JsonParser {
     }
 
     public synchronized static Map<String, Object> getMapNode(JsonElement json, String path) {
-        if (json == null || !isNodeExisted(json, path)) {
+        if (!isNodeExisted(json, path)) {
             return Maps.newHashMap();
         }
         JsonElement element = getJsonElement(json, path);
@@ -56,7 +55,7 @@ public class JsonParser {
     }
 
     public synchronized static List<Object> getArrayNodeAsList(JsonElement json, String path) {
-        if (json == null || !isNodeExisted(json, path)) {
+        if (!isNodeExisted(json, path)) {
             return Lists.newArrayList();
         }
         JsonElement element = getJsonElement(json, path);
