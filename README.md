@@ -287,5 +287,6 @@ public void TestCaseSample {
 3. Setting `testing.browser.names=PHANTOMJS` applied, no test case will be executed, because no test case annotated to browser `PHANTOMJS`
 
 ## License
-![GNU Public License version 3.0](http://www.gnu.org/graphics/gplv3-127x51.png)
-Selenium-Extensions is released under [GNU Public License version 3.0](http://www.gnu.org/licenses/gpl-3.0.txt)
+![Apache License version 2.0](http://www.apache.org/img/asf_logo.png)
+
+Selenium-Extensions is released under [Apache License version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
