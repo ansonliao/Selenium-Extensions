@@ -1,6 +1,22 @@
 package com.github.ansonliao.selenium.factory;
 
-import com.github.ansonliao.selenium.json.JsonParser;
+import static com.github.ansonliao.selenium.json.JsonParser.getGsonInstance;
+import static com.github.ansonliao.selenium.json.JsonParser.getJsonElement;
+import static com.github.ansonliao.selenium.json.JsonParser.isNodeExisted;
+import static com.github.ansonliao.selenium.utils.CapsUtils.CLI_ARGS_KEY;
+import static com.github.ansonliao.selenium.utils.CapsUtils.DESIRED_CAPABILITIES_KEY;
+import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.remote.BrowserType.CHROME;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -11,26 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.util.Strings;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
-import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
-import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
-import static java.util.stream.Collectors.toList;
-import static org.openqa.selenium.remote.BrowserType.CHROME;
-
 public class ChromeFactory extends DriverManager {
+
     private static final Logger logger = LoggerFactory.getLogger(ChromeFactory.class);
-    private static final String CAPS_PATH = "chrome.caps";
-    private static final String ARGS_PATH = "chrome.args";
+    private static final String CAPS_PATH = "chrome." + DESIRED_CAPABILITIES_KEY;
+    private static final String ARGS_PATH = "chrome." + CLI_ARGS_KEY;
     private static ChromeFactory instance = new ChromeFactory();
     private ChromeOptions options = new ChromeOptions();
-    private Map<String, Object> caps = JsonParser.getMapNode(capsJsonElement, CAPS_PATH);
-    private List<Object> argList = JsonParser.getArrayNodeAsList(capsJsonElement, ARGS_PATH);
 
     private ChromeFactory() {
         super();
@@ -42,6 +45,28 @@ public class ChromeFactory extends DriverManager {
 
     @Override
     public WebDriver getDriver() {
+        List<Object> argList = Lists.newArrayList();
+        Map<String, Object> caps = Maps.newHashMap();
+        if (capsJsonElement != null) {
+            if (isNodeExisted(capsJsonElement, ARGS_PATH)) {
+                // retrieve chromedriver cli argument list
+                argList = getGsonInstance().fromJson(
+                        getJsonElement(capsJsonElement, ARGS_PATH).toString(), List.class);
+            } else {
+                logger.info(
+                        "WebDriver Caps Json is not empty, but key : [{}] was not found in the caps json file.",
+                        CLI_ARGS_KEY);
+            }
+            if (isNodeExisted(capsJsonElement, CAPS_PATH)) {
+                // retrieve chromedriver desired capabilities
+                caps = getGsonInstance().fromJson(
+                        getJsonElement(capsJsonElement, CAPS_PATH).toString(), Map.class);
+            } else {
+                logger.info(
+                        "WebDriver Caps Json is not empty, but key : [{}] was not found in the caps json file.",
+                        CLI_ARGS_KEY);
+            }
+        }
         if (isHeadless) {
             argList.add("headless");
         }
@@ -56,7 +81,10 @@ public class ChromeFactory extends DriverManager {
         if (!caps.containsKey(CapabilityType.PLATFORM)) {
             caps.put(CapabilityType.PLATFORM, getPlatform());
         }
-        caps.put("tz", getTimezone());
+        if (!caps.keySet().parallelStream().map(String::trim).map(String::toLowerCase)
+                .collect(toList()).contains("tz")) {
+            caps.put("tz", getTimezone());
+        }
         argList.parallelStream()
                 .map(String::valueOf)
                 .map(String::trim)
@@ -80,7 +108,8 @@ public class ChromeFactory extends DriverManager {
         capabilities.setCapability("tz", getTimezone());
         RemoteWebDriver remoteWebDriver = null;
         try {
-            logger.info("Create RemoteWebDriver instance with Selenium Hub URL: {}", SELENIUM_HUB_URL);
+            logger.info("Create RemoteWebDriver instance with Selenium Hub URL: {}",
+                    SELENIUM_HUB_URL);
             remoteWebDriver = new RemoteWebDriver(new URL(SELENIUM_HUB_URL), capabilities);
         } catch (MalformedURLException e) {
             logger.error("Malformed URL found: {}", SELENIUM_HUB_URL);
