@@ -1,20 +1,17 @@
 package com.github.ansonliao.selenium.json;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;
-import java.util.Map;
 
 public class JsonParser {
+
     private static final Gson GSON_INSTANCE = new Gson();
 
     public static Gson getGsonInstance() {
@@ -46,33 +43,35 @@ public class JsonParser {
         return result;
     }
 
-    public synchronized static Map<String, Object> getMapNode(JsonElement json, String path) {
-        if (!isNodeExisted(json, path)) {
-            return Maps.newHashMap();
-        }
-        JsonElement element = getJsonElement(json, path);
-        return getGsonInstance().fromJson(element.toString(), Map.class);
-    }
-
-    public synchronized static List<Object> getArrayNodeAsList(JsonElement json, String path) {
-        if (!isNodeExisted(json, path)) {
-            return Lists.newArrayList();
-        }
-        JsonElement element = getJsonElement(json, path);
-        return getGsonInstance().fromJson(element.toString(), List.class);
-    }
+    // public synchronized static Map<String, Object> getMapNode(JsonElement json, String path) {
+    //     if (!isNodeExisted(json, path)) {
+    //         return Maps.newHashMap();
+    //     }
+    //     JsonElement element = getJsonElement(json, path);
+    //     return getGsonInstance().fromJson(element.toString(), Map.class);
+    // }
+    //
+    // public synchronized static List<Object> getArrayNodeAsList(JsonElement json, String path) {
+    //     if (!isNodeExisted(json, path)) {
+    //         return Lists.newArrayList();
+    //     }
+    //     JsonElement element = getJsonElement(json, path);
+    //     return getGsonInstance().fromJson(element.toString(), List.class);
+    // }
 
     public synchronized static boolean isNodeExisted(JsonElement json, String path) {
         return json == null ? false : !(getJsonElement(json, path) == null);
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        String jsonFile = "caps/caps_empty.json";
+        String jsonFile = "caps/caps.json";
         BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
 
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
         System.out.println(isNodeExisted(jsonObject, "chrome"));
+        System.out.println(getGsonInstance().fromJson(
+                getJsonElement(jsonObject, "chrome.cli_args").toString(), List.class));
         // System.out.println(isNodeExisted(jsonObject, "chrome.caps"));
         // JsonElement element = getJsonElement(jsonObject, "chrome.caps");
         // System.out.println(element.toString());

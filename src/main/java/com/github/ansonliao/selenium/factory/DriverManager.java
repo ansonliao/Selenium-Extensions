@@ -1,29 +1,23 @@
 package com.github.ansonliao.selenium.factory;
 
+import static com.github.ansonliao.selenium.utils.CapsUtils.getCaps;
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.testng.util.Strings;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import static com.github.ansonliao.selenium.json.JsonParser.getGsonInstance;
-import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
-import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
-
 public abstract class DriverManager {
+
     protected boolean isHeadless = false;
     protected boolean isIncognito = false;
     protected static final String SELENIUM_HUB_URL = retrieveSeleniumHubUrl();
     protected static final String CAPS_JSON_FILE = "caps/caps.json";
-    protected static BufferedReader jsonReader = getJsonReader();
-    protected static JsonElement capsJsonElement =
-            jsonReader == null ? null : getGsonInstance().fromJson(jsonReader, JsonObject.class);
+    protected static JsonElement capsJsonElement = getCaps();
 
     public WebDriver driver;
     public String exportParameter = getExportParameterKey();
@@ -68,15 +62,15 @@ public abstract class DriverManager {
         System.setProperty(key, value);
     }
 
-    protected static BufferedReader getJsonReader() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(CAPS_JSON_FILE));
-        } catch (FileNotFoundException e) {
-            reader = null;
-        }
-        return reader;
-    }
+    // protected static BufferedReader getJsonReader() {
+    //     BufferedReader reader;
+    //     try {
+    //         reader = new BufferedReader(new FileReader(CAPS_JSON_FILE));
+    //     } catch (FileNotFoundException e) {
+    //         reader = null;
+    //     }
+    //     return reader;
+    // }
 
     protected String getTimezone() {
         DateFormat dbFormatter = new SimpleDateFormat("EEEE, MMMM dd, yyyy hh:mm aa zzzz");
