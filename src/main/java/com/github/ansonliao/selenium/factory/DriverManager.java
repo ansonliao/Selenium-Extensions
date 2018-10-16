@@ -1,15 +1,16 @@
 package com.github.ansonliao.selenium.factory;
 
-import static com.github.ansonliao.selenium.utils.CapsUtils.getCaps;
-import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
-import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
-
 import com.google.gson.JsonElement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.testng.util.Strings;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import static com.github.ansonliao.selenium.utils.CapsUtils.getCaps;
+import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
+import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
 public abstract class DriverManager {
 

@@ -1,5 +1,7 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -13,16 +15,26 @@ import org.testng.util.Strings;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
+import static com.github.ansonliao.selenium.json.JsonParser.getGsonInstance;
+import static com.github.ansonliao.selenium.json.JsonParser.getJsonElement;
+import static com.github.ansonliao.selenium.json.JsonParser.isNodeExisted;
+import static com.github.ansonliao.selenium.utils.CapsUtils.CLI_ARGS_KEY;
+import static com.github.ansonliao.selenium.utils.CapsUtils.DESIRED_CAPABILITIES_KEY;
 import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
 import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
 
 public class FirefoxFactory extends DriverManager {
 
     private static final Logger logger =
             LoggerFactory.getLogger(FirefoxFactory.class);
+    private static final String CAPS_PATH = "firefox." + DESIRED_CAPABILITIES_KEY;
+    private static final String ARGS_PATH = "firefox." + CLI_ARGS_KEY;
     private FirefoxBinary binary = new FirefoxBinary();
     private FirefoxOptions options = new FirefoxOptions();
     private static FirefoxFactory instance = new FirefoxFactory();
@@ -37,13 +49,46 @@ public class FirefoxFactory extends DriverManager {
 
     @Override
     public WebDriver getDriver() {
+        List<Object> argList = Lists.newArrayList();
+        Map<String, Object> caps = Maps.newHashMap();
+        if (capsJsonElement != null) {
+            if (!isNodeExisted(capsJsonElement, ARGS_PATH)) {
+                argList = getGsonInstance().fromJson(
+                        getJsonElement(capsJsonElement, ARGS_PATH).toString(), List.class);
+            } else {
+                logger.info(
+                        "WebDriver Caps Json is not empty, but key : [{}] was not found in the caps json file.",
+                        CLI_ARGS_KEY);
+            }
+        }
+        if (isNodeExisted(capsJsonElement, CAPS_PATH)) {
+            caps = getGsonInstance().fromJson(
+                    getJsonElement(capsJsonElement, CAPS_PATH).toString(), Map.class);
+        } else {
+            logger.info(
+                    "WebDriver Caps Json is not empty, but key : [{}] was not found in the caps json file.",
+                    CLI_ARGS_KEY);
+        }
+
+        // if (isHeadless) {
+        //     binary.addCommandLineOptions("--headless");
+        //     options.setBinary(binary);
+        // }
+        // if (isIncognito) {
+        //     options.addArguments("--private");
+        // }
         if (isHeadless) {
-            binary.addCommandLineOptions("--headless");
-            options.setBinary(binary);
+            argList.add("headless");
         }
-        if (isIncognito) {
-            options.addArguments("--private");
-        }
+        argList.parallelStream()
+                .map(String::valueOf)
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .distinct().collect(toList())
+                .parallelStream()
+                .forEach(options::addArguments);
+
+
 
         driver = Strings.isNullOrEmpty(SELENIUM_HUB_URL)
                 ? new FirefoxDriver(options)

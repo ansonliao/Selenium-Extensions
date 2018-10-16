@@ -1,5 +1,22 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.util.Strings;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+
 import static com.github.ansonliao.selenium.json.JsonParser.getGsonInstance;
 import static com.github.ansonliao.selenium.json.JsonParser.getJsonElement;
 import static com.github.ansonliao.selenium.json.JsonParser.isNodeExisted;
@@ -10,22 +27,6 @@ import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.remote.BrowserType.CHROME;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.util.Strings;
 
 public class ChromeFactory extends DriverManager {
 
