@@ -1,7 +1,5 @@
 package com.github.ansonliao.selenium.factory;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -18,17 +16,21 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.ansonliao.selenium.json.JsonParser.getGsonInstance;
-import static com.github.ansonliao.selenium.json.JsonParser.getJsonElement;
-import static com.github.ansonliao.selenium.json.JsonParser.isNodeExisted;
 import static com.github.ansonliao.selenium.utils.CapsUtils.CLI_ARGS_KEY;
 import static com.github.ansonliao.selenium.utils.CapsUtils.DESIRED_CAPABILITIES_KEY;
+import static com.github.ansonliao.selenium.utils.CapsUtils.getCaps;
+import static com.github.ansonliao.selenium.utils.CapsUtils.getCliArgs;
 import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
 import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
 
+/**
+ * Selenium WebDriver desired capabilities:
+ * https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities
+ * https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode
+ */
 public class FirefoxFactory extends DriverManager {
 
     private static final Logger logger =
@@ -49,26 +51,26 @@ public class FirefoxFactory extends DriverManager {
 
     @Override
     public WebDriver getDriver() {
-        List<Object> argList = Lists.newArrayList();
-        Map<String, Object> caps = Maps.newHashMap();
-        if (capsJsonElement != null) {
-            if (!isNodeExisted(capsJsonElement, ARGS_PATH)) {
-                argList = getGsonInstance().fromJson(
-                        getJsonElement(capsJsonElement, ARGS_PATH).toString(), List.class);
-            } else {
-                logger.info(
-                        "WebDriver Caps Json is not empty, but key : [{}] was not found in the caps json file.",
-                        CLI_ARGS_KEY);
-            }
-        }
-        if (isNodeExisted(capsJsonElement, CAPS_PATH)) {
-            caps = getGsonInstance().fromJson(
-                    getJsonElement(capsJsonElement, CAPS_PATH).toString(), Map.class);
-        } else {
-            logger.info(
-                    "WebDriver Caps Json is not empty, but key : [{}] was not found in the caps json file.",
-                    CLI_ARGS_KEY);
-        }
+        List<Object> argList = getCliArgs(FIREFOX);
+        Map<String, Object> caps = getCaps(FIREFOX);
+        // if (capsJsonElement != null) {
+        //     if (!isNodeExisted(capsJsonElement, ARGS_PATH)) {
+        //         argList = getGsonInstance().fromJson(
+        //                 getJsonElement(capsJsonElement, ARGS_PATH).toString(), List.class);
+        //     } else {
+        //         logger.info(
+        //                 "WebDriver Caps Json is not empty, but key : [{}] was not found in the caps json file.",
+        //                 CLI_ARGS_KEY);
+        //     }
+        // }
+        // if (isNodeExisted(capsJsonElement, CAPS_PATH)) {
+        //     caps = getGsonInstance().fromJson(
+        //             getJsonElement(capsJsonElement, CAPS_PATH).toString(), Map.class);
+        // } else {
+        //     logger.info(
+        //             "WebDriver Caps Json is not empty, but key : [{}] was not found in the caps json file.",
+        //             CLI_ARGS_KEY);
+        // }
 
         // if (isHeadless) {
         //     binary.addCommandLineOptions("--headless");
@@ -78,7 +80,9 @@ public class FirefoxFactory extends DriverManager {
         //     options.addArguments("--private");
         // }
         if (isHeadless) {
-            argList.add("headless");
+            if (argList.parallelStream().filter(arg -> String.valueOf(arg).toLowerCase().contains("headless"))
+                    .findFirst().get() == null)
+                argList.add("--headless");
         }
         argList.parallelStream()
                 .map(String::valueOf)
@@ -86,9 +90,17 @@ public class FirefoxFactory extends DriverManager {
                 .map(String::toLowerCase)
                 .distinct().collect(toList())
                 .parallelStream()
-                .forEach(options::addArguments);
+                .forEach(binary::addCommandLineOptions);
+        options.setBinary(binary);
+        // argList.parallelStream()
+        //         .map(String::valueOf)
+        //         .map(String::trim)
+        //         .map(String::toLowerCase)
+        //         .distinct().collect(toList())
+        //         .parallelStream()
+        //         .forEach(options::addArguments);
 
-
+        // options.addArguments("", "");
 
         driver = Strings.isNullOrEmpty(SELENIUM_HUB_URL)
                 ? new FirefoxDriver(options)
