@@ -18,7 +18,7 @@ public abstract class DriverManager {
     protected boolean isIncognito = false;
     protected static final String SELENIUM_HUB_URL = retrieveSeleniumHubUrl();
     protected static final String CAPS_JSON_FILE = "caps/caps.json";
-    protected static JsonElement capsJsonElement = getCaps();
+    // protected static JsonElement capsJsonElement = getCaps();
 
     public WebDriver driver;
     public String exportParameter = getExportParameterKey();
