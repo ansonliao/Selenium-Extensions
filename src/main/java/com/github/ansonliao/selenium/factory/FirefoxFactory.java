@@ -37,9 +37,9 @@ public class FirefoxFactory extends DriverManager {
             LoggerFactory.getLogger(FirefoxFactory.class);
     private static final String CAPS_PATH = "firefox." + DESIRED_CAPABILITIES_KEY;
     private static final String ARGS_PATH = "firefox." + CLI_ARGS_KEY;
+    private static FirefoxFactory instance = new FirefoxFactory();
     private FirefoxBinary binary = new FirefoxBinary();
     private FirefoxOptions options = new FirefoxOptions();
-    private static FirefoxFactory instance = new FirefoxFactory();
 
     private FirefoxFactory() {
         super();

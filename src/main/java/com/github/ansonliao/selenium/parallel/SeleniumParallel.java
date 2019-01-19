@@ -30,10 +30,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SeleniumParallel {
-    protected static Logger logger =
-            LoggerFactory.getLogger(SeleniumParallel.class);
-    protected static JavaProjectBuilder javaProjectBuilder =
-            new JavaProjectBuilder();
     private static final String FILE_SEPARATOR = File.separator;
     private static final String PROJECT_ROOT_DIR = System.getProperty("user.dir");
     private static final String SCREENSHOT_DIR = PROJECT_ROOT_DIR
@@ -41,11 +37,14 @@ public class SeleniumParallel {
             .concat("target")
             .concat(FILE_SEPARATOR)
             .concat("screenshots");
-
-    private WebDriver driver;
+    protected static Logger logger =
+            LoggerFactory.getLogger(SeleniumParallel.class);
+    protected static JavaProjectBuilder javaProjectBuilder =
+            new JavaProjectBuilder();
     protected DriverManager driverManager;
     protected String browserName;
     protected String url;
+    private WebDriver driver;
 
     public String findUrl(Method method) {
         if (method.isAnnotationPresent(URL.class)) {
@@ -70,12 +69,12 @@ public class SeleniumParallel {
         return driver;
     }
 
-    public void setDriver(WebDriver driver) {
-        this.driver = driver;
-    }
-
     public WebDriver getDriver() {
         return this.driver;
+    }
+
+    public void setDriver(WebDriver driver) {
+        this.driver = driver;
     }
 
     public WebDriver openUrl(String url) {

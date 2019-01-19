@@ -11,8 +11,12 @@ import java.lang.reflect.Method;
 public class TestNGRetry implements IRetryAnalyzer {
     private static final Logger logger =
             LoggerFactory.getLogger(TestNGRetry.class);
-    private int retryCount = 1;
     private static int maxRetryCount;
+    private int retryCount = 1;
+
+    public static int getMaxRetryCount() {
+        return maxRetryCount;
+    }
 
     @Override
     public boolean retry(ITestResult iTestResult) {
@@ -57,9 +61,5 @@ public class TestNGRetry implements IRetryAnalyzer {
 
     public int getRetryCount() {
         return retryCount;
-    }
-
-    public static int getMaxRetryCount() {
-        return maxRetryCount;
     }
 }

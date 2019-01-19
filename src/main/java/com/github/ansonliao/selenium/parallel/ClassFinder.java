@@ -20,7 +20,6 @@ import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInst
 import static java.util.stream.Collectors.toList;
 
 public class ClassFinder {
-    private static Logger logger = LoggerFactory.getLogger(ClassFinder.class);
     private static final String PACKAGE_SEPARATOR = ".";
     private static final String DIR_SEPARATOR = File.separator;
     private static final String CLASS_FILE_SUFFIX = ".class";
@@ -28,7 +27,7 @@ public class ClassFinder {
             removeQuoteMark(getConfigInstance().testngTestClassPrefix().toLowerCase().trim());
     private static final String BAD_PACKAGE_ERROR =
             "Unable to get resources from path '%s'. Are you sure the package '%s' exists?";
-
+    private static Logger logger = LoggerFactory.getLogger(ClassFinder.class);
     private static FastClasspathScanner classpathScanner;
     private static ScanResult scanResult;
 

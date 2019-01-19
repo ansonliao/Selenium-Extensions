@@ -3,7 +3,6 @@ package com.github.ansonliao.selenium.utils.config;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.ConfigFactory;
 
-import java.io.File;
 import java.util.List;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -11,6 +10,13 @@ import static org.aeonbits.owner.Config.HotReloadType.ASYNC;
 
 public class SEConfigs {
     private static SEConfiguration config;
+
+    public static synchronized SEConfiguration getConfigInstance() {
+        if (config == null) {
+            config = ConfigFactory.create(SEConfiguration.class, System.getProperties(), System.getenv());
+        }
+        return config;
+    }
 
     @Config.HotReload(value = 500, unit = MILLISECONDS, type = ASYNC)
     @Config.Sources({
@@ -129,13 +135,6 @@ public class SEConfigs {
         @DefaultValue("caps/caps.json")
         String capsPath();
 
-    }
-
-    public static synchronized SEConfiguration getConfigInstance() {
-        if (config == null) {
-            config = ConfigFactory.create(SEConfiguration.class, System.getProperties(), System.getenv());
-        }
-        return config;
     }
 
 }

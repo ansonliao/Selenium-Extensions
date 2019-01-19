@@ -28,8 +28,8 @@ public class PlatformUtils {
 
     public static synchronized boolean isUnix(String osName) {
         return (osName.indexOf("nix") >= 0
-            || osName.indexOf("nux") >= 0
-            || osName.indexOf("aix") >= 0);
+                || osName.indexOf("nux") >= 0
+                || osName.indexOf("aix") >= 0);
     }
 
     public static synchronized boolean isSolaris(String osName) {
