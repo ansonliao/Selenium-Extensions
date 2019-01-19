@@ -71,12 +71,12 @@ public class XmlTestBuilder {
         return Lists.newArrayList(xmlTestList);
     }
 
-    public static void setXmlSuite(XmlSuite suite) {
-        xmlSuite = suite;
-    }
-
     public static XmlSuite getXmlSuite() {
         return xmlSuite;
+    }
+
+    public static void setXmlSuite(XmlSuite suite) {
+        xmlSuite = suite;
     }
 
 }

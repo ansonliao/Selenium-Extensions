@@ -21,11 +21,10 @@ public class ExtentTestManager {
     private static final Logger sfl4jLogger = LoggerFactory.getLogger(ExtentTestManager.class);
     public static ThreadLocal<ExtentTest> extentTests = new ThreadLocal<>();
     public static ExtentReports extentReport = ExtentManager.getExtentReports();
-    private static ExtentTest extentTest;
-
     public static Map<String, ExtentTest> parentTests = Maps.newHashMap();
     public static Map<String, ExtentTest> childTests = Maps.newHashMap();
     public static ThreadLocal<ExtentTest> grandTests = new ThreadLocal<>();
+    private static ExtentTest extentTest;
 
     public synchronized static ExtentTest getExtentTest() {
         return grandTests.get();

@@ -1,7 +1,6 @@
 package com.github.ansonliao.selenium.testng;
 
 import com.github.ansonliao.selenium.utils.StringUtils;
-import com.google.common.collect.ImmutableMultiset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.xml.XmlSuite;

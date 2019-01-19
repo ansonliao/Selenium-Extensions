@@ -19,9 +19,11 @@ import java.util.stream.Collectors;
 
 public class AuthorUtils {
     private static final Logger logger = LoggerFactory.getLogger(AuthorUtils.class);
-    private static JavaProjectBuilder javaProjectBuilder = new JavaProjectBuilder();
     private static final String PROJECT_ROOT_DIR = System.getProperty("user.dir");
     private static final String FILE_SEPARATOR = File.separator;
+    private static JavaProjectBuilder javaProjectBuilder = new JavaProjectBuilder();
+    private static Predicate<DocletTag> filterAuthorTag = tag ->
+            tag.getName().equals("author") || tag.getName().equals("author:");
 
     static {
         javaProjectBuilder.addSourceTree(new File(
@@ -68,9 +70,6 @@ public class AuthorUtils {
 
         return Optional.of(authors);
     }
-
-    private static Predicate<DocletTag> filterAuthorTag = tag ->
-            tag.getName().equals("author") || tag.getName().equals("author:");
 
     private synchronized static Optional<List<String>> getAuthorsFromAnnotation(Object obj) {
         Author author = obj instanceof Class<?>
