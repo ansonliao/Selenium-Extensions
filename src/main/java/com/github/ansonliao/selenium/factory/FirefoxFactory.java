@@ -81,8 +81,9 @@ public class FirefoxFactory extends DriverManager {
         // }
         if (isHeadless) {
             if (argList.parallelStream().filter(arg -> String.valueOf(arg).toLowerCase().contains("headless"))
-                    .findFirst().get() == null)
+                    .findFirst().get() == null) {
                 argList.add("--headless");
+            }
         }
         argList.parallelStream()
                 .map(String::valueOf)
