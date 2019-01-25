@@ -2,9 +2,11 @@ package com.github.ansonliao.selenium.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.util.Strings;
@@ -17,11 +19,15 @@ import java.util.Map;
 import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
 import static com.github.ansonliao.selenium.utils.PlatformUtils.isWindows;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
+import static com.jayway.jsonpath.Option.DEFAULT_PATH_LEAF_TO_NULL;
 
 public class CapsUtils {
 
     public static final String CLI_ARGS_KEY = "args";
     public static final String DESIRED_CAPABILITIES_KEY = "caps";
+    public static final Configuration GSON_CONFIGURATION = Configuration.builder()
+            .jsonProvider(new GsonJsonProvider()).build();
+
     private static Logger logger = LoggerFactory.getLogger(CapsUtils.class);
     private static String wdCapsFilePath;
     private static DocumentContext documentContext;
@@ -33,7 +39,7 @@ public class CapsUtils {
                 ? getConfigInstance().capsPath().replace("\\", "/")
                 : getConfigInstance().capsPath();
         try {
-            documentContext = JsonPath.parse(new File(wdCapsFilePath));
+            documentContext = JsonPath.using(GSON_CONFIGURATION).parse(new File(wdCapsFilePath));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,6 +75,15 @@ public class CapsUtils {
         String path = "$.".concat(browser).concat(".").concat(CLI_ARGS_KEY);
 
         return isPathExists(path) ? documentContext.read(path, List.class) : Lists.newArrayList();
+    }
+
+    public synchronized static Map<String, Object> getEmulation(String browser) {
+        if (isJsonFileEmpty()) {
+            return Maps.newHashMap();
+        }
+        String path = "$.".concat(browser).concat(".").concat("emulation");
+
+        return isPathExists(path) ? documentContext.read(path, Map.class) : Maps.newHashMap();
     }
 
     // public synchronized static JsonElement getCaps() {
@@ -108,7 +123,13 @@ public class CapsUtils {
     // }
 
     public static void main(String[] args) throws IOException {
-        System.out.println(isPathExists("chrome.ext"));
+        // System.out.println(getEmulation("chrome"));
+
+        System.out.println(JsonPath.using(Configuration.builder().jsonProvider(new GsonJsonProvider())
+                .options(DEFAULT_PATH_LEAF_TO_NULL).build())
+                .parse(new File("caps/caps.json")).read("$.chrome.emulation").toString());
+
+
     }
 
 }
