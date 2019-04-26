@@ -1,9 +1,13 @@
 package com.github.ansonliao.selenium.factory;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.testng.util.Strings;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -34,6 +38,19 @@ public abstract class DriverManager {
     }
 
     public abstract WebDriver getDriver();
+
+    public WebDriver getDriver(DesiredCapabilities capabilities, String seleniumHubUrl) {
+        RemoteWebDriver remoteWebDriver = null;
+        try {
+            logger.info("Create RemoteWebDriver instance with Selenium Hub URL: {}",
+                    seleniumHubUrl);
+            remoteWebDriver = new RemoteWebDriver(new URL(seleniumHubUrl), capabilities);
+        } catch (MalformedURLException e) {
+            logger.error("Malformed URL found: {}", SELENIUM_HUB_URL);
+            e.printStackTrace();
+        }
+        return remoteWebDriver;
+    }
 
     protected abstract WebDriver buildRemoteWebDriver();
 

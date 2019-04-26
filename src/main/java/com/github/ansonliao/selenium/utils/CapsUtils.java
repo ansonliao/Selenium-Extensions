@@ -23,10 +23,10 @@ import static com.jayway.jsonpath.Option.DEFAULT_PATH_LEAF_TO_NULL;
 
 public class CapsUtils {
 
-    public static final String CLI_ARGS_KEY = "args";
+    public static final String CLI_ARGS_KEY = "cli_args";
     public static final String DESIRED_CAPABILITIES_KEY = "caps";
-    public static final Configuration GSON_CONFIGURATION = Configuration.builder()
-            .jsonProvider(new GsonJsonProvider()).build();
+    public static Configuration GSON_CONFIGURATION = Configuration.builder().jsonProvider(new GsonJsonProvider())
+            .options(DEFAULT_PATH_LEAF_TO_NULL).build();
 
     private static Logger logger = LoggerFactory.getLogger(CapsUtils.class);
     private static String wdCapsFilePath;
@@ -39,7 +39,7 @@ public class CapsUtils {
                 ? getConfigInstance().capsPath().replace("\\", "/")
                 : getConfigInstance().capsPath();
         try {
-            documentContext = JsonPath.using(GSON_CONFIGURATION).parse(new File(wdCapsFilePath));
+            documentContext = JsonPath.parse(new File(wdCapsFilePath));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -123,13 +123,11 @@ public class CapsUtils {
     // }
 
     public static void main(String[] args) throws IOException {
-        // System.out.println(getEmulation("chrome"));
+        System.out.println(getEmulation("chrome"));
 
-        System.out.println(JsonPath.using(Configuration.builder().jsonProvider(new GsonJsonProvider())
-                .options(DEFAULT_PATH_LEAF_TO_NULL).build())
-                .parse(new File("caps/caps.json")).read("$.chrome.emulation").toString());
-
-
+        // System.out.println(JsonPath.using(Configuration.builder().jsonProvider(new GsonJsonProvider())
+        //         .options(DEFAULT_PATH_LEAF_TO_NULL).build())
+        //         .parse(new File(wdCapsFilePath)).read("$.chrome.emulation").toString());
     }
 
 }

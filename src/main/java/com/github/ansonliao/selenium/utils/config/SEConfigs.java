@@ -7,6 +7,7 @@ import java.util.List;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.aeonbits.owner.Config.HotReloadType.ASYNC;
+import static org.aeonbits.owner.Config.LoadType.FIRST;
 
 public class SEConfigs {
     private static SEConfiguration config;

@@ -1,13 +1,13 @@
 package com.github.ansonliao.selenium.factory;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 
+@Deprecated
 public class PhantomJsFactory extends DriverManager {
 
     private static final Logger logger =
@@ -24,8 +24,7 @@ public class PhantomJsFactory extends DriverManager {
 
     @Override
     public WebDriver getDriver() {
-        driver = new PhantomJSDriver();
-        return driver;
+        return null;
     }
 
     @Override

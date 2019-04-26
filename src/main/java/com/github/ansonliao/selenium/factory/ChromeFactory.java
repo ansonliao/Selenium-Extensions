@@ -32,8 +32,6 @@ import static org.openqa.selenium.remote.BrowserType.CHROME;
 public class ChromeFactory extends DriverManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ChromeFactory.class);
-    private static final String CAPS_PATH = "chrome." + DESIRED_CAPABILITIES_KEY;
-    private static final String ARGS_PATH = "chrome." + CLI_ARGS_KEY;
     private static ChromeFactory instance = new ChromeFactory();
     private ChromeOptions options = new ChromeOptions();
 
@@ -49,26 +47,6 @@ public class ChromeFactory extends DriverManager {
     public WebDriver getDriver() {
         List<Object> argList = getCliArgs(CHROME);
         Map<String, Object> caps = getCaps(CHROME);
-        // if (capsJsonElement != null) {
-        //     if (isNodeExisted(capsJsonElement, ARGS_PATH)) {
-        //         // retrieve chromedriver cli argument list
-        //         argList = getGsonInstance().fromJson(
-        //                 getJsonElement(capsJsonElement, ARGS_PATH).toString(), List.class);
-        //     } else {
-        //         logger.info(
-        //                 "WebDriver Caps Json is not empty, but key : [{}] was not found in the caps json file.",
-        //                 CLI_ARGS_KEY);
-        //     }
-        //     if (isNodeExisted(capsJsonElement, CAPS_PATH)) {
-        //         // retrieve chromedriver desired capabilities
-        //         caps = getGsonInstance().fromJson(
-        //                 getJsonElement(capsJsonElement, CAPS_PATH).toString(), Map.class);
-        //     } else {
-        //         logger.info(
-        //                 "WebDriver Caps Json is not empty, but key : [{}] was not found in the caps json file.",
-        //                 CLI_ARGS_KEY);
-        //     }
-        // }
         if (isHeadless) {
             if (argList.parallelStream()
                     .filter(arg -> String.valueOf(arg).toLowerCase().contains("headless"))
@@ -83,13 +61,11 @@ public class ChromeFactory extends DriverManager {
                 argList.add("incognito");
             }
         }
-        // options.addArguments("--disable-gpu");
-        // options.addArguments("--start-maximized");
         if (!caps.containsKey(CapabilityType.BROWSER_NAME)) {
             caps.put(CapabilityType.BROWSER_NAME, CHROME);
         }
-        if (!caps.containsKey(CapabilityType.PLATFORM)) {
-            caps.put(CapabilityType.PLATFORM, getPlatform().toString());
+        if (!caps.containsKey("platform")) {
+            caps.put("platform", getPlatform().toString());
         }
         if (!caps.keySet().parallelStream().map(String::trim).map(String::toLowerCase)
                 .collect(toList()).contains("tz")) {
@@ -103,29 +79,46 @@ public class ChromeFactory extends DriverManager {
                 .parallelStream()
                 .forEach(options::addArguments);
         options.setExperimentalOption("prefs", caps);
+        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
         driver = Strings.isNullOrEmpty(SELENIUM_HUB_URL)
                 ? new ChromeDriver(options)
-                : buildRemoteWebDriver();
+                : getDriver(capabilities, SELENIUM_HUB_URL);
         return driver;
     }
 
+    // @Override
+    // public WebDriver getDriver(DesiredCapabilities capabilities, String seleniumHubUrl) {
+    //     RemoteWebDriver remoteWebDriver = null;
+    //     try {
+    //         logger.info("Create RemoteWebDriver instance with Selenium Hub URL: {}",
+    //                 seleniumHubUrl);
+    //         remoteWebDriver = new RemoteWebDriver(new URL(seleniumHubUrl), capabilities);
+    //     } catch (MalformedURLException e) {
+    //         logger.error("Malformed URL found: {}", SELENIUM_HUB_URL);
+    //         e.printStackTrace();
+    //     }
+    //     return remoteWebDriver;
+    // }e
+
     @Override
     protected WebDriver buildRemoteWebDriver() {
-        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-        capabilities.setCapability(CapabilityType.BROWSER_NAME, CHROME);
-        capabilities.setCapability(CapabilityType.PLATFORM, getPlatform());
-        capabilities.setCapability("tz", getTimezone());
-        RemoteWebDriver remoteWebDriver = null;
-        try {
-            logger.info("Create RemoteWebDriver instance with Selenium Hub URL: {}",
-                    SELENIUM_HUB_URL);
-            remoteWebDriver = new RemoteWebDriver(new URL(SELENIUM_HUB_URL), capabilities);
-        } catch (MalformedURLException e) {
-            logger.error("Malformed URL found: {}", SELENIUM_HUB_URL);
-            e.printStackTrace();
-        }
-        return remoteWebDriver;
+        // DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+        // capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+        // capabilities.setCapability(CapabilityType.BROWSER_NAME, CHROME);
+        // capabilities.setCapability(CapabilityType.PLATFORM, getPlatform());
+        // capabilities.setCapability("tz", getTimezone());
+        // RemoteWebDriver remoteWebDriver = null;
+        // try {
+        //     logger.info("Create RemoteWebDriver instance with Selenium Hub URL: {}",
+        //             SELENIUM_HUB_URL);
+        //     remoteWebDriver = new RemoteWebDriver(new URL(SELENIUM_HUB_URL), capabilities);
+        // } catch (MalformedURLException e) {
+        //     logger.error("Malformed URL found: {}", SELENIUM_HUB_URL);
+        //     e.printStackTrace();
+        // }
+        // return remoteWebDriver;
+        return null;
     }
 
     @Override
