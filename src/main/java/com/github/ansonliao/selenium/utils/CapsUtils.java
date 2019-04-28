@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static com.github.ansonliao.selenium.utils.MyFileUtils.isFileExisted;
 import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
 import static com.github.ansonliao.selenium.utils.PlatformUtils.isWindows;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
@@ -39,17 +40,25 @@ public class CapsUtils {
                 ? getConfigInstance().capsPath().replace("\\", "/")
                 : getConfigInstance().capsPath();
         try {
-            documentContext = JsonPath.parse(new File(wdCapsFilePath));
+            documentContext = isFileExisted(wdCapsFilePath)
+                    ? JsonPath.parse(new File(wdCapsFilePath))
+                    : null;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public synchronized static boolean isJsonFileEmpty() {
+        if (documentContext == null) {
+            return true;
+        }
         return Strings.isNullOrEmpty(documentContext.read("$").toString().trim());
     }
 
     public synchronized static boolean isPathExists(String path) {
+        if (isJsonFileEmpty()) {
+            return false;
+        }
         String fullPath = path.trim().startsWith("$.") ? path : "$.".concat(path);
         try {
             documentContext.read(fullPath);
