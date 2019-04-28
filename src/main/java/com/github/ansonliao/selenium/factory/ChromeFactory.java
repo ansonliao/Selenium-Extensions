@@ -15,8 +15,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.ansonliao.selenium.utils.CapsUtils.CLI_ARGS_KEY;
-import static com.github.ansonliao.selenium.utils.CapsUtils.DESIRED_CAPABILITIES_KEY;
 import static com.github.ansonliao.selenium.utils.CapsUtils.getCaps;
 import static com.github.ansonliao.selenium.utils.CapsUtils.getCliArgs;
 import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
@@ -26,8 +24,13 @@ import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.remote.BrowserType.CHROME;
 
 /**
+ * 1.
  * Chromedriver Capabilities & ChromeOptions:
  * http://chromedriver.chromium.org/capabilities
+ * https://stackoverflow.com/a/46786163
+ * 2.
+ * About set the mobile emulator, please refer to:
+ * http://chromedriver.chromium.org/mobile-emulation
  */
 public class ChromeFactory extends DriverManager {
 
@@ -79,6 +82,7 @@ public class ChromeFactory extends DriverManager {
                 .parallelStream()
                 .forEach(options::addArguments);
         options.setExperimentalOption("prefs", caps);
+        // caps.forEach(options::setCapability);
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
         driver = Strings.isNullOrEmpty(SELENIUM_HUB_URL)
