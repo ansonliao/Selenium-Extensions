@@ -12,8 +12,6 @@ import org.testng.util.Strings;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.ansonliao.selenium.utils.CapsUtils.CLI_ARGS_KEY;
-import static com.github.ansonliao.selenium.utils.CapsUtils.DESIRED_CAPABILITIES_KEY;
 import static com.github.ansonliao.selenium.utils.CapsUtils.getCaps;
 import static com.github.ansonliao.selenium.utils.CapsUtils.getCliArgs;
 import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
@@ -31,7 +29,6 @@ public class FirefoxFactory extends DriverManager {
     private static final Logger logger =
             LoggerFactory.getLogger(FirefoxFactory.class);
     private static FirefoxFactory instance = new FirefoxFactory();
-    private FirefoxBinary binary = new FirefoxBinary();
     private FirefoxOptions options = new FirefoxOptions();
 
     private FirefoxFactory() {
@@ -52,16 +49,14 @@ public class FirefoxFactory extends DriverManager {
                 argList.add("--headless");
             }
         }
-        argList.parallelStream()
+        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+        caps.forEach((k, v) -> capabilities.setCapability(k, v));
+        caps.forEach((k, v) -> options.setCapability(k, v));
+        options.addArguments(argList.parallelStream()
                 .map(String::valueOf)
                 .map(String::trim)
                 .map(String::toLowerCase)
-                .distinct().collect(toList())
-                .parallelStream()
-                .forEach(binary::addCommandLineOptions);
-        options.setBinary(binary);
-        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-        caps.forEach((k, v) -> capabilities.setCapability(k, v));
+                .distinct().collect(toList()));
         driver = Strings.isNullOrEmpty(SELENIUM_HUB_URL)
                 ? new FirefoxDriver(options)
                 : getDriver(capabilities, SELENIUM_HUB_URL);
@@ -70,20 +65,6 @@ public class FirefoxFactory extends DriverManager {
 
     @Override
     protected WebDriver buildRemoteWebDriver() {
-        // DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-        // capabilities.setCapability(FirefoxOptions.FIREFOX_OPTIONS, capabilities);
-        // capabilities.setCapability(CapabilityType.BROWSER_NAME, FIREFOX);
-        // capabilities.setCapability(CapabilityType.PLATFORM, getPlatform());
-        // capabilities.setCapability("tz", getTimezone());
-        // RemoteWebDriver remoteWebDriver = null;
-        // try {
-        //     logger.info("Create RemoteWebDriver instance with Selenium Hub URL: {}", SELENIUM_HUB_URL);
-        //     remoteWebDriver = new RemoteWebDriver(new URL(SELENIUM_HUB_URL), capabilities);
-        // } catch (MalformedURLException e) {
-        //     logger.error("Malformed URL found: {}", SELENIUM_HUB_URL);
-        //     e.printStackTrace();
-        // }
-        // return remoteWebDriver;
         return null;
     }
 

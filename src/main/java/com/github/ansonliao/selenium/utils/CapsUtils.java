@@ -26,6 +26,7 @@ public class CapsUtils {
 
     public static final String CLI_ARGS_KEY = "cli_args";
     public static final String DESIRED_CAPABILITIES_KEY = "caps";
+    public static final String EXTENSIONS_KEY = "extensions";
     public static Configuration GSON_CONFIGURATION = Configuration.builder().jsonProvider(new GsonJsonProvider())
             .options(DEFAULT_PATH_LEAF_TO_NULL).build();
 
@@ -83,6 +84,14 @@ public class CapsUtils {
         }
         String path = "$.".concat(browser).concat(".").concat(CLI_ARGS_KEY);
 
+        return isPathExists(path) ? documentContext.read(path, List.class) : Lists.newArrayList();
+    }
+
+    public synchronized static List<Object> getExtensions(String browser) {
+        if (isJsonFileEmpty()) {
+            return Lists.newArrayList();
+        }
+        String path = "$.".concat(browser).concat(".").concat(EXTENSIONS_KEY);
         return isPathExists(path) ? documentContext.read(path, List.class) : Lists.newArrayList();
     }
 

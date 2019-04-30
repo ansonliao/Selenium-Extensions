@@ -146,7 +146,7 @@
             <property name="ignoreFinal" value="false"/>
             <property name="allowedAbbreviationLength" value="8"/>
         </module>
-        <module name="VariableDeclarationUsageDistance"/>
+        <!-- module name="VariableDeclarationUsageDistance"/ -->
         <module name="CustomImportOrder">
             <property name="specialImportsRegExp" value="com.google"/>
             <property name="sortImportsInGroupAlphabetically" value="true"/>

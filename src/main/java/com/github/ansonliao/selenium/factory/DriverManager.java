@@ -17,13 +17,11 @@ import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInst
 public abstract class DriverManager {
 
     protected static final String SELENIUM_HUB_URL = retrieveSeleniumHubUrl();
-    protected static final String CAPS_JSON_FILE = "caps/caps.json";
     public WebDriver driver;
-    public String exportParameter = getExportParameterKey();
-    // protected static JsonElement capsJsonElement = getCaps();
     public Logger logger = getLogger();
     protected boolean isHeadless = false;
     protected boolean isIncognito = false;
+    private String exportParameter = getExportParameterKey();
 
     public static String retrieveSeleniumHubUrl() {
         String url = removeQuoteMark(getConfigInstance().seleniumHubUrl());
@@ -76,16 +74,6 @@ public abstract class DriverManager {
         logger.info("Export {} as {}", key, value);
         System.setProperty(key, value);
     }
-
-    // protected static BufferedReader getJsonReader() {
-    //     BufferedReader reader;
-    //     try {
-    //         reader = new BufferedReader(new FileReader(CAPS_JSON_FILE));
-    //     } catch (FileNotFoundException e) {
-    //         reader = null;
-    //     }
-    //     return reader;
-    // }
 
     protected String getTimezone() {
         DateFormat dbFormatter = new SimpleDateFormat("EEEE, MMMM dd, yyyy hh:mm aa zzzz");
