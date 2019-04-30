@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.util.Strings;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 import static com.github.ansonliao.selenium.utils.CapsUtils.getCaps;
 import static com.github.ansonliao.selenium.utils.CapsUtils.getCliArgs;
+import static com.github.ansonliao.selenium.utils.CapsUtils.getExtensions;
 import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
 import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
@@ -49,6 +51,7 @@ public class ChromeFactory extends DriverManager {
     @Override
     public WebDriver getDriver() {
         List<Object> argList = getCliArgs(CHROME);
+        List<Object> extensions = getExtensions(CHROME);
         Map<String, Object> caps = getCaps(CHROME);
         if (isHeadless) {
             if (argList.parallelStream()
@@ -64,25 +67,21 @@ public class ChromeFactory extends DriverManager {
                 argList.add("incognito");
             }
         }
-        if (!caps.containsKey(CapabilityType.BROWSER_NAME)) {
-            caps.put(CapabilityType.BROWSER_NAME, CHROME);
-        }
         if (!caps.containsKey("platform")) {
             caps.put("platform", getPlatform().toString());
         }
-        if (!caps.keySet().parallelStream().map(String::trim).map(String::toLowerCase)
-                .collect(toList()).contains("tz")) {
-            caps.put("tz", getTimezone());
-        }
-        argList.parallelStream()
+        options.addArguments(argList.parallelStream()
                 .map(String::valueOf)
                 .map(String::trim)
                 .map(String::toLowerCase)
-                .distinct().collect(toList())
-                .parallelStream()
-                .forEach(options::addArguments);
-        options.setExperimentalOption("prefs", caps);
+                .distinct().collect(toList()));
+        extensions.parallelStream()
+                .map(String::valueOf)
+                .map(File::new)
+                .forEach(options::addExtensions);
+        // options.setExperimentalOption("prefs", caps);
         // caps.forEach(options::setCapability);
+        caps.forEach((k, v) -> options.setCapability(k, v));
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
         driver = Strings.isNullOrEmpty(SELENIUM_HUB_URL)
@@ -91,37 +90,8 @@ public class ChromeFactory extends DriverManager {
         return driver;
     }
 
-    // @Override
-    // public WebDriver getDriver(DesiredCapabilities capabilities, String seleniumHubUrl) {
-    //     RemoteWebDriver remoteWebDriver = null;
-    //     try {
-    //         logger.info("Create RemoteWebDriver instance with Selenium Hub URL: {}",
-    //                 seleniumHubUrl);
-    //         remoteWebDriver = new RemoteWebDriver(new URL(seleniumHubUrl), capabilities);
-    //     } catch (MalformedURLException e) {
-    //         logger.error("Malformed URL found: {}", SELENIUM_HUB_URL);
-    //         e.printStackTrace();
-    //     }
-    //     return remoteWebDriver;
-    // }e
-
     @Override
     protected WebDriver buildRemoteWebDriver() {
-        // DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        // capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-        // capabilities.setCapability(CapabilityType.BROWSER_NAME, CHROME);
-        // capabilities.setCapability(CapabilityType.PLATFORM, getPlatform());
-        // capabilities.setCapability("tz", getTimezone());
-        // RemoteWebDriver remoteWebDriver = null;
-        // try {
-        //     logger.info("Create RemoteWebDriver instance with Selenium Hub URL: {}",
-        //             SELENIUM_HUB_URL);
-        //     remoteWebDriver = new RemoteWebDriver(new URL(SELENIUM_HUB_URL), capabilities);
-        // } catch (MalformedURLException e) {
-        //     logger.error("Malformed URL found: {}", SELENIUM_HUB_URL);
-        //     e.printStackTrace();
-        // }
-        // return remoteWebDriver;
         return null;
     }
 
