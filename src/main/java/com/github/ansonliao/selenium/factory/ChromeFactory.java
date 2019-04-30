@@ -33,6 +33,12 @@ import static org.openqa.selenium.remote.BrowserType.CHROME;
  * 2.
  * About set the mobile emulator, please refer to:
  * http://chromedriver.chromium.org/mobile-emulation
+ * 3.
+ * ChromeDriver options argument list can refer to:
+ * http://peter.sh/experiments/chromium-command-line-switches/
+ * https://chromium.googlesource.com/chromium/src/+/master/chrome/common/chrome_switches.cc
+ * https://chromium.googlesource.com/chromium/src/+/master/chrome/common/pref_names.cc
+ *
  */
 public class ChromeFactory extends DriverManager {
 
