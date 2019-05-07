@@ -1,7 +1,6 @@
 package com.github.ansonliao.selenium.factory;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -45,7 +44,7 @@ public class FirefoxFactory extends DriverManager {
         Map<String, Object> caps = getCaps(FIREFOX);
         if (isHeadless) {
             if (argList.parallelStream().filter(arg -> String.valueOf(arg).toLowerCase().contains("headless"))
-                    .findFirst().get() == null) {
+                    .map(String::valueOf).anyMatch(s -> Strings.isNotNullAndNotEmpty(s))) {
                 argList.add("--headless");
             }
         }

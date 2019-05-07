@@ -34,8 +34,6 @@ public class CapsUtils {
     private static String wdCapsFilePath;
     private static DocumentContext documentContext;
 
-    // private static final String CAPS_FILE = "caps".concat(File.separator).concat("caps.json");
-
     static {
         wdCapsFilePath = isWindows(getPlatform().toString())
                 ? getConfigInstance().capsPath().replace("\\", "/")
