@@ -3,16 +3,12 @@ package com.github.ansonliao.selenium.factory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.util.Strings;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +34,6 @@ import static org.openqa.selenium.remote.BrowserType.CHROME;
  * http://peter.sh/experiments/chromium-command-line-switches/
  * https://chromium.googlesource.com/chromium/src/+/master/chrome/common/chrome_switches.cc
  * https://chromium.googlesource.com/chromium/src/+/master/chrome/common/pref_names.cc
- *
  */
 public class ChromeFactory extends DriverManager {
 
@@ -60,16 +55,16 @@ public class ChromeFactory extends DriverManager {
         List<Object> extensions = getExtensions(CHROME);
         Map<String, Object> caps = getCaps(CHROME);
         if (isHeadless) {
-            if (argList.parallelStream()
+            if (!argList.parallelStream()
                     .filter(arg -> String.valueOf(arg).toLowerCase().contains("headless"))
-                    .findFirst().get() == null) {
+                    .map(String::valueOf).anyMatch(s -> Strings.isNotNullAndNotEmpty(s))) {
                 argList.add("headless");
             }
         }
         if (isIncognito) {
-            if (argList.parallelStream()
+            if (!argList.parallelStream()
                     .filter(arg -> String.valueOf(arg).toLowerCase().contains("incognito"))
-                    .findFirst().get() == null) {
+                    .map(String::valueOf).anyMatch(s -> Strings.isNotNullAndNotEmpty(s))) {
                 argList.add("incognito");
             }
         }
