@@ -4,7 +4,9 @@ import com.github.ansonliao.selenium.factory.WDManager;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import ru.yandex.qatools.ashot.AShot;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -19,8 +21,8 @@ public class ScreenshotManager {
             .concat("screenshots");
 
     public String capture(Class<?> clazz, String imgPrefix, String browserName) {
-        File scrFile = ((TakesScreenshot) WDManager.getDriver())
-                .getScreenshotAs(OutputType.FILE);
+        // File scrFile = ((TakesScreenshot) WDManager.getDriver())
+        //         .getScreenshotAs(OutputType.FILE);
 
         String destDir = String.join(
                 FILE_SEPARATOR,
@@ -32,7 +34,11 @@ public class ScreenshotManager {
                         new Timestamp(System.currentTimeMillis()).getTime()))
                         .concat(".jpeg"));
         try {
-            MyFileUtils.copyFile(scrFile, new File(destDir));
+            // MyFileUtils.copyFile(scrFile, new File(destDir));
+            ImageIO.write(
+                    new AShot().takeScreenshot(WDManager.getDriver()).getImage(),
+                    "PNG",
+                    new File(destDir));
         } catch (IOException e) {
             e.printStackTrace();
         }
