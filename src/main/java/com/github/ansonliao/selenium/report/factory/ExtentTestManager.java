@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Reporter;
+import org.testng.annotations.Test;
 import org.testng.util.Strings;
 
 import java.lang.reflect.Method;
@@ -45,23 +46,44 @@ public class ExtentTestManager {
     public synchronized static ExtentTest createTest(Method method, String browserName,
                                                      List<String> authors, List<String> groups, Object... parameters) {
         ExtentTest test;
-        String description;
+        String description = "N/A";
         Class clazz = method.getDeclaringClass();
         String className = clazz.getName();
 
         if (!parentTests.containsKey(className)) {
-            description = clazz.isAnnotationPresent(Description.class)
-                    ? ((Description) clazz.getAnnotation(Description.class)).value().trim()
-                    : "";
+            if (clazz.isAnnotationPresent(Test.class)) {
+                Test var1 = (Test) clazz.getAnnotation(Test.class);
+                if (Strings.isNotNullAndNotEmpty(var1.description().trim())) {
+                    description = var1.description().trim();
+                }
+            } else if (clazz.isAnnotationPresent(Description.class)) {
+                Description var2 = (Description) clazz.getAnnotation(Description.class);
+                if (Strings.isNotNullAndNotEmpty(var2.value().trim())) {
+                    description = var2.value().trim();
+                }
+            }
+
+            sfl4jLogger.info("Create ExtentReport test node: {} - {}, description: {}",
+                    className, browserName, description);
             test = extentReport.createTest(className, description);
             parentTests.put(className, test);
         }
 
         String childNodeKey = String.join(".", clazz.getName(), method.getName());
         if (!childTests.containsKey(childNodeKey)) {
-            description = method.isAnnotationPresent(Description.class)
-                    ? (method.getAnnotation(Description.class)).value().trim()
-                    : "";
+            // The first priority source of description is @Test, then @Description, the last is the class level
+            if (method.isAnnotationPresent(Test.class)) {
+                if (Strings.isNotNullAndNotEmpty(method.getAnnotation(Test.class).description().trim())) {
+                    description = method.getAnnotation(Test.class).description().trim();
+                } else {
+                    if (method.isAnnotationPresent(Description.class)) {
+                        if (Strings.isNotNullAndNotEmpty(method.getAnnotation(Description.class).value().trim())) {
+                            description = method.getAnnotation(Description.class).value().trim();
+                        }
+                    }
+                }
+            }
+
             test = parentTests.get(className).createNode(method.getName(), description);
             if (authors != null && authors.size() > 0) {
                 for (String author : authors) {
@@ -79,13 +101,16 @@ public class ExtentTestManager {
                                     ? "\"".concat(param.toString()).concat("\"")
                                     : String.valueOf(param))
                     .collect(joining(", "));
-            extTestNodeName = extTestNodeName.concat("Parames: ").concat(paramStr);
-            sfl4jLogger.info("Create ExtentReport test node: {}", extTestNodeName);
+            extTestNodeName = extTestNodeName.concat("Params: ").concat(paramStr);
+            // sfl4jLogger.info("Create ExtentReport test node: {}", extTestNodeName);
         }
 
         sfl4jLogger.info("Create ExtentReport test node: {}.{} - {}, description: {}",
-                className, method.getName(),
-                browserName, Strings.isNullOrEmpty(extTestNodeName) ? "N/A" : extTestNodeName);
+                className,
+                Strings.isNotNullAndNotEmpty(extTestNodeName)
+                        ? String.format("%s[%s]", method.getName(), extTestNodeName)
+                        : method.getName(),
+                browserName, description);
         test = childTests.get(childNodeKey).createNode(browserName, extTestNodeName);
         if (groups != null && groups.size() > 0) {
             for (String group : groups) {
