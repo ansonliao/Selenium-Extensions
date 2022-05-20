@@ -48,7 +48,7 @@
     <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
     <aventstack.extentreports.version>3.1.3</aventstack.extentreports.version>
     <aeonbits.owner.version>1.0.10</aeonbits.owner.version>
-    <gson.version>2.8.5</gson.version>
+    <gson.version>2.8.9</gson.version>
     <jsonpath.version>2.4.0</jsonpath.version>
     <ashot.version>1.5.2</ashot.version>
     <dependency.locations.enabled>false</dependency.locations.enabled>
