@@ -30,7 +30,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <testng.version>6.10</testng.version>
+    <testng.version>7.7.0</testng.version>
     <slf4j.api.version>1.7.24</slf4j.api.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
