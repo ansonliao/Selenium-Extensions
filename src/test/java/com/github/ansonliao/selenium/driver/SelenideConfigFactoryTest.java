@@ -87,6 +87,22 @@ public class SelenideConfigFactoryTest {
         assertTrue(chromeOptions.toString().contains("--incognito"));
     }
 
+    @Test
+    public void createAppliesHeadlessFromClass() throws Exception {
+        SelenideConfig config = SelenideConfigFactory.create("chrome",
+                ClassLevelFixture.class.getDeclaredMethod("plain"));
+        assertTrue(config.headless());
+    }
+
+    @Test
+    public void createAppliesIncognitoFromClass() throws Exception {
+        SelenideConfig config = SelenideConfigFactory.create("chrome",
+                ClassLevelFixture.class.getDeclaredMethod("plain"));
+        ChromeOptions options = (ChromeOptions) config.browserCapabilities();
+        Object chromeOptions = options.getCapability("goog:chromeOptions");
+        assertTrue(chromeOptions.toString().contains("--incognito"));
+    }
+
     static class Fixture {
         @Test
         public void plain() {
@@ -100,6 +116,14 @@ public class SelenideConfigFactoryTest {
         @Test
         @Incognito
         public void incognito() {
+        }
+    }
+
+    @Headless
+    @Incognito
+    static class ClassLevelFixture {
+        @Test
+        public void plain() {
         }
     }
 }

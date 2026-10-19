@@ -48,8 +48,10 @@ final class SelenideConfigFactory {
                 ? getConfigInstance().defaultBrowser()
                 : browserName;
         String browser = normalizeBrowser(resolvedBrowser);
-        boolean headless = method.isAnnotationPresent(Headless.class);
-        boolean incognito = method.isAnnotationPresent(Incognito.class);
+        boolean headless = method.isAnnotationPresent(Headless.class)
+                || method.getDeclaringClass().isAnnotationPresent(Headless.class);
+        boolean incognito = method.isAnnotationPresent(Incognito.class)
+                || method.getDeclaringClass().isAnnotationPresent(Incognito.class);
 
         if (IE.equals(browser) && (headless || incognito)) {
             logger.warn("{} does not support headless/incognito mode; ignoring",
