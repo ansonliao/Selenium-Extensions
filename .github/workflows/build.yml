@@ -31,8 +31,8 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build (compile, checkstyle and jars; browser tests skipped)
-        run: ./gradlew build -x test --no-daemon --stacktrace
+      - name: Build (compile, checkstyle, unit tests and jars)
+        run: ./gradlew build --no-daemon --stacktrace
 
       - name: Upload reports
         if: always()
@@ -42,4 +42,5 @@ jobs:
           path: |
             build/reports/checkstyle
             build/reports/tests
+            build/reports/jacoco
           if-no-files-found: ignore

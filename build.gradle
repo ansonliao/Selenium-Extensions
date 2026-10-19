@@ -2,6 +2,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'checkstyle'
+    id 'jacoco'
     id 'io.qameta.allure-report' version '4.3.0'
 }
 
@@ -58,9 +59,42 @@ allure {
 
 tasks.named('test') {
     useTestNG()
+    // The browser demo lives in the `testcases` package and needs a real
+    // browser; exclude it from the default unit-test run. Pass -PbrowserTests
+    // to include it, or run `./gradlew browserTest` explicitly.
+    if (!project.hasProperty('browserTests')) {
+        exclude '**/testcases/**'
+    }
     testLogging {
         events 'passed', 'skipped', 'failed'
         showStandardStreams = true
+    }
+    if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_25)) {
+        finalizedBy jacocoTestReport
+    }
+}
+
+// Runs only the browser demo. Requires a locally installed browser + driver.
+task browserTest(type: Test) {
+    description = 'Runs the browser demo in testcases/** (requires a local browser)'
+    group = 'verification'
+    useTestNG()
+    include '**/testcases/**'
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        showStandardStreams = true
+    }
+    shouldRunAfter test
+}
+
+jacoco {
+    toolVersion = '0.8.12'
+}
+
+jacocoTestReport {
+    reports {
+        html.required = true
+        xml.required = true
     }
 }
 
