@@ -166,9 +166,15 @@ final class SelenideConfigFactory {
         if (isNullOrEmpty(url)) {
             return "";
         }
-        if (!url.endsWith("wd/hub")) {
-            return url.endsWith("/") ? url + "wd/hub" : url + "/wd/hub";
+        // Trim and drop a single trailing slash so a complete hub URL that ends
+        // with one is not doubled (e.g. "http://host:4444/wd/hub/").
+        String normalized = url.trim();
+        if (normalized.endsWith("/")) {
+            normalized = normalized.substring(0, normalized.length() - 1);
         }
-        return url;
+        if (normalized.toLowerCase(Locale.ROOT).endsWith("wd/hub")) {
+            return normalized;
+        }
+        return normalized + "/wd/hub";
     }
 }

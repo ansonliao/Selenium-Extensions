@@ -65,6 +65,18 @@ public class SelenideConfigFactoryTest {
     }
 
     @Test
+    public void normalizeHubUrlKeepsExistingWdHubWithTrailingSlash() {
+        assertEquals(SelenideConfigFactory.normalizeHubUrl("http://localhost:4444/wd/hub/"),
+                "http://localhost:4444/wd/hub");
+    }
+
+    @Test
+    public void normalizeHubUrlIsCaseInsensitive() {
+        assertEquals(SelenideConfigFactory.normalizeHubUrl("http://localhost:4444/WD/HUB"),
+                "http://localhost:4444/WD/HUB");
+    }
+
+    @Test
     public void createUsesDefaultBrowserWhenEmpty() throws Exception {
         SelenideConfig config = SelenideConfigFactory.create("", resolve("plain"));
         assertEquals(config.browser(), "chrome");
