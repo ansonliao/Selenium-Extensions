@@ -12,8 +12,8 @@ public class RetryListener implements IAnnotationTransformer {
     @Override
     public void transform(ITestAnnotation iTestAnnotation, Class aClass,
                           Constructor constructor, Method method) {
-        IRetryAnalyzer iRetryAnalyzer = iTestAnnotation.getRetryAnalyzer();
-        if (iRetryAnalyzer == null) {
+        Class<? extends IRetryAnalyzer> retryAnalyzer = iTestAnnotation.getRetryAnalyzerClass();
+        if (retryAnalyzer == null) {
             iTestAnnotation.setRetryAnalyzer(TestNGRetry.class);
         }
     }

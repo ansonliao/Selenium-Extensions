@@ -1,8 +1,9 @@
 package com.github.ansonliao.selenium.utils;
 
-import com.github.ansonliao.selenium.parallel.ClassFinder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import com.github.ansonliao.selenium.parallel.ClassFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +20,7 @@ public class BrowserUtils {
     private static Logger logger = LoggerFactory.getLogger(BrowserUtils.class);
 
     public static List<String> getSupportedBrowsers() {
-        return ClassFinder.getScanAllClassesResult()
-                .getNamesOfAllClasses()
+        return ClassFinder.getAllClassNames()
                 .parallelStream()
                 .filter(className ->
                         className.startsWith(
@@ -36,8 +36,7 @@ public class BrowserUtils {
     }
 
     public static List<String> getSupportedIgnoreBrowsers() {
-        return ClassFinder.getScanAllClassesResult()
-                .getNamesOfAllClasses()
+        return ClassFinder.getAllClassNames()
                 .parallelStream()
                 .filter(className ->
                         className.startsWith(

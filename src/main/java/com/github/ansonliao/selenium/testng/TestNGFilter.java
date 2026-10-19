@@ -1,16 +1,16 @@
 package com.github.ansonliao.selenium.testng;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+
 import com.github.ansonliao.selenium.parallel.ClassFinder;
 import com.github.ansonliao.selenium.parallel.MethodFinder;
 import com.github.ansonliao.selenium.utils.BrowserUtils;
 import com.github.ansonliao.selenium.utils.StringUtils;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
-import org.testng.collections.Lists;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toSet;
 
 public class TestNGFilter {
     private static final Logger logger = LoggerFactory.getLogger(TestNGFilter.class);
-    private static List<Class<?>> testngClasses = Lists.newArrayList();
+    private static List<Class<?>> testngClasses = new ArrayList<>();
     private static Multimap<Class<?>, Method> testNGClass2MethodMap = HashMultimap.create();
 
     static {

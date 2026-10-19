@@ -3,7 +3,6 @@ package com.github.ansonliao.selenium.utils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.util.Strings;
 
 import java.io.File;
 
@@ -35,6 +34,6 @@ public class MyFileUtils extends FileUtils {
     }
 
     public static synchronized boolean isFileExisted(String path) {
-        return Strings.isNotNullAndNotEmpty(path) && new File(path).exists();
+        return StringUtils.isNotNullAndNotEmpty(path) && new File(path).exists();
     }
 }

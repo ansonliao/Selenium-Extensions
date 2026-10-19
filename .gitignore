@@ -33,6 +33,18 @@ Thumbs.db
 target/
 test-output/
 
+# Gradle #
+##########
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+.allure/
+
+# Allure #
+##########
+allure-results/
+allure-report/
+
 # NetBeans #
 ############
 nbproject/private/

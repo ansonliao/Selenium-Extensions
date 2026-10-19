@@ -2,8 +2,9 @@ package com.github.ansonliao.selenium.parallel;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
+
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
@@ -28,12 +29,23 @@ public class ClassFinder {
     private static final String BAD_PACKAGE_ERROR =
             "Unable to get resources from path '%s'. Are you sure the package '%s' exists?";
     private static Logger logger = LoggerFactory.getLogger(ClassFinder.class);
-    private static FastClasspathScanner classpathScanner;
-    private static ScanResult scanResult;
+    private static volatile ScanResult scanResult;
 
-    static {
-        classpathScanner = new FastClasspathScanner().enableMethodAnnotationIndexing();
-        scanResult = classpathScanner.scan();
+    private static ScanResult scanResult() {
+        if (scanResult == null) {
+            synchronized (ClassFinder.class) {
+                if (scanResult == null) {
+                    ScanResult result = new ClassGraph()
+                            .enableClassInfo()
+                            .enableMethodInfo()
+                            .enableAnnotationInfo()
+                            .scan();
+                    Runtime.getRuntime().addShutdownHook(new Thread(result::close));
+                    scanResult = result;
+                }
+            }
+        }
+        return scanResult;
     }
 
     public static List<Class<?>> findAllTestClassesInPackage(String scannedPackage) {
@@ -97,7 +109,8 @@ public class ClassFinder {
         //ScanResult result = classpathScanner.scan();
 
         // find all testng test classes with class annotated @Test
-        scanResult.getNamesOfClassesWithAnnotation(Test.class)
+        scanResult().getClassesWithAnnotation(Test.class)
+                .getNames()
                 .parallelStream()
                 .map(className -> createClass(className))
                 .filter(clazz ->
@@ -106,7 +119,8 @@ public class ClassFinder {
                 .forEach(clazz -> classes.add(clazz));
 
         // find all testng test classes with method annotated @Test
-        scanResult.getNamesOfClassesWithMethodAnnotation(Test.class)
+        scanResult().getClassesWithMethodAnnotation(Test.class)
+                .getNames()
                 .parallelStream()
                 .map(className -> createClass(className))
                 .filter(clazz ->
@@ -144,7 +158,7 @@ public class ClassFinder {
         return clazz;
     }
 
-    public static ScanResult getScanAllClassesResult() {
-        return scanResult;
+    public static List<String> getAllClassNames() {
+        return scanResult().getAllClasses().getNames();
     }
 }

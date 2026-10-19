@@ -1,0 +1,63 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.o
+*.so
+
+# Logs and databases #
+######################
+*.log
+*.sqlite
+*.out
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+*.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+*~
+
+# Maven #
+#########
+.classpath
+.project
+.settings/
+target/
+test-output/
+
+# Gradle #
+##########
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+.allure/
+
+# Allure #
+##########
+allure-results/
+allure-report/
+
+# NetBeans #
+############
+nbproject/private/
+/nb-configuration.xml
+
+# IDEA
+############
+.idea
+*.iml
+
+# Web Driver
+drivers/
+
+# Debug Files
+*.txt
+*.html

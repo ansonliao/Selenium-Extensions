@@ -6,10 +6,10 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import ru.yandex.qatools.ashot.AShot;
 
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
+import javax.imageio.ImageIO;
 
 public class ScreenshotManager {
     private static final String FILE_SEPARATOR = File.separator;
@@ -32,7 +32,7 @@ public class ScreenshotManager {
                 browserName,
                 imgPrefix.concat("_").concat(String.valueOf(
                         new Timestamp(System.currentTimeMillis()).getTime()))
-                        .concat(".jpeg"));
+                        .concat(".png"));
         try {
             // MyFileUtils.copyFile(scrFile, new File(destDir));
             ImageIO.write(
@@ -42,10 +42,6 @@ public class ScreenshotManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return destDir.replace(
-                PROJECT_ROOT_DIR
-                        .concat(FILE_SEPARATOR)
-                        .concat("target")
-                        .concat(FILE_SEPARATOR), "");
+        return destDir;
     }
 }

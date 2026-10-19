@@ -1,8 +1,9 @@
 package com.github.ansonliao.selenium.utils;
 
-import com.github.ansonliao.selenium.annotations.Author;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import com.github.ansonliao.selenium.annotations.Author;
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;

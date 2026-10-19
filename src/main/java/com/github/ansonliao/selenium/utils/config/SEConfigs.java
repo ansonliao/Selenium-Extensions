@@ -21,8 +21,8 @@ public class SEConfigs {
 
     @Config.HotReload(value = 500, unit = MILLISECONDS, type = ASYNC)
     @Config.Sources({
-            "classpath:seleniumextensions.properties",
-            "classpath:se.properties"})
+        "classpath:seleniumextensions.properties",
+        "classpath:se.properties"})
     public interface SEConfiguration extends Config {
 
         // SE utils identify keys
@@ -97,35 +97,6 @@ public class SEConfigs {
         // key set to "BROWSER_ANNOTATION_TYPE_PROPERTY" if needed
         @DefaultValue("BROWSER")
         String browserAnnotationTypeProp();
-
-        // webdriver export property key
-        @Key("wd.parameter.key.chrome")
-        @DefaultValue("webdriver.chrome.driver")
-        String chromeDriverProperty();
-
-        @Key("wd.parameter.key.firefox")
-        @DefaultValue("webdriver.gecko.driver")
-        String firefoxDriverProperty();
-
-        @Key("wd.parameter.key.phantomjs")
-        @DefaultValue("phantomjs.binary.path")
-        String phantomjsDriverProperty();
-
-        @Key("wd.parameter.key.edge")
-        @DefaultValue("webdriver.edge.driver")
-        String edgeDriverProperty();
-
-        @Key("wd.parameter.key.ie")
-        @DefaultValue("webdriver.ie.driver")
-        String ieDriverProperty();
-
-        @Key("wd.parameter.key.opera")
-        @DefaultValue("webdriver.opera.driver")
-        String operaDriverProperty();
-
-        @Key("wd.use.mirror")
-        @DefaultValue("false")
-        boolean useTaobaoMirror();
 
         // selenium grid, remote webdriver
         @Key("selenium.hub.url")

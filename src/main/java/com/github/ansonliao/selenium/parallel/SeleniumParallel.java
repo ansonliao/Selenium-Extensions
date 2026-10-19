@@ -1,12 +1,11 @@
 package com.github.ansonliao.selenium.parallel;
 
-import com.aventstack.extentreports.Status;
 import com.github.ansonliao.selenium.annotations.Description;
 import com.github.ansonliao.selenium.annotations.Headless;
 import com.github.ansonliao.selenium.annotations.Incognito;
 import com.github.ansonliao.selenium.annotations.URL;
-import com.github.ansonliao.selenium.factory.DriverManager;
-import com.github.ansonliao.selenium.report.factory.ExtentTestManager;
+import com.github.ansonliao.selenium.driver.SelenideManager;
+import com.github.ansonliao.selenium.report.AllureReport;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
@@ -41,10 +40,8 @@ public class SeleniumParallel {
             LoggerFactory.getLogger(SeleniumParallel.class);
     protected static JavaProjectBuilder javaProjectBuilder =
             new JavaProjectBuilder();
-    protected DriverManager driverManager;
     protected String browserName;
     protected String url;
-    private WebDriver driver;
 
     public String findUrl(Method method) {
         if (method.isAnnotationPresent(URL.class)) {
@@ -63,28 +60,18 @@ public class SeleniumParallel {
     }
 
     public WebDriver startWebDriver(Method method) {
-        driverManager.setIncognito(method.isAnnotationPresent(Incognito.class) ? true : false);
-        driverManager.setHeadless(method.isAnnotationPresent(Headless.class) ? true : false);
-        driver = driverManager.getDriver();
-        return driver;
+        SelenideManager.createDriver(browserName, method);
+        return SelenideManager.getWebDriver();
     }
 
     public WebDriver getDriver() {
-        return this.driver;
-    }
-
-    public void setDriver(WebDriver driver) {
-        this.driver = driver;
+        return SelenideManager.getWebDriver();
     }
 
     public WebDriver openUrl(String url) {
-        getDriver().get(url);
-        ExtentTestManager.getExtentTest().log(
-                Status.INFO,
-                withBoldHTML("Test Start"));
-        ExtentTestManager.getExtentTest().log(Status.INFO,
-                withBoldHTML("Open URL: ") + url);
-        return driver;
+        SelenideManager.getSelenideDriver().open(url);
+        AllureReport.step("Open URL: " + url);
+        return getDriver();
     }
 
     protected String takeScreenShot(String imgPrefix) throws IOException {
@@ -103,11 +90,7 @@ public class SeleniumParallel {
                 .concat(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))
                 .concat(".jpeg");
         MyFileUtils.copyFile(scrFile, new File(destDir));
-        return destDir.replace(
-                PROJECT_ROOT_DIR
-                        .concat(FILE_SEPARATOR)
-                        .concat("target")
-                        .concat(FILE_SEPARATOR), "");
+        return destDir;
     }
 
     public List<String> getAuthors(String className, Method method) {

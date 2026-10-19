@@ -1,29 +1,19 @@
 package com.github.ansonliao.selenium.factory;
 
+import com.github.ansonliao.selenium.driver.SelenideManager;
 import org.openqa.selenium.WebDriver;
 
+/**
+ * Compatibility facade for raw Selenium access. Selenide owns the browser
+ * lifecycle and creates one driver per thread.
+ */
 public class WDManager {
 
-    private static ThreadLocal<WebDriver> webDriverThreadLocal = new ThreadLocal<>();
-
     public synchronized static WebDriver getDriver() {
-        return webDriverThreadLocal.get();
-    }
-
-    public synchronized static void setDriver(WebDriver driver) {
-        webDriverThreadLocal.set(driver);
-    }
-
-    public synchronized static void quitDriver() {
-        getDriver().quit();
-    }
-
-    public synchronized static void removeDriver() {
-        webDriverThreadLocal.remove();
+        return SelenideManager.getWebDriver();
     }
 
     public synchronized static void quitAndClearDriver() {
-        quitDriver();
-        removeDriver();
+        SelenideManager.closeDriver();
     }
 }

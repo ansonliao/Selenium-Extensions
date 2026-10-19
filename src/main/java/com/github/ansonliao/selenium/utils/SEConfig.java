@@ -5,7 +5,6 @@ import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.util.Strings;
 
 @Deprecated
 public class SEConfig {
@@ -44,7 +43,7 @@ public class SEConfig {
 
     public static boolean getBoolean(String key) {
         String value = SEConfig.getInstance().config.getString(key);
-        return Strings.isNotNullAndNotEmpty(value)
+        return StringUtils.isNotNullAndNotEmpty(value)
                 ? Boolean.valueOf(value)
                 : false;
     }

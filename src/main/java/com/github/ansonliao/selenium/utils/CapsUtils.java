@@ -2,6 +2,7 @@ package com.github.ansonliao.selenium.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -9,7 +10,6 @@ import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.util.Strings;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.github.ansonliao.selenium.utils.MyFileUtils.isFileExisted;
-import static com.github.ansonliao.selenium.utils.PlatformUtils.getPlatform;
-import static com.github.ansonliao.selenium.utils.PlatformUtils.isWindows;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
 import static com.jayway.jsonpath.Option.DEFAULT_PATH_LEAF_TO_NULL;
 
@@ -35,9 +33,7 @@ public class CapsUtils {
     private static DocumentContext documentContext;
 
     static {
-        wdCapsFilePath = isWindows(getPlatform().toString())
-                ? getConfigInstance().capsPath().replace("\\", "/")
-                : getConfigInstance().capsPath();
+        wdCapsFilePath = getConfigInstance().capsPath().replace("\\", "/");
         try {
             documentContext = isFileExisted(wdCapsFilePath)
                     ? JsonPath.parse(new File(wdCapsFilePath))
@@ -51,7 +47,7 @@ public class CapsUtils {
         if (documentContext == null) {
             return true;
         }
-        return Strings.isNullOrEmpty(documentContext.read("$").toString().trim());
+        return StringUtils.isNullOrEmpty(documentContext.read("$").toString().trim());
     }
 
     public synchronized static boolean isPathExists(String path) {

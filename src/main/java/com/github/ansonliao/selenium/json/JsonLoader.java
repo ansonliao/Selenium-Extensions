@@ -1,8 +1,8 @@
 package com.github.ansonliao.selenium.json;
 
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+
 import org.aeonbits.owner.loaders.Loader;
 
 import java.io.IOException;
@@ -38,8 +38,7 @@ public class JsonLoader implements Loader {
     }
 
     private void parseJsonString(String json, Properties result) {
-        com.google.gson.JsonParser parser = new com.google.gson.JsonParser();
-        JsonElement element = parser.parse(json);
+        JsonElement element = com.google.gson.JsonParser.parseString(json);
         parseJsonElement(element, result, "");
     }
 

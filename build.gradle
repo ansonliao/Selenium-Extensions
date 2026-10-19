@@ -1,0 +1,89 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'checkstyle'
+    id 'io.qameta.allure-report' version '4.3.0'
+}
+
+group = 'com.github.ansonliao'
+version = '3.0.0'
+description = 'A tool for run Web UI test in parallel across browsers'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api 'org.seleniumhq.selenium:selenium-java:4.51.0'
+    api 'com.codeborne:selenide:7.19.0'
+    api 'org.testng:testng:7.12.0'
+    api 'io.qameta.allure:allure-testng:3.0.0'
+    api 'com.google.code.gson:gson:2.14.0'
+    api 'commons-io:commons-io:2.22.0'
+
+    implementation 'io.github.classgraph:classgraph:4.8.199'
+    implementation 'com.jayway.jsonpath:json-path:3.0.0'
+    implementation 'com.thoughtworks.qdox:qdox:2.2.0'
+    implementation 'com.typesafe:config:1.4.3'
+    implementation 'org.aeonbits.owner:owner:1.0.12'
+    implementation 'com.github.lalyos:jfiglet:0.0.9'
+    implementation 'ru.yandex.qatools.ashot:ashot:1.5.4'
+    implementation 'com.google.guava:guava:33.4.8-jre'
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+
+    testImplementation 'org.slf4j:slf4j-simple:2.0.17'
+}
+
+allure {
+    // Allure 3 CLI runtime used by allureReport / allureServe
+    version = '3.16.1'
+}
+
+tasks.named('test') {
+    useTestNG()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        showStandardStreams = true
+    }
+}
+
+checkstyle {
+    toolVersion = '10.26.1'
+    configFile = file('google-style.xml')
+    ignoreFailures = false
+    maxWarnings = 0
+    maxErrors = 0
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = 'Selenium-Extensions'
+            pom {
+                licenses {
+                    license {
+                        name = 'Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+            }
+        }
+    }
+}
