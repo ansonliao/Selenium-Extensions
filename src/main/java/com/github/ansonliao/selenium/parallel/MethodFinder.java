@@ -32,12 +32,16 @@ public class MethodFinder {
 
         if (clazz.isAnnotationPresent(Test.class)) {
             Test t = (Test) clazz.getAnnotation(Test.class);
-            methodList.addAll(Lists.newArrayList(clazz.getDeclaredMethods()));
 
             if (t.groups().length > 0) {
                 List<String> groups = Lists.newArrayList(t.groups());
                 if (groups.contains(groupName)) {
-                    return Lists.newArrayList(clazz.getDeclaredMethods());
+                    // A class-level group applies to every @Test method of the
+                    // class, so return only the @Test methods (never helpers).
+                    return Lists.newArrayList(clazz.getDeclaredMethods())
+                            .parallelStream()
+                            .filter(m -> m.isAnnotationPresent(Test.class))
+                            .collect(toList());
                 }
             }
         }

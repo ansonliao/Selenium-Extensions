@@ -1,5 +1,6 @@
 package com.github.ansonliao.selenium.parallel;
 
+import com.github.ansonliao.selenium.testfixtures.MethodFinderClassGroupSample;
 import com.github.ansonliao.selenium.testfixtures.MethodFinderSample;
 import org.testng.annotations.Test;
 
@@ -39,5 +40,13 @@ public class MethodFinderTest {
         List<Method> methods = MethodFinder.findTestNGMethodInClassByGroup(
                 MethodFinderSample.class, "unknown");
         assertTrue(methods.isEmpty());
+    }
+
+    @Test
+    public void classLevelGroupReturnsOnlyTestMethods() {
+        List<Method> methods = MethodFinder.findTestNGMethodInClassByGroup(
+                MethodFinderClassGroupSample.class, "smoke");
+        assertEquals(methods.size(), 1);
+        assertEquals(methods.get(0).getName(), "smokeTest");
     }
 }
