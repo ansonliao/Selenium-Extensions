@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.github.ansonliao.selenium.utils.MyFileUtils.isFileExisted;
@@ -74,46 +75,53 @@ public class CapsUtils {
         }
         String fullPath = path.trim().startsWith("$.") ? path : "$.".concat(path);
         try {
-            documentContext.read(fullPath);
-            return true;
+            // DEFAULT_PATH_LEAF_TO_NULL makes a missing leaf read as null instead
+            // of throwing, so a null result must be treated as "not exists".
+            return documentContext.read(fullPath) != null;
         } catch (PathNotFoundException e) {
             return false;
         }
     }
 
-    public synchronized static Map<String, Object> getCaps(String browser) {
-        if (isJsonFileEmpty()) {
-            return Maps.newHashMap();
-        }
-        String path = "$.".concat(browser).concat(".").concat(DESIRED_CAPABILITIES_KEY);
+    private static String pathFor(String browser, String subKey) {
+        return "$." + browser + "." + subKey;
+    }
 
-        return isPathExists(path) ? documentContext.read(path, Map.class) : Maps.newHashMap();
+    private static <T> T readCapability(String browser, String subKey, Class<T> type) {
+        if (isJsonFileEmpty()) {
+            return null;
+        }
+        String exact = pathFor(browser, subKey);
+        if (isPathExists(exact)) {
+            return documentContext.read(exact, type);
+        }
+        // Caps files commonly use lower-case browser keys (e.g. "chrome"),
+        // while callers may pass an upper-case key, so retry with lower-case.
+        String lower = pathFor(browser.toLowerCase(Locale.ROOT), subKey);
+        if (isPathExists(lower)) {
+            return documentContext.read(lower, type);
+        }
+        return null;
+    }
+
+    public synchronized static Map<String, Object> getCaps(String browser) {
+        Map<String, Object> value = readCapability(browser, DESIRED_CAPABILITIES_KEY, Map.class);
+        return value != null ? value : Maps.newHashMap();
     }
 
     public synchronized static List<Object> getCliArgs(String browser) {
-        if (isJsonFileEmpty()) {
-            return Lists.newArrayList();
-        }
-        String path = "$.".concat(browser).concat(".").concat(CLI_ARGS_KEY);
-
-        return isPathExists(path) ? documentContext.read(path, List.class) : Lists.newArrayList();
+        List<Object> value = readCapability(browser, CLI_ARGS_KEY, List.class);
+        return value != null ? value : Lists.newArrayList();
     }
 
     public synchronized static List<Object> getExtensions(String browser) {
-        if (isJsonFileEmpty()) {
-            return Lists.newArrayList();
-        }
-        String path = "$.".concat(browser).concat(".").concat(EXTENSIONS_KEY);
-        return isPathExists(path) ? documentContext.read(path, List.class) : Lists.newArrayList();
+        List<Object> value = readCapability(browser, EXTENSIONS_KEY, List.class);
+        return value != null ? value : Lists.newArrayList();
     }
 
     public synchronized static Map<String, Object> getEmulation(String browser) {
-        if (isJsonFileEmpty()) {
-            return Maps.newHashMap();
-        }
-        String path = "$.".concat(browser).concat(".").concat("emulation");
-
-        return isPathExists(path) ? documentContext.read(path, Map.class) : Maps.newHashMap();
+        Map<String, Object> value = readCapability(browser, "emulation", Map.class);
+        return value != null ? value : Maps.newHashMap();
     }
 
     // public synchronized static JsonElement getCaps() {

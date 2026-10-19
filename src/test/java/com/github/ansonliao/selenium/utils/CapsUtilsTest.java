@@ -51,6 +51,28 @@ public class CapsUtilsTest {
         assertFalse(CapsUtils.isJsonFileEmpty());
     }
 
+    @Test
+    public void shouldMatchCapsCaseInsensitively() {
+        String json = "{"
+                + "\"chrome\":{\"caps\":{\"platform\":\"linux\"}},"
+                + "\"firefox\":{\"caps\":{\"platform\":\"windows\"}}"
+                + "}";
+        DocumentContext ctx = JsonPath.parse(json);
+        CapsUtils.reset(ctx);
+
+        // Callers (SelenideConfigFactory) may pass an upper-case browser key.
+        assertEquals(CapsUtils.getCaps("CHROME").get("platform"), "linux");
+        assertEquals(CapsUtils.getCaps("FiReFoX").get("platform"), "windows");
+    }
+
+    @Test
+    public void shouldReturnEmptyForUnknownBrowser() {
+        String json = "{\"chrome\":{\"caps\":{\"platform\":\"linux\"}}}";
+        DocumentContext ctx = JsonPath.parse(json);
+        CapsUtils.reset(ctx);
+        assertTrue(CapsUtils.getCaps("opera").isEmpty());
+    }
+
     @AfterClass
     public void restoreEmptyState() {
         // The parsed document is static; reset it so other test classes still
