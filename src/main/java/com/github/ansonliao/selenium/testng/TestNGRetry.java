@@ -11,10 +11,12 @@ import java.lang.reflect.Method;
 public class TestNGRetry implements IRetryAnalyzer {
     private static final Logger logger =
             LoggerFactory.getLogger(TestNGRetry.class);
-    private static int maxRetryCount;
+    // Per-instance so a shared/leaked analyzer instance cannot pollute the retry
+    // limit computed for a different test method.
+    private int maxRetryCount;
     private int retryCount = 1;
 
-    public static int getMaxRetryCount() {
+    public int getMaxRetryCount() {
         return maxRetryCount;
     }
 
