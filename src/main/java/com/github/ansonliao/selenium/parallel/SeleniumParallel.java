@@ -6,16 +6,11 @@ import com.github.ansonliao.selenium.annotations.Incognito;
 import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.driver.SelenideManager;
 import com.github.ansonliao.selenium.report.AllureReport;
+import com.github.ansonliao.selenium.utils.AuthorUtils;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
-import com.thoughtworks.qdox.JavaProjectBuilder;
-import com.thoughtworks.qdox.model.DocletTag;
-import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaMethod;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -36,10 +31,6 @@ public class SeleniumParallel {
             .concat("target")
             .concat(FILE_SEPARATOR)
             .concat("screenshots");
-    protected static Logger logger =
-            LoggerFactory.getLogger(SeleniumParallel.class);
-    protected static JavaProjectBuilder javaProjectBuilder =
-            new JavaProjectBuilder();
     protected String browserName;
     protected String url;
 
@@ -93,53 +84,12 @@ public class SeleniumParallel {
         return destDir;
     }
 
+    /**
+     * @deprecated use {@link AuthorUtils#getMethodAuthors(Method)} directly.
+     */
+    @Deprecated
     public List<String> getAuthors(String className, Method method) {
-        logger.info("Get authors of Class = " + className);
-
-        javaProjectBuilder.addSourceTree(new File(
-                PROJECT_ROOT_DIR
-                        .concat(FILE_SEPARATOR)
-                        .concat("src")));
-        JavaClass cls = javaProjectBuilder.getClassByName(className);
-        List<DocletTag> authors = cls.getTags().stream()
-                .filter(tag -> tag.getName().equals("author") || tag.getName().equals("author:"))
-                .collect(Collectors.toList());
-        logger.info("Class: {}, authors: {} ", className, authors.toString());
-
-        // get class authors as default author name
-        Set<String> allAuthors = new HashSet<>();
-        if (authors.size() != 0) {
-            for (DocletTag author : authors) {
-                if (author.getValue().trim().length() > 0) {
-                    allAuthors.add(author.getValue().trim());
-                }
-            }
-        }
-
-        // get method author
-        List<JavaMethod> methods = cls.getMethods();
-        logger.info("Get authors of method = " + methods.toString());
-        JavaMethod mth = null;
-        for (JavaMethod m : methods) {
-            if (m.getName().equalsIgnoreCase(method.getName())) {
-                mth = m;
-                break;
-            }
-        }
-
-        authors = mth.getTags().stream()
-                .filter(tag -> tag.getName().equals("author") || tag.getName().equals("author:"))
-                .collect(Collectors.toList());
-        if (authors.size() != 0) {
-            allAuthors.clear();
-            for (DocletTag author : authors) {
-                if (author.getValue().trim().length() > 0) {
-                    allAuthors.add(author.getValue().trim());
-                }
-            }
-        }
-
-        return allAuthors.stream().collect(Collectors.toList());
+        return AuthorUtils.getMethodAuthors(method);
     }
 
     public List<String> getTestGroups(Object object) {
