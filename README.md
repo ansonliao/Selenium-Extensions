@@ -1,22 +1,37 @@
 # Selenium-Extensions
+
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/saikrishna321/AppiumTestDistribution)
 [![badge-jdk](https://img.shields.io/badge/jdk-21-green.svg)](https://adoptium.net/)
 [![Build Status](https://github.com/ansonliao/Selenium-Extensions/actions/workflows/build.yml/badge.svg)](https://github.com/ansonliao/Selenium-Extensions/actions/workflows/build.yml)
 
 A Selenium extension for Java that runs TestNG test cases in parallel across
-multiple browsers. Browser sessions are managed by [Selenide](https://selenide.org/)
-and results are reported with [Allure Report](https://allurereport.org/).
+multiple browsers. Browser sessions are managed by
+[Selenide](https://selenide.org/) and results are reported with
+[Allure Report](https://allurereport.org/).
 
-> **3.0.0 is a breaking release.** See [Breaking changes](#breaking-changes) below.
+> **3.0.0 is a breaking release.** See [Breaking changes](#breaking-changes-in-300).
+
+| | |
+|---|---|
+| Language / runtime | Java 21+ |
+| Build | Gradle 9.6.1 (wrapper included) |
+| Test framework | TestNG 7.12.0 |
+| Browser automation | Selenium 4.51.0 + Selenide 7.19.0 |
+| Reporting | Allure 3.0.0 (built-in), ReportPortal 5.6.8 (optional) |
+| Classpath scanning | ClassGraph 4.8.199 |
 
 ## Requirements
 
 - Java 21 or newer
-- Gradle 9.x (wrapper included) or Maven for consumers
+- A local browser (Chrome, Firefox, Edge or IE) or a Selenium Grid
+- Internet access on first run so Selenium Manager can resolve driver binaries
 
-## Maven Dependency
+## Installation
 
-Add the JitPack repository and dependency to your `pom.xml`:
+The library is published through [JitPack](https://jitpack.io). Use the
+`3.0.0` tag once released, or `master-SNAPSHOT` for the latest commit.
+
+### Maven
 
 ```xml
 <repositories>
@@ -35,29 +50,84 @@ Add the JitPack repository and dependency to your `pom.xml`:
 </dependency>
 ```
 
-## Build from source
+### Gradle
 
-```bash
-./gradlew build          # compile, checkstyle, tests, jars
-./gradlew build -x test  # build-only (no browser required)
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.ansonliao:Selenium-Extensions:3.0.0'
+}
 ```
 
-## Parallel
+## Quick start
 
-TestNG is used to run Selenium test cases in parallel. Parallel mode is by test,
-i.e. the `<test>` tag of the TestNG suite XML.
+```java
+import com.github.ansonliao.selenium.annotations.URL;
+import com.github.ansonliao.selenium.annotations.browser.Chrome;
+import com.github.ansonliao.selenium.annotations.browser.Firefox;
+import org.testng.annotations.Test;
 
-## Visual TestNG test suite XML generation
+public class LoginTest {
 
-No need to provide a TestNG suite XML file: the suite is generated
-programmatically from the browser annotations.
+    @Test
+    @Chrome
+    @URL("https://example.com/login")
+    public void loginWithChrome() {
+        // page code, see "Using Selenide in tests"
+    }
+
+    @Test
+    @Firefox
+    @URL("https://example.com/login")
+    public void loginWithFirefox() {
+        // page code
+    }
+}
+```
+
+Create a runner and execute it:
+
+```java
+public class MyTestRunner {
+    @Test
+    public void run() {
+        TestNGRunner.run();
+    }
+}
+```
+
+```bash
+./gradlew test --tests MyTestRunner   # Gradle
+mvn clean test -Dtest=MyTestRunner    # Maven
+```
+
+When running test classes directly through Gradle/Maven (without
+`TestNGRunner`), register the listeners on the class:
+
+```java
+@Listeners({SeleniumParallelTestListener.class, TestResultListener.class})
+public class LoginTest { /* ... */ }
+```
+
+## How it works
+
+- **Parallel by test.** Each generated TestNG `<test>` tag runs in its own
+  thread; parallel mode is `TESTS`.
+- **Generated suite.** No `testng.xml` is required: browser annotations are
+  scanned and the suite is built programmatically.
+- **Per-thread browser.** Every TestNG thread owns one `SelenideDriver`
+  instance, so browser sessions never leak between parallel tests.
+- **Managed drivers.** Selenium Manager resolves driver binaries; remote runs
+  use `selenium.hub.url`.
 
 ## Driver management
 
-Browsers are created and closed by Selenide. Each TestNG thread gets its own
-`SelenideDriver` instance, so parallel browser runs are isolated. Driver
-binaries are resolved by Selenium Manager (bundled with Selenium 4.6+), so no
-manual driver download or `WebDriverManager` configuration is required.
+Browsers are created and closed by Selenide. Driver binaries are resolved by
+Selenium Manager (bundled with Selenium 4.6+), so no manual driver download or
+`WebDriverManager` configuration is required.
 
 `@Headless` and `@Incognito` are applied per test method. `selenium.hub.url`
 points Selenide at a remote Selenium Grid.
@@ -66,58 +136,105 @@ points Selenide at a remote Selenium Grid.
 
 ```java
 import static com.codeborne.selenide.Condition.visible;
+
 import com.codeborne.selenide.SelenideDriver;
 import com.github.ansonliao.selenium.driver.SelenideManager;
 
-public class LoginTest {
+public class LoginPage {
 
-    @Test
-    @Chrome
-    @URL("https://example.com/login")
-    public void login() {
+    public void login(String user, String password) {
         SelenideDriver driver = SelenideManager.getSelenideDriver();
-        driver.$("#username").setValue("user");
-        driver.$("#password").setValue("secret");
+        driver.$("#username").setValue(user);
+        driver.$("#password").setValue(password);
         driver.$("button[type=submit]").click();
         driver.$(".welcome").shouldBe(visible);
     }
 }
 ```
 
-Raw Selenium access is still available through
-`WDManager.getDriver()` (the underlying `WebDriver`).
+Raw Selenium access is still available through `WDManager.getDriver()`, which
+returns the underlying `WebDriver` of the current thread.
 
-## Report
+## Annotations
 
-### Allure report
+| Annotation | Target | Purpose |
+|---|---|---|
+| `@Chrome`, `@Firefox`, `@Edge`, `@InternetExplorer` | class, method | Adds the test to the browser matrix |
+| `@IgnoreChrome`, `@IgnoreFirefox`, `@IgnoreEdge`, `@IgnoreInternetExplorer` | class, method | Excludes a browser from the matrix |
+| `@Headless` | class, method | Runs the browser headless |
+| `@Incognito` | class, method | Runs the browser in private/incognito mode |
+| `@URL` | class, method | Opens the URL before the test |
+| `@Author` / Javadoc `@author` | class, method | Adds Allure `owner` labels |
+| `@Description` | class, method | Adds the Allure test description |
+| `@Retry(maxRetry = N)` | class, method | Retries a failing test (requires `RetryListener`) |
+| `@PageName` | class | Page name metadata for page objects |
 
-`allure-testng` writes results to `build/allure-results` (see
-`src/test/resources/allure.properties`). Generate the HTML report with:
+To enable retries, add the listener to `testng.listeners`:
+
+```properties
+testng.listeners=com.github.ansonliao.selenium.testng.TestResultListener, \
+  com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener, \
+  com.github.ansonliao.selenium.testng.RetryListener
+```
+
+## Reporting
+
+### Allure (built-in)
+
+`allure-testng` is a transitive dependency and its TestNG listener registers
+automatically. Every test case carries:
+
+- `owner` labels from `@Author` / Javadoc `@author`
+- `tag` labels from TestNG groups (and the browser when
+  `add.browser.group.to.report=true`)
+- a `browser` label
+- an `Open URL: ...` step, plus a `Screenshot` attachment on failure
+
+Results are written to the directory configured by `allure.results.directory`.
+In this repository, `src/test/resources/allure.properties` sets it to
+`build/allure-results`.
+
+Generate the report:
 
 ```bash
-./gradlew allureServe    # generate and open in a browser
-./gradlew allureReport   # generate static report
+./gradlew allureServe    # generate and open a local server
+./gradlew allureReport   # static report
 ```
 
 The static report is written to `build/reports/allure-report/allureReport/`.
-The first run downloads the Allure 3 CLI (including a private Node.js runtime);
-subsequent runs reuse the cache. Maven consumers can use `allure-maven` or the
-`allure` CLI directly.
+The first run downloads the Allure 3 CLI and a private Node.js runtime;
+subsequent runs reuse the cache.
 
-Each test case carries `owner` labels from `@Author`, `tag` labels from TestNG
-groups and a `browser` label. The TestNG suite/test/class/method hierarchy maps
-to the Allure suite tree.
+**Maven consumers** can generate the report with `allure-maven` 3.1.0:
 
-### Screenshot for test fail
+```xml
+<plugin>
+    <groupId>io.qameta.allure</groupId>
+    <artifactId>allure-maven</artifactId>
+    <version>3.1.0</version>
+</plugin>
+```
 
-Screenshots are stored under `target/screenshots` and attached to the failed
-test in the Allure report.
+```bash
+mvn allure:serve
+```
+
+Set `allure.results.directory=target/allure-results` in your own
+`allure.properties`.
+
+### Screenshots
+
+Failure screenshots are stored under `target/screenshots` and attached to the
+failed test in the Allure report. Capturing requires the browser to have
+started; failures before browser startup are reported without a screenshot.
 
 ### ReportPortal (optional)
 
 ReportPortal is **not** a transitive dependency: projects without a
 ReportPortal server are unaffected. To publish results to ReportPortal, add the
-agent to your test classpath and configure it:
+agent to your test classpath and configure it.
+
+Maven:
 
 ```xml
 <dependency>
@@ -126,6 +243,12 @@ agent to your test classpath and configure it:
     <version>5.6.8</version>
     <scope>test</scope>
 </dependency>
+```
+
+Gradle:
+
+```groovy
+testImplementation 'com.epam.reportportal:agent-java-testng:5.6.8'
 ```
 
 `src/test/resources/reportportal.properties`:
@@ -140,8 +263,11 @@ rp.launch=Selenium Extensions
 The agent registers itself through the TestNG `ServiceLoader`. If you override
 `testng.listeners`, add
 `com.epam.reportportal.testng.ReportPortalTestNGListener` to the list.
-Screenshots can be published with a small consumer-side listener calling
+Screenshots can be published with a consumer-side listener calling
 `ReportPortal.emitLog(message, LogLevel.INFO.name(), new Date(), file)`.
+
+> Do not add the ReportPortal agent to projects without a reachable server:
+> the listener tries to open a launch at suite start.
 
 ## Multiple browsers support
 
@@ -266,6 +392,12 @@ or with Maven:
 mvn clean test -Dtest=MyTestRunner
 ```
 
+To run the bundled demo against a real browser:
+
+```bash
+./gradlew test --tests testcases.Test_Demo
+```
+
 ## Filter
 
 `Selenium-Extensions` supports running test cases by filters:
@@ -370,10 +502,24 @@ public class TestCaseSample {
 2. `testing.browser.names=FIREFOX`: only `regression2()` runs.
 3. `testing.browser.names=EDGE`: no test runs (no test is annotated with Edge).
 
+## Troubleshooting
+
+| Symptom | Cause / fix |
+|---|---|
+| `No such browser webdriver` | Browser name is not one of `CHROME`, `FIREFOX`, `EDGE`, `IE`, `INTERNETEXPLORER` |
+| Browser fails to start | Install the browser; on first run Selenium Manager needs network access to download the driver |
+| Allure report is empty | Run the tests before `allureReport`/`allureServe`; verify `allure.results.directory` points at the generated results |
+| Allure CLI download fails | The Gradle plugin provisions Node.js on first use; use a mirror or run once with network access, then reuse `.allure/` cache |
+| ReportPortal launch fails | Ensure `rp.endpoint` is reachable and the API key/project are valid |
+| Screenshot missing on failure | The failure happened before the browser started, or the driver was already closed |
+| Tests run twice | Both `TestNGRunner` and direct TestNG discovery are active; use one entry point |
+
 ## Breaking changes in 3.0.0
 
 - Build migrated from Maven to Gradle (wrapper included). JitPack coordinates
   are unchanged.
+- CI migrated from Travis CI (shut down for open source) to GitHub Actions with
+  a JDK 21/25 matrix.
 - Requirements raised to **Java 21**; Selenium **4.51.0**, TestNG **7.12.0**.
 - **ExtentReports removed**; use Allure 3 (`allure-testng`). `ExtentManager`
   and `ExtentTestManager` were removed.
@@ -382,6 +528,11 @@ public class TestCaseSample {
   facade for the underlying `WebDriver`.
 - **Opera and PhantomJS support removed.**
 - `wd.parameter.key.*` configuration keys removed.
+- Public API removals: `DriverManager`, `DriverManagerFactory`, the
+  `ChromeFactory`/`FirefoxFactory`/`EdgeFactory`/`InternetExplorerFactory`/
+  `OperaFactory`/`PhantomJsFactory` classes, `WDMHelper`, `PlatformUtils`,
+  `ExtentManager`, `ExtentTestManager`, `Opera`/`PhantomJs` annotations and
+  their `Ignore*` variants.
 
 ## License
 
