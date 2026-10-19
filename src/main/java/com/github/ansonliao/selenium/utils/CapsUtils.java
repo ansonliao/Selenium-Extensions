@@ -33,7 +33,16 @@ public class CapsUtils {
     private static DocumentContext documentContext;
 
     static {
-        wdCapsFilePath = getConfigInstance().capsPath().replace("\\", "/");
+        init(getConfigInstance().capsPath());
+    }
+
+    /**
+     * Parses the webdriver capability file at {@code capsPath}. Safe to call
+     * only during class initialization or from tests; the production path is the
+     * static initializer above.
+     */
+    static synchronized void init(String capsPath) {
+        wdCapsFilePath = capsPath.replace("\\", "/");
         try {
             documentContext = isFileExisted(wdCapsFilePath)
                     ? JsonPath.parse(new File(wdCapsFilePath))
@@ -41,6 +50,15 @@ public class CapsUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Testability hook: replaces the parsed capability document without touching
+     * the filesystem. Package-private on purpose.
+     */
+    static synchronized void reset(DocumentContext context) {
+        wdCapsFilePath = null;
+        documentContext = context;
     }
 
     public synchronized static boolean isJsonFileEmpty() {
