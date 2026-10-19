@@ -17,7 +17,7 @@ multiple browsers. Browser sessions are managed by
 | Build | Gradle 9.6.1 (wrapper included) |
 | Test framework | TestNG 7.12.0 |
 | Browser automation | Selenium 4.51.0 + Selenide 7.19.0 |
-| Reporting | Allure 3.0.0 (built-in), ReportPortal 5.6.8 (optional) |
+| Reporting | Allure 3.0.0 + allure-selenide 3.0.0 (built-in), ReportPortal 5.6.8 (optional) |
 | Classpath scanning | ClassGraph 4.8.199 |
 
 ## Requirements
@@ -138,16 +138,21 @@ points Selenide at a remote Selenium Grid.
 import static com.codeborne.selenide.Condition.visible;
 
 import com.codeborne.selenide.SelenideDriver;
+import com.codeborne.selenide.SelenideElement;
 import com.github.ansonliao.selenium.driver.SelenideManager;
 
 public class LoginPage {
 
     public void login(String user, String password) {
         SelenideDriver driver = SelenideManager.getSelenideDriver();
-        driver.$("#username").setValue(user);
-        driver.$("#password").setValue(password);
-        driver.$("button[type=submit]").click();
-        driver.$(".welcome").shouldBe(visible);
+        SelenideElement username = driver.$("#username").as("Username field");
+        SelenideElement passwordField = driver.$("#password").as("Password field");
+        SelenideElement submit = driver.$("button[type=submit]").as("Submit button");
+
+        username.setValue(user);
+        passwordField.setValue(password);
+        submit.click();
+        driver.$(".welcome").as("Welcome message").shouldBe(visible);
     }
 }
 ```
@@ -188,7 +193,41 @@ automatically. Every test case carries:
 - `tag` labels from TestNG groups (and the browser when
   `add.browser.group.to.report=true`)
 - a `browser` label
-- an `Open URL: ...` step, plus a `Screenshot` attachment on failure
+- Selenide action steps such as `$("Submit button") click()`, plus a
+  `Screenshot` attachment on failure
+
+#### Selenide element steps
+
+The official `allure-selenide` listener is registered automatically on every
+TestNG worker thread, so each Selenide action becomes an Allure step:
+
+```java
+SelenideElement submit = driver.$("button[type=submit]").as("Submit button");
+submit.click();
+```
+
+produces:
+
+```text
+$("Submit button") click()
+```
+
+Name elements with `SelenideElement.as(String)`; page objects can use Selenide's
+`@As` annotation:
+
+```java
+@As("Username field")
+@FindBy(css = "#username")
+private SelenideElement username;
+```
+
+Elements without an alias fall back to their selector, for example
+`$("#username") set value(tomsmith)`. Only Selenide API calls are recorded;
+raw `WebDriver` calls through `WDManager.getDriver()` are not.
+
+The `open()` action is reported by Selenide as `$("open") <url>`. Selenide's own
+screenshots and page sources are disabled, so failure screenshots are still
+attached once per failed test by `ScreenshotManager`.
 
 Results are written to the directory configured by `allure.results.directory`.
 In this repository, `src/test/resources/allure.properties` sets it to

@@ -1,6 +1,7 @@
 package testcases;
 
 import com.codeborne.selenide.SelenideDriver;
+import com.codeborne.selenide.SelenideElement;
 import com.github.ansonliao.selenium.annotations.Headless;
 import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.driver.SelenideManager;
@@ -11,6 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.github.ansonliao.selenium.factory.WDManager.getDriver;
 
@@ -31,9 +33,18 @@ public class Test_Demo {
     @URL("http://the-internet.herokuapp.com/login")
     public void f2() {
         SelenideDriver driver = SelenideManager.getSelenideDriver();
-        driver.$("#username").shouldBe(visible);
-        driver.$("#username").setValue("tomsmith");
-        System.out.println("Selenide element interaction completed");
+
+        SelenideElement username = driver.$("#username").as("Username field");
+        SelenideElement password = driver.$("#password").as("Password field");
+        SelenideElement submit = driver.$("button[type=submit]").as("Submit button");
+
+        username.shouldBe(visible).setValue("tomsmith");
+        password.shouldBe(visible).setValue("SuperSecretPassword!");
+        submit.click();
+
+        driver.$(".flash.success").as("Flash message")
+                .shouldBe(visible)
+                .shouldHave(text("You logged into a secure area!"));
     }
 
 }

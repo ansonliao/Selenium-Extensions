@@ -18,7 +18,13 @@ see [Migration notes](#migration-notes) below.
 - **Allure 3 reporting** — `AllureReport` helper plus `allure-testng` 3.0.0 and
   the `io.qameta.allure-report` Gradle plugin 4.3.0. Test cases carry `owner`
   labels (`@Author`/Javadoc), `tag` labels (TestNG groups/browser), a `browser`
-  label, URL steps and failure screenshots.
+  label, and failure screenshots.
+- **Selenide element steps in Allure** — the official `allure-selenide` 3.0.0
+  listener is registered on every TestNG worker thread, so Selenide actions
+  appear as `$("Submit button") click()` steps when elements are named with
+  `as(...)` or `@As`. Selenide's `open()` is reported as `$("open") <url>`.
+  Selenide screenshots/page sources stay disabled; `ScreenshotManager` remains
+  the only failure-screenshot source.
 - **Gradle build** — `build.gradle` (Groovy DSL), Gradle 9.6.1 wrapper,
   `maven-publish` for JitPack, sources and Javadoc jars.
 - **GitHub Actions CI** — JDK 21/25 matrix, checkstyle, build-only (no browser
@@ -26,7 +32,8 @@ see [Migration notes](#migration-notes) below.
 - **ReportPortal integration (opt-in)** — documented usage with
   `agent-java-testng` 5.6.8; ReportPortal is not a transitive dependency.
 - **Tests** — `AuthorUtilsTest` covers annotation, Javadoc, class fallback and
-  missing-source behavior.
+  missing-source behavior; `SelenideAllureStepsTest` covers listener
+  install/uninstall idempotency.
 - **Documentation** — expanded README (installation for Maven/Gradle, quick
   start, annotations, reporting, troubleshooting) and this changelog.
 

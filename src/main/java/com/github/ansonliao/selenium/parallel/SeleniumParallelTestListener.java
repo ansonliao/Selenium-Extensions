@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
-import static com.github.ansonliao.selenium.utils.StringUtils.isNotNullAndNotEmpty;
 import static com.github.ansonliao.selenium.utils.StringUtils.isNullOrEmpty;
 import static com.github.ansonliao.selenium.utils.StringUtils.removeQuoteMark;
 import static com.github.ansonliao.selenium.utils.config.SEConfigs.getConfigInstance;
@@ -117,9 +116,8 @@ public class SeleniumParallelTestListener
     }
 
     private void openRemoteURL(String url) {
-        if (isNotNullAndNotEmpty(url)) {
+        if (!isNullOrEmpty(url)) {
             SelenideManager.getSelenideDriver().open(url);
-            AllureReport.step("Open URL: " + url);
         }
     }
 }

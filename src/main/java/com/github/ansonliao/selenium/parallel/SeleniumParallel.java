@@ -5,7 +5,6 @@ import com.github.ansonliao.selenium.annotations.Headless;
 import com.github.ansonliao.selenium.annotations.Incognito;
 import com.github.ansonliao.selenium.annotations.URL;
 import com.github.ansonliao.selenium.driver.SelenideManager;
-import com.github.ansonliao.selenium.report.AllureReport;
 import com.github.ansonliao.selenium.utils.AuthorUtils;
 import com.github.ansonliao.selenium.utils.MyFileUtils;
 import org.openqa.selenium.OutputType;
@@ -61,7 +60,6 @@ public class SeleniumParallel {
 
     public WebDriver openUrl(String url) {
         SelenideManager.getSelenideDriver().open(url);
-        AllureReport.step("Open URL: " + url);
         return getDriver();
     }
 

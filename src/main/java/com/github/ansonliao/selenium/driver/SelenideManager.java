@@ -2,6 +2,7 @@ package com.github.ansonliao.selenium.driver;
 
 import com.codeborne.selenide.SelenideConfig;
 import com.codeborne.selenide.SelenideDriver;
+import com.github.ansonliao.selenium.report.SelenideAllureSteps;
 import org.openqa.selenium.WebDriver;
 
 import java.lang.reflect.Method;
@@ -22,6 +23,7 @@ public final class SelenideManager {
         SelenideConfig config = SelenideConfigFactory.create(browserName, method);
         SelenideDriver driver = new SelenideDriver(config);
         DRIVER.set(driver);
+        SelenideAllureSteps.install();
         return driver;
     }
 
@@ -54,11 +56,9 @@ public final class SelenideManager {
 
     public static void closeDriver() {
         SelenideDriver driver = DRIVER.get();
-        if (driver == null) {
-            return;
-        }
+        SelenideAllureSteps.uninstall();
         try {
-            if (driver.hasWebDriverStarted()) {
+            if (driver != null && driver.hasWebDriverStarted()) {
                 driver.close();
             }
         } finally {
