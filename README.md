@@ -534,6 +534,10 @@ public class TestCaseSample {
   `ExtentManager`, `ExtentTestManager`, `Opera`/`PhantomJs` annotations and
   their `Ignore*` variants.
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the complete 3.0.0 release notes.
+
 ## License
 
 Selenium-Extensions is released under the
