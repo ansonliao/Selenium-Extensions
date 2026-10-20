@@ -24,15 +24,7 @@ public class ScreenshotManager {
         // File scrFile = ((TakesScreenshot) WDManager.getDriver())
         //         .getScreenshotAs(OutputType.FILE);
 
-        String destDir = String.join(
-                FILE_SEPARATOR,
-                SCREENSHOT_DIR,
-                clazz.getPackage().getName(),
-                clazz.getSimpleName(),
-                browserName,
-                imgPrefix.concat("_").concat(String.valueOf(
-                        new Timestamp(System.currentTimeMillis()).getTime()))
-                        .concat(".png"));
+        String destDir = screenshotPath(clazz, imgPrefix, browserName);
         try {
             // MyFileUtils.copyFile(scrFile, new File(destDir));
             ImageIO.write(
@@ -43,5 +35,22 @@ public class ScreenshotManager {
             e.printStackTrace();
         }
         return destDir;
+    }
+
+    /**
+     * Builds the absolute path a failure screenshot is written to. Kept
+     * separate from {@link #capture(Class, String, String)} so the naming
+     * convention can be verified without a browser.
+     */
+    String screenshotPath(Class<?> clazz, String imgPrefix, String browserName) {
+        return String.join(
+                FILE_SEPARATOR,
+                SCREENSHOT_DIR,
+                clazz.getPackage().getName(),
+                clazz.getSimpleName(),
+                browserName,
+                imgPrefix.concat("_").concat(String.valueOf(
+                        new Timestamp(System.currentTimeMillis()).getTime()))
+                        .concat(".png"));
     }
 }
