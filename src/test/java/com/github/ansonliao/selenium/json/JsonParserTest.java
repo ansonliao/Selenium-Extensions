@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 public class JsonParserTest {
@@ -59,5 +60,35 @@ public class JsonParserTest {
     @Test
     public void isNodeExistedFalseForNullJson() {
         assertFalse(JsonParser.isNodeExisted(null, "chrome"));
+    }
+
+    @Test
+    public void isNodeExistedFalseForMissingNestedPath() {
+        JsonObject json = parse("{\"chrome\":{\"caps\":{}}}");
+        assertFalse(JsonParser.isNodeExisted(json, "firefox.caps"));
+        assertFalse(JsonParser.isNodeExisted(json, "firefox.caps.platform"));
+    }
+
+    @Test
+    public void getJsonElementReturnsNullForMissingNestedPath() {
+        JsonObject json = parse("{\"chrome\":{\"caps\":{}}}");
+        assertNull(JsonParser.getJsonElement(json, "firefox.caps"));
+    }
+
+    @Test
+    public void isNodeExistedFalseWhenIntermediateNodeIsScalar() {
+        JsonObject json = parse("{\"chrome\":{\"version\":\"1\"}}");
+        assertFalse(JsonParser.isNodeExisted(json, "chrome.version.x"));
+    }
+
+    @Test
+    public void isNodeExistedKeepsExistingBehaviour() {
+        JsonObject json = parse("{\"chrome\":{\"caps\":{\"platform\":\"linux\"}}}");
+        assertTrue(JsonParser.isNodeExisted(json, "chrome"));
+        assertTrue(JsonParser.isNodeExisted(json, "chrome.caps"));
+        assertTrue(JsonParser.isNodeExisted(json, "chrome.caps.platform"));
+        assertFalse(JsonParser.isNodeExisted(json, "chrome.caps.missing"));
+        // An explicit JSON null is still an existing node.
+        assertTrue(JsonParser.isNodeExisted(parse("{\"chrome\":null}"), "chrome"));
     }
 }

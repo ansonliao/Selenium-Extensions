@@ -3,7 +3,6 @@ package com.github.ansonliao.selenium.json;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
@@ -29,7 +28,8 @@ public class JsonParser {
                 continue;
             }
             if (result == null) {
-                result = JsonNull.INSTANCE;
+                // A missing key means the path does not resolve; return null so
+                // callers (and isNodeExisted) can tell it does not exist.
                 break;
             }
             if (result.isJsonObject()) {
@@ -38,6 +38,9 @@ public class JsonParser {
                 int ix = Integer.valueOf(key) - 1;
                 result = ((JsonArray) result).get(ix);
             } else {
+                // Reached a scalar before the end of the path, so the path does
+                // not resolve.
+                result = null;
                 break;
             }
         }
@@ -61,7 +64,7 @@ public class JsonParser {
     // }
 
     public synchronized static boolean isNodeExisted(JsonElement json, String path) {
-        return json == null ? false : !(getJsonElement(json, path) == null);
+        return json != null && getJsonElement(json, path) != null;
     }
 
     public static void main(String[] args) throws FileNotFoundException {
