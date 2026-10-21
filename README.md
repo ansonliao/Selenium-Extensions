@@ -28,23 +28,16 @@ multiple browsers. Browser sessions are managed by
 
 ## Installation
 
-The library is published through [JitPack](https://jitpack.io). Use the
-`3.0.0` tag once released, or `master-SNAPSHOT` for the latest commit.
+The library is published as `io.github.ansonliao:Selenium-Extensions`.
+Release `3.0.0` and earlier are also available from
+[JitPack](https://jitpack.io) under the legacy `com.github.ansonliao`
+coordinate.
 
 ### Maven
 
 ```xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-```
-
-```xml
 <dependency>
-    <groupId>com.github.ansonliao</groupId>
+    <groupId>io.github.ansonliao</groupId>
     <artifactId>Selenium-Extensions</artifactId>
     <version>3.0.0</version>
 </dependency>
@@ -53,21 +46,17 @@ The library is published through [JitPack](https://jitpack.io). Use the
 ### Gradle
 
 ```groovy
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
 dependencies {
-    implementation 'com.github.ansonliao:Selenium-Extensions:3.0.0'
+    implementation 'io.github.ansonliao:Selenium-Extensions:3.0.0'
 }
 ```
 
 ## Quick start
 
 ```java
-import com.github.ansonliao.selenium.annotations.URL;
-import com.github.ansonliao.selenium.annotations.browser.Chrome;
-import com.github.ansonliao.selenium.annotations.browser.Firefox;
+import io.github.ansonliao.selenium.annotations.URL;
+import io.github.ansonliao.selenium.annotations.browser.Chrome;
+import io.github.ansonliao.selenium.annotations.browser.Firefox;
 import org.testng.annotations.Test;
 
 public class LoginTest {
@@ -139,7 +128,7 @@ import static com.codeborne.selenide.Condition.visible;
 
 import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
-import com.github.ansonliao.selenium.driver.SelenideManager;
+import io.github.ansonliao.selenium.driver.SelenideManager;
 
 public class LoginPage {
 
@@ -177,9 +166,9 @@ returns the underlying `WebDriver` of the current thread.
 To enable retries, add the listener to `testng.listeners`:
 
 ```properties
-testng.listeners=com.github.ansonliao.selenium.testng.TestResultListener, \
-  com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener, \
-  com.github.ansonliao.selenium.testng.RetryListener
+testng.listeners=io.github.ansonliao.selenium.testng.TestResultListener, \
+  io.github.ansonliao.selenium.parallel.SeleniumParallelTestListener, \
+  io.github.ansonliao.selenium.testng.RetryListener
 ```
 
 ## Reporting
@@ -458,13 +447,13 @@ Create your own configuration named `seleniumextensions.properties` or
 | add.browser.group.to.report | Whether to add the testing browser as an Allure tag | Boolean: `true` / `false` | `false` |
 | run.by.browsers | Run all TestNG tests by the specified browser(s), ignoring browser annotations | `CHROME`, `FIREFOX`, `IE`, `EDGE`, `INTERNETEXPLORER` | null |
 | default.browser | Default browser for test cases without a browser annotation | `CHROME`, `FIREFOX`, `IE`, `EDGE`, `INTERNETEXPLORER` | `CHROME` (case insensitive) |
-| browser.annotation.package | Package containing the browser annotations | string | `com.github.ansonliao.selenium.annotations.browser` |
+| browser.annotation.package | Package containing the browser annotations | string | `io.github.ansonliao.selenium.annotations.browser` |
 | test.tag.class.size.of.testngxml | Number of test classes per `<test>` tag of the generated TestNG XML | positive integer | 10 |
 | testing.package.names | Packages containing the test scripts to run | string or list | null |
 | testing.browser.names | Run test cases whose browser annotation matches this setting | string or list | null |
 | testing.test.groups | Run test cases assigned to these TestNG groups | string or list | null |
 | testing.testng.classes | TestNG test classes to execute | string or list | null |
-| testng.listeners | Custom TestNG listener(s) | string or list | `com.github.ansonliao.selenium.testng.TestResultListener`, `com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener` |
+| testng.listeners | Custom TestNG listener(s) | string or list | `io.github.ansonliao.selenium.testng.TestResultListener`, `io.github.ansonliao.selenium.parallel.SeleniumParallelTestListener` |
 | testng.class.prefix | Only scan test classes whose name starts with this prefix | string | `test` (case insensitive) |
 | selenium.hub.url | Selenium Grid URL; when set, Selenide runs remotely | string | null |
 | wd.caps.file | JSON file with extra capabilities, arguments and extensions | string | `caps/caps.json` |

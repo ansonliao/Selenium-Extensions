@@ -2,11 +2,11 @@ package testcases;
 
 import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
-import com.github.ansonliao.selenium.annotations.Headless;
-import com.github.ansonliao.selenium.annotations.URL;
-import com.github.ansonliao.selenium.driver.SelenideManager;
-import com.github.ansonliao.selenium.parallel.SeleniumParallelTestListener;
-import com.github.ansonliao.selenium.testng.TestResultListener;
+import io.github.ansonliao.selenium.annotations.Headless;
+import io.github.ansonliao.selenium.annotations.URL;
+import io.github.ansonliao.selenium.driver.SelenideManager;
+import io.github.ansonliao.selenium.parallel.SeleniumParallelTestListener;
+import io.github.ansonliao.selenium.testng.TestResultListener;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.github.ansonliao.selenium.factory.WDManager.getDriver;
+import static io.github.ansonliao.selenium.factory.WDManager.getDriver;
 
 @Listeners({SeleniumParallelTestListener.class, TestResultListener.class})
 public class Test_Demo {

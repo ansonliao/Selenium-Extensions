@@ -57,6 +57,6 @@ and to the next machine.
 ```bash
 ./gradlew test                      # unit tests only
 ./gradlew checkstyleMain checkstyleTest
-./gradlew test --tests "com.github.ansonliao.selenium.json.JsonParserTest"
+./gradlew test --tests "io.github.ansonliao.selenium.json.JsonParserTest"
 ./gradlew browserTest               # requires a local browser and driver
 ```

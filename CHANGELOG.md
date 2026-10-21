@@ -3,6 +3,15 @@
 All notable changes to Selenium-Extensions are documented here.
 This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- **Breaking: Maven group and Java package renamed to `io.github.ansonliao`** —
+  the group was `com.github.ansonliao` and the base package was
+  `com.github.ansonliao.selenium`. Dependency coordinates, imports and any
+  `testng.listeners` / `browser.annotation.package` overrides must be updated.
+
 ## [3.0.0] - 2026-10-19
 
 A full modernization of the project: new build system, new browser driver
